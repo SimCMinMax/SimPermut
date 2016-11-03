@@ -1,0 +1,23 @@
+## Interface: 70000
+## Title: SimPermut
+## Notes: Constructs SimC export strings with permutations for items in inventory
+## Author: Jeiwel
+## Version: 0.1
+## OptionalDependencies: Ace3
+## X-Curse-Packaged-Version: v1.5.1
+## X-Curse-Project-Name: Simulationcraft
+## X-Curse-Project-ID: simulationcraft
+## X-Curse-Repository-ID: wow/simulationcraft/mainline
+
+libs\LibStub\LibStub.lua
+libs\CallbackHandler-1.0\CallbackHandler-1.0.lua
+#@no-lib-strip@
+libs\AceAddon-3.0\AceAddon-3.0.xml
+libs\AceConsole-3.0\AceConsole-3.0.xml
+libs\AceEvent-3.0\AceEvent-3.0.xml
+#@end-no-lib-strip@
+
+embeds.xml
+
+extras.lua
+core.lua
