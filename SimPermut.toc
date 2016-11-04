@@ -1,7 +1,6 @@
-## Interface: 70000
 ## Title: SimPermut
 ## Notes: Constructs SimC export strings with permutations for items in inventory
-## Author: Jeiwel
+## Author: Kutikuti
 ## Version: 0.1
 ## OptionalDependencies: Ace3
 ## X-Curse-Packaged-Version: v1.5.1
