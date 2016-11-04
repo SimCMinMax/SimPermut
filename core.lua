@@ -147,13 +147,13 @@ local function GetArtifactString()
   end
 
   local item_id = select(1, ArtifactUI.GetArtifactInfo())
-  print(item_id)
+  --print(item_id)
   if item_id == nil or item_id == 0 then
     return nil
   end
 
   local artifact_id = SimPermut.ArtifactTable[item_id]
-  print(artifact_id)
+  --print(artifact_id)
   if artifact_id == nil then
     return nil
   end
@@ -162,7 +162,7 @@ local function GetArtifactString()
   local str = 'artifact=' .. artifact_id .. ':0:0:0:0'
 
   local powers = ArtifactUI.GetPowers()
-  print(powers)
+  --print(powers)
   for i = 1, #powers do
     local power_id = powers[i]
     local _, _, currentRank, _, bonusRanks = ArtifactUI.GetPowerInfo(power_id)
@@ -170,7 +170,7 @@ local function GetArtifactString()
       str = str .. ':' .. power_id .. ':' .. (currentRank - bonusRanks)
     end
   end
-  print(str)
+  --print(str)
   
   --if ArtifactFrame:IsShown() then
 	--HideUIPanel(ArtifactFrame)
