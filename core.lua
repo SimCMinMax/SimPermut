@@ -11,7 +11,6 @@ local OFFSET_GEM_ID_4 = 6
 local OFFSET_SUFFIX_ID = 7
 local OFFSET_FLAGS = 11
 local OFFSET_BONUS_ID = 13
-local OFFSET_UPGRADE_ID = 14 -- Flags = 0x4
 
 -- Artifact stuff (adapted from LibArtifactData [https://www.wowace.com/addons/libartifactdata-1-0/], thanks!)
 local ArtifactUI          = _G.C_ArtifactUI
@@ -19,8 +18,8 @@ local HasArtifactEquipped = _G.HasArtifactEquipped
 local SocketInventoryItem = _G.SocketInventoryItem
 local Timer               = _G.C_Timer
 
+
 -- load stuff from extras.lua
-local upgradeTable  = SimPermut.upgradeTable
 local slotNames     = SimPermut.slotNames
 local simcSlotNames = SimPermut.simcSlotNames
 local specNames     = SimPermut.SpecNames
@@ -28,17 +27,22 @@ local profNames     = SimPermut.ProfNames
 local regionString  = SimPermut.RegionString
 local artifactTable = SimPermut.ArtifactTable
 
-SLASH_SimPermutSlash1 = "/SimPermut"
+SLASH_SIMPERMUTSLASH1 = "/SimPermut"
 
 -- Most of the guts of this addon were based on a variety of other ones, including
 -- Statslog, AskMrRobot, and BonusScanner. And a bunch of hacking around with AceGUI.
 -- Many thanks to the authors of those addons, and to reia for fixing my awful amateur
 -- coding mistakes regarding objects and namespaces.
 
-SlashCmdList["SimPermutSlash"] = function (arg)
+SlashCmdList["SIMPERMUTSLASH"] = function (arg)
 	local argL = strlower(arg)
 	OpenAllBags()
+	if not CharacterFrame:IsShown() then 
+	  ToggleCharacter("PaperDollFrame") 
+	end
 	SimPermut:PrintCompare(argL)
+	CloseAllBags()
+	ToggleCharacter("PaperDollFrame")
 end
 
 function SimPermut:OnInitialize()
@@ -122,26 +126,34 @@ end
 
 -- Artifact Information
 local function IsArtifactFrameOpen()
-  local ArtifactFrame = _G.ArtifactFrame
+  local ArtifactFrame 	  = _G.ArtifactFrame
   return ArtifactFrame and ArtifactFrame:IsShown() or false
 end
 
 -- recupere la string de l'artefact
 local function GetArtifactString()
+  
   if not HasArtifactEquipped() then
     return nil
   end
-
+  
+  --local ArtifactFrame = _G.ArtifactFrame
+  
+  -- Unregister the events to prevent unwanted call. (thx Aethys :o)
+  UIParent:UnregisterEvent("ARTIFACT_UPDATE");
+  
   if not IsArtifactFrameOpen() then
     SocketInventoryItem(INVSLOT_MAINHAND)
   end
 
   local item_id = select(1, ArtifactUI.GetArtifactInfo())
+  print(item_id)
   if item_id == nil or item_id == 0 then
     return nil
   end
 
   local artifact_id = SimPermut.ArtifactTable[item_id]
+  print(artifact_id)
   if artifact_id == nil then
     return nil
   end
@@ -150,6 +162,7 @@ local function GetArtifactString()
   local str = 'artifact=' .. artifact_id .. ':0:0:0:0'
 
   local powers = ArtifactUI.GetPowers()
+  print(powers)
   for i = 1, #powers do
     local power_id = powers[i]
     local _, _, currentRank, _, bonusRanks = ArtifactUI.GetPowerInfo(power_id)
@@ -157,6 +170,13 @@ local function GetArtifactString()
       str = str .. ':' .. power_id .. ':' .. (currentRank - bonusRanks)
     end
   end
+  print(str)
+  
+  --if ArtifactFrame:IsShown() then
+	--HideUIPanel(ArtifactFrame)
+  --end
+  
+  UIParent:RegisterEvent("ARTIFACT_UPDATE");
 
   return str
 end
@@ -213,11 +233,6 @@ function SimPermut:GetItemString(itemLink)
 	
 	-- Item id
 	local itemId = itemSplit[OFFSET_ITEM_ID]
-	--print(GetItemInfo(itemId))
-	-- item name
-	--local itemname = SimPermut:CleanString(GetItemInfo(itemId))
-	
-	--simcItemOptions[#simcItemOptions + 1] = itemname .. ',id=' .. itemId
 	simcItemOptions[#simcItemOptions + 1] = ',id=' .. itemId
 
 	-- Enchant
@@ -244,14 +259,6 @@ function SimPermut:GetItemString(itemLink)
 
 	local rest_offset = OFFSET_BONUS_ID + #bonuses + 1
 
-	-- Upgrade level
-	if bit.band(flags, 4) == 4 then
-		local upgrade_id = tonumber(itemSplit[rest_offset])
-		if SimPermut.upgradeTable[upgrade_id] ~= nil and SimPermut.upgradeTable[upgrade_id] > 0 then
-		  simcItemOptions[#simcItemOptions + 1] = 'upgrade=' .. SimPermut.upgradeTable[upgrade_id]
-		end
-		rest_offset = rest_offset + 1
-	end
 
 	-- Artifacts use this
 	if bit.band(flags, 256) == 256 then
@@ -344,12 +351,16 @@ function SimPermut:GetPermutations(strItem)
 			local player, bank, bags, voidstorage, slot, bag = EquipmentManager_UnpackLocation(locationBitstring)
 			if bags then
 				texture, count, locked, quality, readable, lootable, itemLink, isFiltered, hasNoValue, itemId = GetContainerItemInfo(bag, slot)
-				permutTable[#permutTable+1]=SimPermut:GetItemString(itemLink)
-				itemidTable[#itemidTable+1]=itemId
+				if itemLink~=nil then
+					permutTable[#permutTable+1]=SimPermut:GetItemString(itemLink)
+					itemidTable[#itemidTable+1]=itemId
+				end
 			else
 				itemLink = GetInventoryItemLink('player', slot)
-				permutTable[#permutTable+1]=SimPermut:GetItemString(itemLink)
-				itemidTable[#itemidTable+1]=SimPermut:GetIDFromLink(itemLink)
+				if itemLink~=nil then
+					permutTable[#permutTable+1]=SimPermut:GetItemString(itemLink)
+					itemidTable[#itemidTable+1]=SimPermut:GetIDFromLink(itemLink)
+				end
 			end
 		end
 		
@@ -368,12 +379,16 @@ function SimPermut:GetPermutations(strItem)
 			local player, bank, bags, voidstorage, slot, bag = EquipmentManager_UnpackLocation(locationBitstring)
 			if bags then
 				texture, count, locked, quality, readable, lootable, itemLink, isFiltered, hasNoValue, itemId = GetContainerItemInfo(bag, slot)
-				permutTable[#permutTable+1]=SimPermut:GetItemString(itemLink)
-				itemidTable[#itemidTable+1]=itemId
+				if itemLink~=nil then
+					permutTable[#permutTable+1]=SimPermut:GetItemString(itemLink)
+					itemidTable[#itemidTable+1]=itemId
+				end
 			else
 				itemLink = GetInventoryItemLink('player', slot)
-				permutTable[#permutTable+1]=SimPermut:GetItemString(itemLink)
-				itemidTable[#itemidTable+1]=SimPermut:GetIDFromLink(itemLink)
+				if itemLink~=nil then
+					permutTable[#permutTable+1]=SimPermut:GetItemString(itemLink)
+					itemidTable[#itemidTable+1]=SimPermut:GetIDFromLink(itemLink)
+				end
 			end
 		end
 		
@@ -417,13 +432,16 @@ function SimPermut:GetPermutations(strItem)
 			local player, bank, bags, voidstorage, slot, bag = EquipmentManager_UnpackLocation(locationBitstring)
 			if bags then
 				texture, count, locked, quality, readable, lootable, itemLink, isFiltered, hasNoValue, itemId = GetContainerItemInfo(bag, slot)
-				permutTable[#permutTable+1]=SimPermut:GetItemString(itemLink)
-				itemidTable[#itemidTable+1]=itemId
+				if itemLink~=nil then
+					permutTable[#permutTable+1]=SimPermut:GetItemString(itemLink)
+					itemidTable[#itemidTable+1]=itemId
+				end
 			else
 				itemLink = GetInventoryItemLink('player', slot)
-				permutTable[#permutTable+1]=SimPermut:GetItemString(itemLink)
-				itemidTable[#itemidTable+1]=SimPermut:GetIDFromLink(itemLink)
-				
+				if itemLink~=nil then
+					permutTable[#permutTable+1]=SimPermut:GetItemString(itemLink)
+					itemidTable[#itemidTable+1]=SimPermut:GetIDFromLink(itemLink)
+				end
 			end
 		end
 		
