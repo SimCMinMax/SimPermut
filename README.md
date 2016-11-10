@@ -8,8 +8,12 @@ Particulary usefull to compare trinket combination.
 
 ## How Can I Use It?
 
-/simPermut X
+graphical interface :
+/SimPermut
 
+
+old but still working :
+/simPermut X
 X = (head,neck,soulder,chest,back,wrist,hands,waist,legs,finger,trinket)
 
 ## Credits
