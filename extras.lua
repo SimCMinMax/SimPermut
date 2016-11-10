@@ -136,4 +136,37 @@ SimPermut.SpecNames = {
 
 SimPermut.slotNames = {"HeadSlot", "NeckSlot", "ShoulderSlot", "BackSlot", "ChestSlot", "ShirtSlot", "TabardSlot", "WristSlot", "HandsSlot", "WaistSlot", "LegsSlot", "FeetSlot", "Finger0Slot", "Finger1Slot", "Trinket0Slot", "Trinket1Slot", "MainHandSlot", "SecondaryHandSlot", "AmmoSlot" };    
 SimPermut.simcSlotNames = {'head','neck','shoulder','back','chest','shirt','tabard','wrist','hands','waist','legs','feet','finger1','finger2','trinket1','trinket2','main_hand','off_hand','ammo'}
+SimPermut.listNames = {'head','neck','shoulder','back','chest','wrist','hands','waist','legs','feet','finger','trinket'}
 
+SimPermut.enchantNeck = {
+  [0] 	 = 'Untouched',
+  [5891] = 'Ancient Priestess',
+  [5437] = 'Claw',
+  [5438] = 'Distant Army',
+  [5889] = 'Heavy Hide',
+  [5439] = 'Hidden Satyr',
+  [5890] = 'Trained Soldier'
+}
+SimPermut.enchantCloak = {
+  [0] 	 = 'Untouched',
+  [5434] = '+200 Str',
+  [5435] = '+200 Agi',
+  [5436] = '+200 Int'
+}
+SimPermut.enchantRing = {
+  [0] 	 = 'Untouched',
+  [5427] = '+200 Crit',
+  [5428] = '+200 Haste',
+  [5429] = '+200 Mastery',
+  [5430] = '+200 Versatility'
+}
+SimPermut.gemList = {
+  [0] 	 = 'Untouched',
+  [130219] = '+150 Crit',
+  [130220] = '+150 Haste',
+  [130222] = '+150 Mastery',
+  [130221] = '+150 Versatility',
+  [130246] = '+200 Str',
+  [130247] = '+200 Agi',
+  [130248] = '+200 Int'
+}
