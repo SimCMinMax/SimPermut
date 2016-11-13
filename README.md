@@ -2,7 +2,7 @@
 
 ## Overview
 
-This repository is for the addon SimPermut which mak a string usable by SimulationCraft with all the different permutations for the items you have in your inventory. This makes easy comparing stuff.
+This repository is for the addon SimPermut which make a string usable by SimulationCraft with all the different permutations for the items you have in your inventory. This makes easy comparing stuff.
 
 Particulary usefull to compare trinket combination.
 

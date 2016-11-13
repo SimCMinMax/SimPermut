@@ -364,9 +364,9 @@ end
 function SimPermut:GetCopyName(tableID,item1,item2)
 	local name,ilvl
 	name,_,_,ilvl=GetItemInfo(tableID[item1])
-	local itemname1 = tokenize(name)..'('..ilvl..')'
+	local itemname1 = tokenize(name)..'_'..ilvl
 	name,_,_,ilvl=GetItemInfo(tableID[item2])
-	local itemname2 = tokenize(name)..'('..ilvl..')'
+	local itemname2 = tokenize(name)..'_'..ilvl
 	
 	return itemname1.."_"..itemname2
 end
@@ -545,10 +545,10 @@ function SimPermut:GetItemString(itemLink,itemType,base)
 	end
 	
 	--ilvl
-	_,_,_,ilvl = GetItemInfo(itemLink)
-	if ilvl ~= nil then
-		simcItemOptions[#simcItemOptions + 1] = 'ilvl=' .. ilvl
-	end
+	--_,_,_,ilvl = GetItemInfo(itemLink)
+	--if ilvl ~= nil then
+	--	simcItemOptions[#simcItemOptions + 1] = 'ilvl=' .. ilvl
+	--end
 	
 	return simcItemOptions
 end
@@ -704,7 +704,7 @@ function SimPermut:GetPermutations(strItem)
 		
 		for i=1 ,#permutTable do
 			name,_,_,ilvl=GetItemInfo(itemidTable[i])
-			permut= permut .. "copy=" .. tokenize(name)..'('..ilvl..')' .. '\n'
+			permut= permut .. "copy=" .. tokenize(name)..'_'..ilvl .. '\n'
 			permut= permut .. simcname.."=" .. table.concat(permutTable[i], ',') .. '\n'
 		end
 			
@@ -724,9 +724,9 @@ function SimPermut:GetPermutationsFromList(strItem)
 			for j=i+1,#tableLinkPermut do
 				name1,_,_,ilvl1=GetItemInfo(tableLinkPermut[i])
 				name2,_,_,ilvl2=GetItemInfo(tableLinkPermut[j])
-				permut= permut .. "copy=" .. tokenize(name1)..'('..ilvl1..')'.."_"..tokenize(name2)..'('..ilvl2..')' .. '\n'
-				permut= permut .. "finger1=" .. table.concat(SimPermut:GetItemString(tableLinkPermut[i],strItem,false), ',') .. '\n'
-				permut= permut .. "finger2=" .. table.concat(SimPermut:GetItemString(tableLinkPermut[j],strItem,false), ',') .. '\n'
+				permut= permut .. "copy=" .. tokenize(name1)..'_'..ilvl1.."_"..tokenize(name2)..'_'..ilvl2 .. '\n'
+				permut= permut .. "trinket1=" .. table.concat(SimPermut:GetItemString(tableLinkPermut[i],strItem,false), ',') .. '\n'
+				permut= permut .. "trinket2=" .. table.concat(SimPermut:GetItemString(tableLinkPermut[j],strItem,false), ',') .. '\n'
 			end
 		end
 	elseif strItem=="finger" then
@@ -734,7 +734,7 @@ function SimPermut:GetPermutationsFromList(strItem)
 			for j=i+1,#tableLinkPermut do
 				name1,_,_,ilvl1=GetItemInfo(tableLinkPermut[i])
 				name2,_,_,ilvl2=GetItemInfo(tableLinkPermut[j])
-				permut= permut .. "copy=" .. tokenize(name1)..'('..ilvl1..')'.."_"..tokenize(name2)..'('..ilvl2..')' .. '\n'
+				permut= permut .. "copy=" .. tokenize(name1)..'_'..ilvl1.."_"..tokenize(name2)..'_'..ilvl2 .. '\n'
 				permut= permut .. "finger1=" .. table.concat(SimPermut:GetItemString(tableLinkPermut[i],strItem,false), ',') .. '\n'
 				permut= permut .. "finger2=" .. table.concat(SimPermut:GetItemString(tableLinkPermut[j],strItem,false), ',') .. '\n'
 			end
@@ -767,7 +767,7 @@ function SimPermut:GetPermutationsFromList(strItem)
 		
 		for i=1, #tableLinkPermut do
 			name,_,_,ilvl=GetItemInfo(tableLinkPermut[i])
-			permut= permut .. "copy=" .. tokenize(name)..'('..ilvl..')' .. '\n'
+			permut= permut .. "copy=" .. tokenize(name)..'_'..ilvl.. '\n'
 			permut= permut .. simcname.."=" .. table.concat(SimPermut:GetItemString(tableLinkPermut[i],strItem,false), ',') .. '\n'
 		end
 	end
