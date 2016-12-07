@@ -12,6 +12,7 @@ local OFFSET_SUFFIX_ID 	= 7
 local OFFSET_FLAGS 		= 11
 local OFFSET_BONUS_ID 	= 13
 local ITEM_THRESHOLD 	= 800
+local ITEM_COUNT_THRESHOLD = 25
 
 -- Libs
 local ArtifactUI          = _G.C_ArtifactUI
@@ -21,9 +22,10 @@ local Timer               = _G.C_Timer
 local AceGUI 			  = LibStub("AceGUI-3.0")
 local PersoLib			  = LibStub("PersoLib")
 
-
 --UI
-local mainFrame 
+local mainframe 
+local mainframeCreated=false
+local stringframe
 local tableDropDown={}
 local scroll
 local multiLineEditBox		  
@@ -39,12 +41,14 @@ local actualEnchantBack=0
 local actualGem=0
 local actualForce=false
 local labelCount
+local labelError
 local tableListItems={}
 local tableLabel={}
 local tableTitres={}
 local tableCheckBoxes={}
 local tableLinkPermut={}
 local selecteditems=0
+local errorMessage=""
 
 -- load stuff from extras.lua
 local slotNames     	= SimPermut.slotNames
@@ -66,7 +70,17 @@ SLASH_SIMPERMUTSLASHTEST1 = "/Simtest"
 SlashCmdList["SIMPERMUTSLASH"] = function (arg)
 	local argL = strlower(arg)
 	if string.len(arg) == 0 then 
-		SimPermut:BuildFrame()
+		if mainframeCreated then
+			--print()
+			if mainframe:IsShown() then
+				mainframe:Hide()
+			else
+				SimPermut:BuildFrame()
+			end
+		else
+			SimPermut:BuildFrame()
+			mainframeCreated=true
+		end
 	else
 		SimPermut:PrintCompare(argL,false)
 	end
@@ -114,7 +128,7 @@ SlashCmdList["SIMPERMUTSLASHTEST"] = function (arg)
 	--for i=1,#returnvalue do
 	--	print(unpack(returnvalue[i]))
 	--end
-	print(SimPermut:GetBaseString())
+	--print(SimPermut:GetBaseString())
 	--print("Elapsed time ALACON : "..t[1].."x"..t[2].."(".. elements.." elements) : "..elapsed_time1)
 	--print("Elapsed time BOGOSS : "..t[1].."x"..t[2].."(".. elements.." elements) : "..elapsed_time2)
 end
@@ -134,6 +148,7 @@ end
 function SimPermut:BuildFrame()
 	mainframe = AceGUI:Create("Frame")
 	mainframe:SetTitle("SimPermut")
+	mainframe:SetPoint("CENTER",-150,0)
 	mainframe:SetCallback("OnClose", function(widget) AceGUI:Release(widget) end)
 	mainframe:SetLayout("Flow")
 	mainframe:SetWidth(1000)
@@ -254,7 +269,19 @@ function SimPermut:BuildFrame()
 	
 	labelCount= AceGUI:Create("Label")
 	labelCount:SetText(" ")
-	labelCount:SetWidth(80)
+	labelCount:SetWidth(150)
+	
+	local labelSpacer4= AceGUI:Create("Label")
+	labelSpacer4:SetText(" ")
+	labelSpacer4:SetFullWidth(true)
+	
+	labelError= AceGUI:Create("Label")
+	labelError:SetText(" ")
+	labelError:SetFullWidth(true) 
+	labelError:SetColor(252, 22, 22)
+	--local Path, Size, Flags = labelError:GetFont()
+	--labelError:SetFont(Path,myFontSize+4,Flags);
+	
 	
 	mainGroup:AddChild(labelEnchantNeck)
 	mainGroup:AddChild(dropdownEnchantNeck)
@@ -270,39 +297,20 @@ function SimPermut:BuildFrame()
 	mainGroup:AddChild(labelSpacer3)
 	mainGroup:AddChild(buttonGenerate)
 	mainGroup:AddChild(labelCount)
+	--mainGroup:AddChild(labelSpacer4)
+	--mainGroup:AddChild(labelError)
 	
 	mainframe:AddChild(mainGroup)
-end
-
--- clic btn generate
-function SimPermut:Generate()
-	local permuttable={}
-	local permutString=""
-	local baseString=""
-	local finalString=""
-	SimPermut:GetTableLink()
-	permuttable=SimPermut:GetAllPermutations()
-	permutString=SimPermut:GetPermutationString(permuttable)
-	baseString=SimPermut:GetBaseString()
-	finalString=SimPermut:GetFinalString(baseString,permutString)
-	SimPermut:PrintPermut(finalString)
-end
-
--- Slot Dropdown manager
-function SimPermut:CallDropDown(selected)
-	tableDropDown[selected] = not tableDropDown[selected]
-	--tableCheckBoxes[selected] = {}
-
-	scroll:ReleaseChildren()
-	tableTitres={}
-	tableLabel={}
-	tableCheckBoxes={}
-	tableLinkPermut={}
-	SimPermut:GetListItems()
-	SimPermut:BuildItemFrame()
 	
-	SimPermut:GetSelectedCount()
-	--SimPermut:LoadPermut()
+	
+	--[[stringframe = AceGUI:Create("Frame", "SimPermutPopup", UIParent)
+	stringframe:SetTitle("SimPermut String")
+	--stringframe:SetPoint("CENTER",150,0)
+	stringframe:SetCallback("OnClose", function(widget) AceGUI:Release(widget) end)
+	stringframe:SetLayout("Flow")
+	stringframe:SetWidth(200)
+	stringframe:SetHeight(200)
+	stringframe:SetPoint("TOPLEFT", mainframe, "TOPRIGHT", 0, 0)]]--
 end
 
 -- Load Item list
@@ -340,7 +348,7 @@ function SimPermut:BuildItemFrame()
 						else
 							selecteditems=selecteditems-1
 						end
-						labelCount:SetText(selecteditems)
+						SimPermut:CheckItemCount()
 					end)
 					selecteditems=selecteditems+1
 					scroll:AddChild(tableCheckBoxes[j][i])
@@ -365,6 +373,44 @@ function SimPermut:BuildItemFrame()
 	end
 end
 
+-- clic btn generate
+function SimPermut:Generate()
+	--labelError:SetText("")
+	--errorMessage=""
+	mainframe:SetStatusText("")
+	local permuttable={}
+	local permutString=""
+	local baseString=""
+	local finalString=""
+	if SimPermut:GetTableLink() then
+		permuttable=SimPermut:GetAllPermutations()
+		permutString=SimPermut:GetPermutationString(permuttable)
+		baseString=SimPermut:GetBaseString()
+		finalString=SimPermut:GetFinalString(baseString,permutString)
+		SimPermut:PrintPermut(finalString)
+	else --error
+		mainframe:SetStatusText(errorMessage)
+		--labelError:SetText(errorMessage)
+	end
+end
+
+-- Slot Dropdown manager
+function SimPermut:CallDropDown(selected)
+	tableDropDown[selected] = not tableDropDown[selected]
+	--tableCheckBoxes[selected] = {}
+
+	scroll:ReleaseChildren()
+	tableTitres={}
+	tableLabel={}
+	tableCheckBoxes={}
+	tableLinkPermut={}
+	SimPermut:GetListItems()
+	SimPermut:BuildItemFrame()
+	
+	SimPermut:GetSelectedCount()
+	--SimPermut:LoadPermut()
+end
+
 -- Get the count of selected items
 function SimPermut:GetSelectedCount()
 	selecteditems = 0
@@ -376,7 +422,16 @@ function SimPermut:GetSelectedCount()
 		end
 	end
 	
-	labelCount:SetText(selecteditems)
+	SimPermut:CheckItemCount()
+end
+
+-- Check if item count is not too high
+function SimPermut:CheckItemCount()
+	if selecteditems >= ITEM_COUNT_THRESHOLD then
+		labelCount:SetText("   Warning : Too many items selected ("..selecteditems..")")
+	else
+		labelCount:SetText("   ".. selecteditems.. " items selected")
+	end
 end
 
 -- Load dropdown (not used)
@@ -410,35 +465,7 @@ function SimPermut:LoadPermut(item)
 	
 end
 
--- SimC tokenize function
-local function tokenize_Old(str)
-  str = str or ""
-  -- convert to lowercase and remove spaces
-  str = string.lower(str)
-  str = string.gsub(str, ' ', '_')
-
-  -- keep stuff we want, dumpster everything else
-  local s = ""
-  for i=1,str:len() do
-    -- keep digits 0-9
-    if str:byte(i) >= 48 and str:byte(i) <= 57 then
-      s = s .. str:sub(i,i)
-      -- keep lowercase letters
-    elseif str:byte(i) >= 97 and str:byte(i) <= 122 then
-      s = s .. str:sub(i,i)
-      -- keep %, +, ., _
-    elseif str:byte(i)==37 or str:byte(i)==43 or str:byte(i)==46 or str:byte(i)==95 then
-      s = s .. str:sub(i,i)
-    end
-  end
-  -- strip trailing spaces
-  if string.sub(s, s:len())=='_' then
-    s = string.sub(s, 0, s:len()-1)
-  end
-  return s
-end
-
--- method for constructing the talent string
+-- simc, method for constructing the talent string
 local function CreateSimcTalentString()
   local talentInfo = {}
   local maxTiers = 7
@@ -464,7 +491,7 @@ local function CreateSimcTalentString()
   return str
 end
 
--- function that translates between the game's role values and ours
+-- simc, function that translates between the game's role values and ours
 local function translateRole(str)
   if str == 'TANK' then
     return PersoLib:tokenize(str)
@@ -477,13 +504,13 @@ local function translateRole(str)
   end
 end
 
--- Artifact Information
+-- simc, Artifact Information
 local function IsArtifactFrameOpen()
   local ArtifactFrame 	  = _G.ArtifactFrame
   return ArtifactFrame and ArtifactFrame:IsShown() or false
 end
 
--- recupere la string de l'artefact
+-- generates artifact string
 local function GetArtifactString()
   
   if not HasArtifactEquipped() then
@@ -543,16 +570,6 @@ function SimPermut:GetCopyName(tableID,item1,item2)
 	local itemname2 = PersoLib:tokenize(name)..'_'..ilvl
 	
 	return itemname1.."_"..itemname2
-end
-
--- clean character not authorized by simc (not used)
-function SimPermut:CleanString(str)
-	--print(str)
-	str = string.gsub(str, " ", "_")
-	str = string.gsub(str, "'", "_")
-	str = string.gsub(str, ":", "_")
-	str = string.gsub(str, ",", "_")
-	return str
 end
 
 -- get item id from link
@@ -1040,6 +1057,7 @@ end
 
 -- generates tablelink to be ready for permuts
 function SimPermut:GetTableLink()
+	local returnvalue=true
 	local slotid
 	for i=1,#listNames do
 		--print(i,listNames[i],#tableCheckBoxes[i])
@@ -1074,8 +1092,22 @@ function SimPermut:GetTableLink()
 		tableLinkPermut[14]={}
 		tableLinkPermut[14][1]=GetInventoryItemLink('player', GetInventorySlotInfo(slotNames[16]))
 	else --else we copy the selected ones on the second slot and reposition the slot in the good position
-		tableLinkPermut[13]=tableLinkPermut[12]
-		tableLinkPermut[14]=tableLinkPermut[13]
+		if #tableLinkPermut[12]==1 then
+			errorMessage="Can't permut with only one trinket"
+			returnvalue=false
+		elseif #tableLinkPermut[12]==2 then
+			tableLinkPermut[13]={}
+			tableLinkPermut[13][1]=tableLinkPermut[12][1]
+			tableLinkPermut[14]={}
+			tableLinkPermut[14][1]=tableLinkPermut[12][2]
+			tableLinkPermut[12]={}
+			--print(#tableLinkPermut[13])
+			--print(#tableLinkPermut[14])
+		else
+			tableLinkPermut[13]=tableLinkPermut[12]
+			tableLinkPermut[14]=tableLinkPermut[13]
+			tableLinkPermut[12]={}
+		end
 	end
 	
 	--print (#tableLinkPermut[11])
@@ -1083,11 +1115,25 @@ function SimPermut:GetTableLink()
 		tableLinkPermut[11][1]=GetInventoryItemLink('player', GetInventorySlotInfo(slotNames[13]))
 		tableLinkPermut[12][1]=GetInventoryItemLink('player', GetInventorySlotInfo(slotNames[14]))
 	else --else we copy the selected ones on the second slot
-		tableLinkPermut[12]=tableLinkPermut[11]
+		if #tableLinkPermut[11]==1 then
+			errorMessage="Can't permut with only one ring"
+			returnvalue=false
+		elseif #tableLinkPermut[11]==2 then
+			local temptable={}
+			temptable[1]=tableLinkPermut[11]
+			tableLinkPermut[11]={}
+			tableLinkPermut[11][1]=temptable[1][1]
+			tableLinkPermut[12][1]=temptable[1][2]
+			--tableLinkPermut[11][2]=nil
+			--print(#tableLinkPermut[11])
+			--print(#tableLinkPermut[12])
+		else
+			tableLinkPermut[12]=tableLinkPermut[11]
+		end
 	end
 		
 	
-	
+	return returnvalue
 end
 
 -- generates all permutations for the tableLinkPermut
@@ -1223,11 +1269,12 @@ end
 
 -- draw the frame and print the text
 function SimPermut:PrintPermut(finalString)
-  SimcCopyFrame:Show()
-  SimcCopyFrameScroll:Show()
-  SimcCopyFrameScrollText:Show()
-  SimcCopyFrameScrollText:SetText(finalString)
-  SimcCopyFrameScrollText:HighlightText()
+	SimcCopyFrame:Show()
+	SimcCopyFrame:SetPoint("RIGHT")
+	SimcCopyFrameScroll:Show()
+	SimcCopyFrameScrollText:Show()
+	SimcCopyFrameScrollText:SetText(finalString)
+	SimcCopyFrameScrollText:HighlightText()
 end
 
 -- generates simc string if asked from chat
