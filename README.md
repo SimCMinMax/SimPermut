@@ -18,11 +18,7 @@ Get it on curse : https://mods.curse.com/addons/wow/254069-simpermut
 
 -Clean copies (remove copy with same items as base, remove duplicated copies due to finger/trinket permutations)
 
--Code cleanup
-
 -Clip the text frame on the right of the frame
-
--Split the item list in two columns to scroll less
 
 -Add gems and enchant to the item list to select for each item
 

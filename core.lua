@@ -25,13 +25,11 @@ local PersoLib			  = LibStub("PersoLib")
 --UI
 local mainframe 
 local mainframeCreated=false
-local stringframe
+local stringframeCreated=false
 local tableDropDown={}
-local scroll
+local scroll1
+local scroll2
 local multiLineEditBox		  
---local dropdownEnchantNeck
---local dropdownEnchantFinger
---local dropdownEnchantBack
 local dropdownGem
 local checkBoxForce
 local actualSlot=""
@@ -41,7 +39,6 @@ local actualEnchantBack=0
 local actualGem=0
 local actualForce=false
 local labelCount
-local labelError
 local tableListItems={}
 local tableLabel={}
 local tableTitres={}
@@ -65,72 +62,19 @@ local enchantCloak 		= SimPermut.enchantCloak
 local enchantNeck 		= SimPermut.enchantNeck
 
 SLASH_SIMPERMUTSLASH1 = "/SimPermut"
-SLASH_SIMPERMUTSLASHTEST1 = "/Simtest"
 
+-- Command UI
 SlashCmdList["SIMPERMUTSLASH"] = function (arg)
-	local argL = strlower(arg)
-	if string.len(arg) == 0 then 
-		if mainframeCreated then
-			--print()
-			if mainframe:IsShown() then
-				mainframe:Hide()
-			else
-				SimPermut:BuildFrame()
-			end
+	if mainframeCreated then
+		if mainframe:IsShown() then
+			mainframe:Hide()
 		else
 			SimPermut:BuildFrame()
-			mainframeCreated=true
 		end
 	else
-		SimPermut:PrintCompare(argL,false)
+		SimPermut:BuildFrame()
+		mainframeCreated=true
 	end
-end
-
-SlashCmdList["SIMPERMUTSLASHTEST"] = function (arg)
-	local t = {}
-	for word in arg:gmatch("%w+") do table.insert(t, word) end
-	local testTable={}
-	local returnvalue={}
-	local elements=27
-	--[[for i=1,t[1] do
-		testTable[i]={}
-		for j=1,t[2] do
-			testTable[i][j]=i*10+j
-			--print(testTable[i][j])
-			elements=i*j
-		end
-	end]]--
-	
-	testTable[1]={10,11,12}
-	testTable[2]={20,21,22}
-	testTable[3]={}
-	testTable[4]={}
-	testTable[5]={}
-	testTable[6]={}
-	testTable[7]={}
-	testTable[8]={}
-	testTable[9]={}
-	testTable[10]={42}
-	testTable[11]={110}
-	testTable[12]={120,121}
-	testTable[13]={130,42}
-	testTable[14]={140}
-	
-	local start_time1 = time()
-	--returnvalue=PersoLib:doCartesianALACON(testTable)
-	local end_time1 = time()
-	local elapsed_time1 = difftime(end_time1-start_time1)
-	
-	local start_time2 = time()
-	--returnvalue=Cartesian(testTable)
-	local end_time2 = time()
-	local elapsed_time2 = difftime(end_time2-start_time2)
-	--for i=1,#returnvalue do
-	--	print(unpack(returnvalue[i]))
-	--end
-	--print(SimPermut:GetBaseString())
-	--print("Elapsed time ALACON : "..t[1].."x"..t[2].."(".. elements.." elements) : "..elapsed_time1)
-	--print("Elapsed time BOGOSS : "..t[1].."x"..t[2].."(".. elements.." elements) : "..elapsed_time2)
 end
 
 function SimPermut:OnInitialize()
@@ -144,12 +88,21 @@ end
 function SimPermut:OnDisable()
 end
 
+
+----------------------------
+----------- UI -------------
+----------------------------
 -- Main Frame construction
 function SimPermut:BuildFrame()
 	mainframe = AceGUI:Create("Frame")
 	mainframe:SetTitle("SimPermut")
 	mainframe:SetPoint("CENTER",-150,0)
-	mainframe:SetCallback("OnClose", function(widget) AceGUI:Release(widget) end)
+	mainframe:SetCallback("OnClose", function(widget) 
+		AceGUI:Release(widget) 
+		if stringframeCreated and SimcCopyFrame:IsShown() then
+			SimcCopyFrame:Hide()
+		end
+	end)
 	mainframe:SetLayout("Flow")
 	mainframe:SetWidth(1000)
 	mainframe:SetHeight(750)
@@ -177,22 +130,31 @@ function SimPermut:BuildFrame()
     mainGroup:SetLayout("Flow")
     mainGroup:SetWidth(200)
 	
-	local scrollcontainer = AceGUI:Create("SimpleGroup")
-	scrollcontainer:SetFullWidth(true)
-	scrollcontainer:SetHeight(500)
-	scrollcontainer:SetLayout("Fill")
-	mainGroup:AddChild(scrollcontainer)
+	local scrollcontainer1 = AceGUI:Create("SimpleGroup")
+	scrollcontainer1:SetRelativeWidth(0.5)
+	scrollcontainer1:SetHeight(500)
+	scrollcontainer1:SetLayout("Fill")
+	mainGroup:AddChild(scrollcontainer1)
 	
-	scroll = AceGUI:Create("ScrollFrame")
-	scroll:SetLayout("Flow")
-	scrollcontainer:AddChild(scroll)
+	scroll1 = AceGUI:Create("ScrollFrame")
+	scroll1:SetLayout("Flow")
+	scrollcontainer1:AddChild(scroll1)
+	
+	local scrollcontainer2 = AceGUI:Create("SimpleGroup")
+	scrollcontainer2:SetRelativeWidth(0.5)
+	scrollcontainer2:SetHeight(500)
+	scrollcontainer2:SetLayout("Fill")
+	mainGroup:AddChild(scrollcontainer2)
+	
+	scroll2 = AceGUI:Create("ScrollFrame")
+	scroll2:SetLayout("Flow")
+	scrollcontainer2:AddChild(scroll2)
 
 	local labelEnchantNeck= AceGUI:Create("Label")
 	labelEnchantNeck:SetText("Enchant Neck")
 	labelEnchantNeck:SetWidth(100)
 	
 	local dropdownEnchantNeck = AceGUI:Create("Dropdown")
-	--dropdownEnchantNeck:SetDisabled(true)
 	dropdownEnchantNeck:SetWidth(160)
 	dropdownEnchantNeck:SetList(enchantNeck)
 	dropdownEnchantNeck:SetValue(0)
@@ -205,7 +167,6 @@ function SimPermut:BuildFrame()
 	labelEnchantBack:SetWidth(100)
 	
 	local dropdownEnchantBack = AceGUI:Create("Dropdown")
-	--dropdownEnchantBack:SetDisabled(true)
 	dropdownEnchantBack:SetWidth(160)
 	dropdownEnchantBack:SetList(enchantCloak)
 	dropdownEnchantBack:SetValue(0)
@@ -218,7 +179,6 @@ function SimPermut:BuildFrame()
 	labelEnchantFinger:SetWidth(100)
 	
 	local dropdownEnchantFinger = AceGUI:Create("Dropdown")
-	--dropdownEnchantFinger:SetDisabled(true)
 	dropdownEnchantFinger:SetWidth(160)
 	dropdownEnchantFinger:SetList(enchantRing)
 	dropdownEnchantFinger:SetValue(0)
@@ -236,7 +196,6 @@ function SimPermut:BuildFrame()
 	
 	dropdownGem = AceGUI:Create("Dropdown")
 	dropdownGem:SetList(gemList)
-	--dropdownGem:SetDisabled(true)
 	dropdownGem:SetWidth(160)
 	dropdownGem:SetCallback("OnValueChanged", function (this, event, item)
 		actualGem=item
@@ -250,7 +209,6 @@ function SimPermut:BuildFrame()
 	checkBoxForce = AceGUI:Create("CheckBox")
 	checkBoxForce:SetWidth(100)
 	checkBoxForce:SetLabel("Force")
-	--checkBoxForce:SetDisabled(true)
 	checkBoxForce:SetCallback("OnValueChanged", function (this, event, item)
 		actualForce=checkBoxForce:GetValue()
     end)
@@ -261,27 +219,13 @@ function SimPermut:BuildFrame()
 
 	local buttonGenerate = AceGUI:Create("Button")
 	buttonGenerate:SetText("Generate")
-	--buttonGenerate:SetDisabled(true)
 	buttonGenerate:SetCallback("OnClick", function()
 		SimPermut:Generate()
-		--SimPermut:PrintCompare(actualSlot,true) 
 	end)
 	
 	labelCount= AceGUI:Create("Label")
 	labelCount:SetText(" ")
 	labelCount:SetWidth(150)
-	
-	local labelSpacer4= AceGUI:Create("Label")
-	labelSpacer4:SetText(" ")
-	labelSpacer4:SetFullWidth(true)
-	
-	labelError= AceGUI:Create("Label")
-	labelError:SetText(" ")
-	labelError:SetFullWidth(true) 
-	labelError:SetColor(252, 22, 22)
-	--local Path, Size, Flags = labelError:GetFont()
-	--labelError:SetFont(Path,myFontSize+4,Flags);
-	
 	
 	mainGroup:AddChild(labelEnchantNeck)
 	mainGroup:AddChild(dropdownEnchantNeck)
@@ -297,86 +241,68 @@ function SimPermut:BuildFrame()
 	mainGroup:AddChild(labelSpacer3)
 	mainGroup:AddChild(buttonGenerate)
 	mainGroup:AddChild(labelCount)
-	--mainGroup:AddChild(labelSpacer4)
-	--mainGroup:AddChild(labelError)
 	
 	mainframe:AddChild(mainGroup)
-	
-	
-	--[[stringframe = AceGUI:Create("Frame", "SimPermutPopup", UIParent)
-	stringframe:SetTitle("SimPermut String")
-	--stringframe:SetPoint("CENTER",150,0)
-	stringframe:SetCallback("OnClose", function(widget) AceGUI:Release(widget) end)
-	stringframe:SetLayout("Flow")
-	stringframe:SetWidth(200)
-	stringframe:SetHeight(200)
-	stringframe:SetPoint("TOPLEFT", mainframe, "TOPRIGHT", 0, 0)]]--
 end
 
 -- Load Item list
 function SimPermut:BuildItemFrame()
-
 	for j=1,#listNames do
-		--print(j,listNames[j],tableDropDown[j])
-		
 		if tableDropDown[j] then
-			
 			tableTitres[j]=AceGUI:Create("Label")
 			tableTitres[j]:SetText(PersoLib:firstToUpper(listNames[j]))
 			tableTitres[j]:SetFullWidth(true)
-			scroll:AddChild(tableTitres[j])
+			if(j<7) then
+				scroll1:AddChild(tableTitres[j])
+			else
+				scroll2:AddChild(tableTitres[j])
+			end
 			
-			--[[print(j,listNames[j])
-			if tableCheckBoxes[j] and #tableCheckBoxes[j]>0 then
-				print("-",tableCheckBoxes[j],#tableCheckBoxes[j],#tableCheckBoxes[j][1])
-				for i=1 ,#tableListItems[j] do
-					scroll:AddChild(tableCheckBoxes[j][i])
-					scroll:AddChild(tableLabel[j][i])
+			
+			tableCheckBoxes[j]={}
+			tableLabel[j]={}
+			for i=1 ,#tableListItems[j] do
+				tableCheckBoxes[j][i]=AceGUI:Create("CheckBox")
+				tableCheckBoxes[j][i]:SetLabel("")
+				tableCheckBoxes[j][i]:SetRelativeWidth(0.05)
+				tableCheckBoxes[j][i]:SetValue(true)
+				tableCheckBoxes[j][i]:SetCallback("OnValueChanged", function(this, event, item)
+					if tableCheckBoxes[j][i]:GetValue() then
+						selecteditems=selecteditems+1
+					else
+						selecteditems=selecteditems-1
+					end
+					SimPermut:CheckItemCount()
+				end)
+				selecteditems=selecteditems+1
+				if(j<7) then
+					scroll1:AddChild(tableCheckBoxes[j][i])
+				else
+					scroll2:AddChild(tableCheckBoxes[j][i])
 				end
-			else]]--
-				tableCheckBoxes[j]={}
-				tableLabel[j]={}
-				for i=1 ,#tableListItems[j] do
-					
-					tableCheckBoxes[j][i]=AceGUI:Create("CheckBox")
-					tableCheckBoxes[j][i]:SetLabel("")
-					tableCheckBoxes[j][i]:SetRelativeWidth(0.05)
-					tableCheckBoxes[j][i]:SetValue(true)
-					tableCheckBoxes[j][i]:SetCallback("OnValueChanged", function(this, event, item)
-						if tableCheckBoxes[j][i]:GetValue() then
-							selecteditems=selecteditems+1
-						else
-							selecteditems=selecteditems-1
-						end
-						SimPermut:CheckItemCount()
-					end)
-					selecteditems=selecteditems+1
-					scroll:AddChild(tableCheckBoxes[j][i])
-					--print("added ",tableCheckBoxes[j][i])
-					
-					
-					tableLabel[j][i]=AceGUI:Create("InteractiveLabel")
-					tableLabel[j][i]:SetText(tableListItems[j][i])
-					tableLabel[j][i]:SetRelativeWidth(0.95)
-					tableLabel[j][i]:SetCallback("OnEnter", function(widget)
-						GameTooltip:SetOwner(widget.frame, "ANCHOR_BOTTOMLEFT")
-						GameTooltip:SetHyperlink(tableListItems[j][i])
-						GameTooltip:Show()
-					end)
-					tableLabel[j][i]:SetCallback("OnLeave", function() GameTooltip:Hide()  end)
-					
-					scroll:AddChild(tableLabel[j][i])
+				
+				tableLabel[j][i]=AceGUI:Create("InteractiveLabel")
+				tableLabel[j][i]:SetText(tableListItems[j][i])
+				tableLabel[j][i]:SetRelativeWidth(0.95)
+				tableLabel[j][i]:SetCallback("OnEnter", function(widget)
+					GameTooltip:SetOwner(widget.frame, "ANCHOR_BOTTOMLEFT")
+					GameTooltip:SetHyperlink(tableListItems[j][i])
+					GameTooltip:Show()
+				end)
+				tableLabel[j][i]:SetCallback("OnLeave", function() GameTooltip:Hide()  end)
+				
+				if(j<7) then
+					scroll1:AddChild(tableLabel[j][i])
+				else
+					scroll2:AddChild(tableLabel[j][i])
 				end
-			--end
+			end
 		end
-		--print(#tableCheckBoxes[j])
 	end
 end
 
 -- clic btn generate
 function SimPermut:Generate()
-	--labelError:SetText("")
-	--errorMessage=""
 	mainframe:SetStatusText("")
 	local permuttable={}
 	local permutString=""
@@ -390,25 +316,22 @@ function SimPermut:Generate()
 		SimPermut:PrintPermut(finalString)
 	else --error
 		mainframe:SetStatusText(errorMessage)
-		--labelError:SetText(errorMessage)
 	end
 end
 
 -- Slot Dropdown manager
 function SimPermut:CallDropDown(selected)
 	tableDropDown[selected] = not tableDropDown[selected]
-	--tableCheckBoxes[selected] = {}
 
-	scroll:ReleaseChildren()
+	scroll1:ReleaseChildren()
+	scroll2:ReleaseChildren()
 	tableTitres={}
 	tableLabel={}
 	tableCheckBoxes={}
 	tableLinkPermut={}
 	SimPermut:GetListItems()
 	SimPermut:BuildItemFrame()
-	
 	SimPermut:GetSelectedCount()
-	--SimPermut:LoadPermut()
 end
 
 -- Get the count of selected items
@@ -434,161 +357,20 @@ function SimPermut:CheckItemCount()
 	end
 end
 
--- Load dropdown (not used)
-function SimPermut:LoadPermut(item)
-	dropdownGem:SetDisabled(false)
-	
-	if actualGem==0 then
-		dropdownGem:SetValue(0)
-		actualGem=0
-	end
-	
-	if item == "back" then
-		--dropdownEnchant:SetDisabled(false)
-		
-		--actualEnchant=0
-	elseif item == "finger" then
-		--dropdownEnchant:SetDisabled(false)
-		--dropdownEnchant:SetList(enchantRing)
-		--dropdownEnchant:SetValue(0)
-		--actualEnchant=0
-	elseif item == "neck" then
-		--dropdownEnchant:SetDisabled(false)
-		--dropdownEnchant:SetList(enchantNeck)
-		--dropdownEnchant:SetValue(0)
-		--actualEnchant=0
-	else
-		--dropdownEnchant:SetDisabled(true)
-		--dropdownEnchant:SetValue("Untouched")
-		--actualEnchant=0
-	end
-	
+-- draw the frame and print the text
+function SimPermut:PrintPermut(finalString)
+	SimcCopyFrame:Show()
+	SimcCopyFrame:SetPoint("RIGHT")
+	stringframeCreated=true
+	SimcCopyFrameScroll:Show()
+	SimcCopyFrameScrollText:Show()
+	SimcCopyFrameScrollText:SetText(finalString)
+	SimcCopyFrameScrollText:HighlightText()
 end
 
--- simc, method for constructing the talent string
-local function CreateSimcTalentString()
-  local talentInfo = {}
-  local maxTiers = 7
-  local maxColumns = 3
-  for tier = 1, maxTiers do
-    for column = 1, maxColumns do
-      local talentID, name, iconTexture, selected, available = GetTalentInfo(tier, column, GetActiveSpecGroup())
-      if selected then
-        talentInfo[tier] = column
-      end
-    end
-  end
-
-  local str = 'talents='
-  for i = 1, maxTiers do
-    if talentInfo[i] then
-      str = str .. talentInfo[i]
-    else
-      str = str .. '0'
-    end
-  end
-
-  return str
-end
-
--- simc, function that translates between the game's role values and ours
-local function translateRole(str)
-  if str == 'TANK' then
-    return PersoLib:tokenize(str)
-  elseif str == 'DAMAGER' then
-    return 'attack'
-  elseif str == 'HEALER' then
-    return 'healer'
-  else
-    return ''
-  end
-end
-
--- simc, Artifact Information
-local function IsArtifactFrameOpen()
-  local ArtifactFrame 	  = _G.ArtifactFrame
-  return ArtifactFrame and ArtifactFrame:IsShown() or false
-end
-
--- generates artifact string
-local function GetArtifactString()
-  
-  if not HasArtifactEquipped() then
-    return nil
-  end
-  
-  --local ArtifactFrame = _G.ArtifactFrame
-  
-  -- Unregister the events to prevent unwanted call. (thx Aethys :o)
-  UIParent:UnregisterEvent("ARTIFACT_UPDATE");
-  
-  if not IsArtifactFrameOpen() then
-    SocketInventoryItem(INVSLOT_MAINHAND)
-  end
-
-  local item_id = select(1, ArtifactUI.GetArtifactInfo())
-  --print(item_id)
-  if item_id == nil or item_id == 0 then
-    return nil
-  end
-
-  local artifact_id = SimPermut.ArtifactTable[item_id]
-  --print(artifact_id)
-  if artifact_id == nil then
-    return nil
-  end
-
-  -- Note, relics are handled by the item string
-  local str = 'artifact=' .. artifact_id .. ':0:0:0:0'
-
-  local powers = ArtifactUI.GetPowers()
-  --print(powers)
-  for i = 1, #powers do
-    local power_id = powers[i]
-    local _, _, currentRank, _, bonusRanks = ArtifactUI.GetPowerInfo(power_id)
-    if currentRank > 0 and currentRank - bonusRanks > 0 then
-      str = str .. ':' .. power_id .. ':' .. (currentRank - bonusRanks)
-    end
-  end
-  --print(str)
-  
-  --if ArtifactFrame:IsShown() then
-	--HideUIPanel(ArtifactFrame)
-  --end
-  
-  UIParent:RegisterEvent("ARTIFACT_UPDATE");
-
-  return str
-end
-
--- Generates the name of the copy for trinket and finger comparison
-function SimPermut:GetCopyName(tableID,item1,item2)
-	local name,ilvl
-	name,_,_,ilvl=GetItemInfo(tableID[item1])
-	local itemname1 = PersoLib:tokenize(name)..'_'..ilvl
-	name,_,_,ilvl=GetItemInfo(tableID[item2])
-	local itemname2 = PersoLib:tokenize(name)..'_'..ilvl
-	
-	return itemname1.."_"..itemname2
-end
-
--- get item id from link
-function SimPermut:GetIDFromLink(itemLink)
-	local itemString = string.match(itemLink, "item:([%-?%d:]+)")
-	local itemSplit = {}
-
-	-- Split data into a table
-	for v in string.gmatch(itemString, "(%d*:?)") do
-		if v == ":" then
-		  itemSplit[#itemSplit + 1] = 0
-		else
-		  itemSplit[#itemSplit + 1] = string.gsub(v, ':', '')
-		end
-	end
-
-	return itemSplit[OFFSET_ITEM_ID]
-end
-
+----------------------------
+-- Permutation Management --
+----------------------------
 -- get item string
 function SimPermut:GetItemString(itemLink,itemType,base)
 	--itemLink 	: link of the item
@@ -600,7 +382,6 @@ function SimPermut:GetItemString(itemLink,itemType,base)
 	local simcItemOptions = {}
 	local ilvl
 	local hasGem=false
-	--print(itemString)
 	-- Split data into a table
 	for v in string.gmatch(itemString, "(%d*:?)") do
 		if v == ":" then
@@ -615,7 +396,6 @@ function SimPermut:GetItemString(itemLink,itemType,base)
 	simcItemOptions[#simcItemOptions + 1] = ',id=' .. itemId
 
 	-- Enchant
-	--print(base,itemType,actualForce,actualEnchant)
 	if base then 
 		if tonumber(itemSplit[OFFSET_ENCHANT_ID]) > 0 then
 			simcItemOptions[#simcItemOptions + 1] = 'enchant_id=' .. itemSplit[OFFSET_ENCHANT_ID]
@@ -646,7 +426,6 @@ function SimPermut:GetItemString(itemLink,itemType,base)
 				end
 			end
 		elseif string.match(itemType, 'finger*') then
-		--itemType=="finger1" or itemType=="finger2" or itemType=="finger")then
 			if actualForce and actualEnchantFinger~=0 then
 				simcItemOptions[#simcItemOptions + 1] = 'enchant_id=' .. actualEnchantFinger
 			else
@@ -739,12 +518,6 @@ function SimPermut:GetItemString(itemLink,itemType,base)
 		end
 	end
 	
-	--ilvl
-	--_,_,_,ilvl = GetItemInfo(itemLink)
-	--if ilvl ~= nil then
-	--	simcItemOptions[#simcItemOptions + 1] = 'ilvl=' .. ilvl
-	--end
-	
 	return simcItemOptions
 end
 
@@ -766,217 +539,6 @@ function SimPermut:GetItemStrings()
   end
 
   return items
-end
-
--- generates simc string for all permutations of a particular slot (not used)
-function SimPermut:GetPermutations(strItem)
-	local texture, count, locked, quality, readable, lootable, isFiltered, hasNoValue, itemId, itemLink, itemstring, permut, ilvl, name
-	local permutTable={}
-	local itemidTable={}
-	local equippableItems = {}
-	local copyname
-	permut=""
-	
-	if strItem=="trinket" then
-		local id, texture, checkRelic = GetInventorySlotInfo("Trinket1Slot")
-		GetInventoryItemsForSlot(id, equippableItems)
-		for locationBitstring, itemID in pairs(equippableItems) do
-			local player, bank, bags, voidstorage, slot, bag = EquipmentManager_UnpackLocation(locationBitstring)
-			if bags then
-				texture, count, locked, quality, readable, lootable, itemLink, isFiltered, hasNoValue, itemId = GetContainerItemInfo(bag, slot)
-				if itemLink~=nil then
-					_,_,_,ilvl = GetItemInfo(itemLink)
-					if ilvl>= ITEM_THRESHOLD then
-						permutTable[#permutTable+1]=SimPermut:GetItemString(itemLink,strItem,false)
-						itemidTable[#itemidTable+1]=itemId
-					end
-				end
-			else
-				itemLink = GetInventoryItemLink('player', slot)
-				if itemLink~=nil then
-					_,_,_,ilvl = GetItemInfo(itemLink)
-					if ilvl>= ITEM_THRESHOLD then
-						permutTable[#permutTable+1]=SimPermut:GetItemString(itemLink,strItem,false)
-						itemidTable[#itemidTable+1]=SimPermut:GetIDFromLink(itemLink)
-					end
-				end
-			end
-		end
-		
-		for i=1 ,#permutTable do
-			for j=i+1,#permutTable do
-				copyname=SimPermut:GetCopyName(itemidTable,i,j)
-				permut= permut .. "copy=" .. copyname .. '\n'
-				permut= permut .. "trinket1=" .. table.concat(permutTable[i], ',') .. '\n'
-				permut= permut .. "trinket2=" .. table.concat(permutTable[j], ',') .. '\n'
-			end
-		end
-	elseif strItem=="finger" then
-		local id, texture, checkRelic = GetInventorySlotInfo("Finger1Slot")
-		GetInventoryItemsForSlot(id, equippableItems)
-		for locationBitstring, itemID in pairs(equippableItems) do
-			local player, bank, bags, voidstorage, slot, bag = EquipmentManager_UnpackLocation(locationBitstring)
-			if bags then
-				texture, count, locked, quality, readable, lootable, itemLink, isFiltered, hasNoValue, itemId = GetContainerItemInfo(bag, slot)
-				if itemLink~=nil then
-					_,_,_,ilvl = GetItemInfo(itemLink)
-					if ilvl>= ITEM_THRESHOLD then
-						permutTable[#permutTable+1]=SimPermut:GetItemString(itemLink,strItem,false)
-						itemidTable[#itemidTable+1]=itemId
-					end
-				end
-			else
-				itemLink = GetInventoryItemLink('player', slot)
-				if itemLink~=nil then
-					_,_,_,ilvl = GetItemInfo(itemLink)
-					if ilvl>= ITEM_THRESHOLD then
-						permutTable[#permutTable+1]=SimPermut:GetItemString(itemLink,strItem,false)
-						itemidTable[#itemidTable+1]=SimPermut:GetIDFromLink(itemLink)
-					end
-				end
-			end
-		end
-		
-		for i=1 ,#permutTable do
-			for j=i+1,#permutTable do
-				copyname=SimPermut:GetCopyName(itemidTable,i,j)
-				permut= permut .. "copy=" .. copyname .. '\n'
-				permut= permut .. "finger1=" .. table.concat(permutTable[i], ',') .. '\n'
-				permut= permut .. "finger2=" .. table.concat(permutTable[j], ',') .. '\n'
-			end
-		end
-	else
-		local blizzardname,simcname,slotID
-		if strItem=="head" then
-			slotID=1
-		elseif strItem=="neck" then
-			slotID=2
-		elseif strItem=="shoulder" then
-			slotID=3
-		elseif strItem=="back" then
-			slotID=4
-		elseif strItem=="chest" then
-			slotID=5
-		elseif strItem=="wrist" then
-			slotID=8
-		elseif strItem=="hands" then
-			slotID=9
-		elseif strItem=="waist" then
-			slotID=10
-		elseif strItem=="legs" then
-			slotID=11
-		elseif strItem=="feet" then
-			slotID=12
-		end
-		blizzardname=SimPermut.slotNames[slotID]
-		simcname=simcSlotNames[slotID]
-		
-		local id, texture, checkRelic = GetInventorySlotInfo(blizzardname)
-		GetInventoryItemsForSlot(id, equippableItems)
-		for locationBitstring, itemID in pairs(equippableItems) do
-			local player, bank, bags, voidstorage, slot, bag = EquipmentManager_UnpackLocation(locationBitstring)
-			if bags then
-				texture, count, locked, quality, readable, lootable, itemLink, isFiltered, hasNoValue, itemId = GetContainerItemInfo(bag, slot)
-				if itemLink~=nil then
-					_,_,_,ilvl = GetItemInfo(itemLink)
-					if ilvl>= ITEM_THRESHOLD then
-						permutTable[#permutTable+1]=SimPermut:GetItemString(itemLink,strItem,false)
-						itemidTable[#itemidTable+1]=itemId
-					end
-				end
-			else
-				itemLink = GetInventoryItemLink('player', slot)
-				if itemLink~=nil then
-					_,_,_,ilvl = GetItemInfo(itemLink)
-					if ilvl>= ITEM_THRESHOLD then
-						permutTable[#permutTable+1]=SimPermut:GetItemString(itemLink,strItem,false)
-						itemidTable[#itemidTable+1]=SimPermut:GetIDFromLink(itemLink)
-					end
-				end
-			end
-		end
-		
-		for i=1 ,#permutTable do
-			name,_,_,ilvl=GetItemInfo(itemidTable[i])
-			permut= permut .. "copy=" .. PersoLib:tokenize(name)..'_'..ilvl .. '\n'
-			permut= permut .. simcname.."=" .. table.concat(permutTable[i], ',') .. '\n'
-		end
-			
-	end
-	
-	return permut
-end
-
--- generates simc string for all permutations of a table (not used)
-function SimPermut:GetPermutationsFromList(strItem)
-	local permutTable={}
-	local itemidTable={}
-	local permut=""
-	
-	if strItem=="trinket" then
-		for i=1, #tableLinkPermut do
-			for j=i+1,#tableLinkPermut do
-				name1,_,_,ilvl1=GetItemInfo(tableLinkPermut[i])
-				name2,_,_,ilvl2=GetItemInfo(tableLinkPermut[j])
-				permut= permut .. "copy=" .. PersoLib:tokenize(name1)..'_'..ilvl1.."_"..PersoLib:tokenize(name2)..'_'..ilvl2 .. '\n'
-				permut= permut .. "trinket1=" .. table.concat(SimPermut:GetItemString(tableLinkPermut[i],strItem,false), ',') .. '\n'
-				permut= permut .. "trinket2=" .. table.concat(SimPermut:GetItemString(tableLinkPermut[j],strItem,false), ',') .. '\n'
-			end
-		end
-	elseif strItem=="finger" then
-		for i=1, #tableLinkPermut do
-			for j=i+1,#tableLinkPermut do
-				name1,_,_,ilvl1=GetItemInfo(tableLinkPermut[i])
-				name2,_,_,ilvl2=GetItemInfo(tableLinkPermut[j])
-				permut= permut .. "copy=" .. PersoLib:tokenize(name1)..'_'..ilvl1.."_"..PersoLib:tokenize(name2)..'_'..ilvl2 .. '\n'
-				permut= permut .. "finger1=" .. table.concat(SimPermut:GetItemString(tableLinkPermut[i],strItem,false), ',') .. '\n'
-				permut= permut .. "finger2=" .. table.concat(SimPermut:GetItemString(tableLinkPermut[j],strItem,false), ',') .. '\n'
-			end
-		end
-	else
-		local blizzardname,simcname,slotID
-		if strItem=="head" then
-			slotID=1
-		elseif strItem=="neck" then
-			slotID=2
-		elseif strItem=="shoulder" then
-			slotID=3
-		elseif strItem=="back" then
-			slotID=4
-		elseif strItem=="chest" then
-			slotID=5
-		elseif strItem=="wrist" then
-			slotID=8
-		elseif strItem=="hands" then
-			slotID=9
-		elseif strItem=="waist" then
-			slotID=10
-		elseif strItem=="legs" then
-			slotID=11
-		elseif strItem=="feet" then
-			slotID=12
-		end
-		blizzardname=SimPermut.slotNames[slotID]
-		simcname=simcSlotNames[slotID]
-		
-		for i=1, #tableLinkPermut do
-			name,_,_,ilvl=GetItemInfo(tableLinkPermut[i])
-			permut= permut .. "copy=" .. PersoLib:tokenize(name)..'_'..ilvl.. '\n'
-			permut= permut .. simcname.."=" .. table.concat(SimPermut:GetItemString(tableLinkPermut[i],strItem,false), ',') .. '\n'
-		end
-	end
-	
-	
-	return permut
-end
-
--- choose the function depending if we comme from UI or chat
-function SimPermut:WhichFunctionUse(strItem,fromInterface)
-	if fromInterface then
-		return SimPermut:GetPermutationsFromList(strItem)
-	else
-		return SimPermut:GetPermutations(strItem)
-	end
 end
 
 -- get the list of items of a slot
@@ -1016,7 +578,6 @@ function SimPermut:GetListItem(strItem)
 	end
 	blizzardname=SimPermut.slotNames[slotID]
 	simcname=simcSlotNames[slotID]
-	--print(strItem,blizzardname,simcname)
 	local id, texture, checkRelic = GetInventorySlotInfo(blizzardname)
 	GetInventoryItemsForSlot(id, equippableItems)
 	for locationBitstring, itemID in pairs(equippableItems) do
@@ -1049,7 +610,6 @@ function SimPermut:GetListItems()
 		tableListItems[i]={}
 		--si l'item est sélectionné
 		if tableDropDown[i] then
-			--print("add "..listNames[i])
 			tableListItems[i]=SimPermut:GetListItem(listNames[i])
 		end
 	end
@@ -1060,13 +620,11 @@ function SimPermut:GetTableLink()
 	local returnvalue=true
 	local slotid
 	for i=1,#listNames do
-		--print(i,listNames[i],#tableCheckBoxes[i])
 		tableLinkPermut[i]={}
 		if tableListItems[i] and #tableListItems[i]>0 then
 			for j=1,#tableListItems[i] do
 				if tableCheckBoxes[i][j]:GetValue() then
 					tableLinkPermut[i][#tableLinkPermut[i] + 1] = tableListItems[i][j]
-					--print("added : ",tableListItems[i][j])
 				end
 			end
 		end
@@ -1079,13 +637,11 @@ function SimPermut:GetTableLink()
 				slotid=i
 			end
 			tableLinkPermut[i][1]=GetInventoryItemLink('player', GetInventorySlotInfo(slotNames[slotid]))
-			--print("added (default) : ",slotid,tableLinkPermut[i][1])
 		end
 			
 	end
 	
 	--manage fingers and trinkets
-	--print (#tableLinkPermut[12])
 	if #tableLinkPermut[12]==0 then --if no trinket chosen, we take the equiped ones
 		tableLinkPermut[13]={}
 		tableLinkPermut[13][1]=GetInventoryItemLink('player', GetInventorySlotInfo(slotNames[15]))
@@ -1101,8 +657,6 @@ function SimPermut:GetTableLink()
 			tableLinkPermut[14]={}
 			tableLinkPermut[14][1]=tableLinkPermut[12][2]
 			tableLinkPermut[12]={}
-			--print(#tableLinkPermut[13])
-			--print(#tableLinkPermut[14])
 		else
 			tableLinkPermut[13]=tableLinkPermut[12]
 			tableLinkPermut[14]=tableLinkPermut[13]
@@ -1110,7 +664,6 @@ function SimPermut:GetTableLink()
 		end
 	end
 	
-	--print (#tableLinkPermut[11])
 	if #tableLinkPermut[11]==0 then --if no finger chosen, we take the equiped ones
 		tableLinkPermut[11][1]=GetInventoryItemLink('player', GetInventorySlotInfo(slotNames[13]))
 		tableLinkPermut[12][1]=GetInventoryItemLink('player', GetInventorySlotInfo(slotNames[14]))
@@ -1124,9 +677,6 @@ function SimPermut:GetTableLink()
 			tableLinkPermut[11]={}
 			tableLinkPermut[11][1]=temptable[1][1]
 			tableLinkPermut[12][1]=temptable[1][2]
-			--tableLinkPermut[11][2]=nil
-			--print(#tableLinkPermut[11])
-			--print(#tableLinkPermut[12])
 		else
 			tableLinkPermut[12]=tableLinkPermut[11]
 		end
@@ -1149,16 +699,12 @@ end
 function SimPermut:GetPermutationString(permuttable)
 	local returnString="\n"
 
-	
 	for i=1,#permuttable do
 		returnString =  returnString.."copy=copy"..i.."\n"
-		--print(#permuttable[i])
 		for j=1,#permuttable[i] do
 			local itemString=SimPermut:GetItemString(permuttable[i][j],PermutSimcNames[j],false)
-			--print(table.concat(itemString, ','))
 			returnString = returnString..PermutSimcNames[j] .. "=" .. table.concat(itemString, ',').."\n"
 		end
-		--print(unpack(permuttable[i]))
 		
 		returnString =  returnString.."\n"
 	end
@@ -1224,14 +770,14 @@ function SimPermut:GetBaseString()
 	local player = PersoLib:tokenize(playerClass) .. '="' .. playerName .. '"'
 	playerLevel = 'level=' .. playerLevel
 	playerRace = 'race=' .. PersoLib:tokenize(playerRace)
-	playerRole = 'role=' .. translateRole(role)
+	playerRole = 'role=' .. PersoLib:translateRole(role)
 	playerSpec = 'spec=' .. PersoLib:tokenize(playerSpec)
 	playerRealm = 'server=' .. PersoLib:tokenize(playerRealm)
 	playerRegion = 'region=' .. PersoLib:tokenize(playerRegion)
 
 	-- Talents are more involved - method to handle them
-	local playerTalents = CreateSimcTalentString()
-	local playerArtifact = GetArtifactString()
+	local playerTalents = PersoLib:CreateSimcTalentString()
+	local playerArtifact = PersoLib:GetArtifactString()
 
 	-- Build the output string for the player (not including gear)
 	local SimPermutProfile = player .. '\n'
@@ -1264,88 +810,6 @@ end
 
 -- generates the string of base + permutations
 function SimPermut:GetFinalString(basestring,permutstring)
-	return basestring..'\n\n'..permutstring
+	return basestring..'\n'..permutstring
 end
 
--- draw the frame and print the text
-function SimPermut:PrintPermut(finalString)
-	SimcCopyFrame:Show()
-	SimcCopyFrame:SetPoint("RIGHT")
-	SimcCopyFrameScroll:Show()
-	SimcCopyFrameScrollText:Show()
-	SimcCopyFrameScrollText:SetText(finalString)
-	SimcCopyFrameScrollText:HighlightText()
-end
-
--- generates simc string if asked from chat
-function SimPermut:PrintCompare(arg,fromInterface)
-
-  --Prep affichage
-  OpenAllBags()
-  if not CharacterFrame:IsShown() then 
-	ToggleCharacter("PaperDollFrame") 
-  end
-  
-  local SimPermutProfile=SimPermut:GetBaseString()
-  
-  --permutations
-  if string.len(arg) ~= 0 then
-	local permutations=""
-	if arg=="trinket" then
-		permutations=SimPermut:WhichFunctionUse(arg,fromInterface)
-		bPermut=true
-	elseif arg=="finger" then
-		permutations=SimPermut:WhichFunctionUse(arg,fromInterface)
-		bPermut=true
-	elseif arg=="head" then
-		permutations=SimPermut:WhichFunctionUse(arg,fromInterface)
-		bPermut=true
-	elseif arg=="neck" then
-		permutations=SimPermut:WhichFunctionUse(arg,fromInterface)
-		bPermut=true
-	elseif arg=="shoulder" then
-		permutations=SimPermut:WhichFunctionUse(arg,fromInterface)
-		bPermut=true
-	elseif arg=="back" then
-		permutations=SimPermut:WhichFunctionUse(arg,fromInterface)
-		bPermut=true
-	elseif arg=="chest" then
-		permutations=SimPermut:WhichFunctionUse(arg,fromInterface)
-		bPermut=true
-	elseif arg=="wrist" then
-		permutations=SimPermut:WhichFunctionUse(arg,fromInterface)
-		bPermut=true
-	elseif arg=="hands" then
-		permutations=SimPermut:WhichFunctionUse(arg,fromInterface)
-		bPermut=true
-	elseif arg=="waist" then
-		permutations=SimPermut:WhichFunctionUse(arg,fromInterface)
-		bPermut=true
-	elseif arg=="legs" then
-		permutations=SimPermut:WhichFunctionUse(arg,fromInterface)
-		bPermut=true
-	elseif arg=="feet" then
-		permutations=SimPermut:WhichFunctionUse(arg,fromInterface)
-		bPermut=true
-	else
-		SimPermutProfile = "Error: Items to compare not found!"
-		bPermut=false
-	end
-	
-	if bPermut then
-		SimPermutProfile = SimPermutProfile .. permutations
-	end
-  end
-  
-  -- sanity checks - if there's anything that makes the output completely invalid, punt!
-  if specId==nil then
-    SimPermutProfile = "Error: You need to pick a spec!"
-  end
-  
-  CloseAllBags()
-  ToggleCharacter("PaperDollFrame")
-
-  -- show the appropriate frames
-  SimPermut:PrintPermut(SimPermutProfile)
-
-end
