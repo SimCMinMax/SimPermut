@@ -12,7 +12,8 @@ local OFFSET_SUFFIX_ID 	= 7
 local OFFSET_FLAGS 		= 11
 local OFFSET_BONUS_ID 	= 13
 local ITEM_THRESHOLD 	= 800
-local ITEM_COUNT_THRESHOLD = 25
+local ITEM_COUNT_THRESHOLD = 21
+local COPY_THRESHOLD = 136
 
 -- Libs
 local ArtifactUI          = _G.C_ArtifactUI
@@ -44,6 +45,7 @@ local tableLabel={}
 local tableTitres={}
 local tableCheckBoxes={}
 local tableLinkPermut={}
+local tableBaseLink={}
 local selecteditems=0
 local errorMessage=""
 
@@ -54,6 +56,7 @@ local listNames 		= SimPermut.listNames
 local specNames     	= SimPermut.SpecNames
 local profNames     	= SimPermut.ProfNames
 local PermutSimcNames   = SimPermut.PermutSimcNames
+local PermutSlotNames   = SimPermut.PermutSlotNames
 local regionString  	= SimPermut.RegionString
 local artifactTable 	= SimPermut.ArtifactTable
 local gemList 			= SimPermut.gemList
@@ -62,6 +65,18 @@ local enchantCloak 		= SimPermut.enchantCloak
 local enchantNeck 		= SimPermut.enchantNeck
 
 SLASH_SIMPERMUTSLASH1 = "/SimPermut"
+
+-------------Test-----------------
+SLASH_SIMPERMUTSLASHTEST1 = "/Simtest"
+SlashCmdList["SIMPERMUTSLASHTEST"] = function (arg)
+	local t = {}
+	for word in arg:gmatch("%w+") do table.insert(t, word) end
+	local stats = {}
+	stats = GetItemStats(GetInventoryItemLink("player", t[1]))
+	print(GetInventoryItemLink("player", t[1]))
+	for stat, value in pairs(stats) do print( stat,value) end
+end
+-------------Test-----------------
 
 -- Command UI
 SlashCmdList["SIMPERMUTSLASH"] = function (arg)
@@ -225,7 +240,7 @@ function SimPermut:BuildFrame()
 	
 	labelCount= AceGUI:Create("Label")
 	labelCount:SetText(" ")
-	labelCount:SetWidth(150)
+	labelCount:SetWidth(250)
 	
 	mainGroup:AddChild(labelEnchantNeck)
 	mainGroup:AddChild(dropdownEnchantNeck)
@@ -309,9 +324,9 @@ function SimPermut:Generate()
 	local baseString=""
 	local finalString=""
 	if SimPermut:GetTableLink() then
+		baseString,tableBaseLink=SimPermut:GetBaseString()
 		permuttable=SimPermut:GetAllPermutations()
 		permutString=SimPermut:GetPermutationString(permuttable)
-		baseString=SimPermut:GetBaseString()
 		finalString=SimPermut:GetFinalString(baseString,permutString)
 		SimPermut:PrintPermut(finalString)
 	else --error
@@ -524,21 +539,23 @@ end
 -- get all items equiped Strings
 function SimPermut:GetItemStrings()
   local items = {}
+  local itemsLinks = {}
+  local slotId,itemLink
+  local itemString = {}
   
-  for slotNum=1, #slotNames do
-    local slotId = GetInventorySlotInfo(slotNames[slotNum])
-
-    local itemLink = GetInventoryItemLink('player', slotId)
-	local itemString = {}
+  for slotNum=1, #PermutSlotNames do
+    slotId = GetInventorySlotInfo(PermutSlotNames[slotNum])
+    itemLink = GetInventoryItemLink('player', slotId)
 
     -- if we don't have an item link, we don't care
     if itemLink then
-	  local itemString=SimPermut:GetItemString(itemLink,simcSlotNames[slotNum],true)	
-      items[slotNum] = simcSlotNames[slotNum] .. "=" .. table.concat(itemString, ',')
+	  itemString=SimPermut:GetItemString(itemLink,PermutSimcNames[slotNum],true)
+	  itemsLinks[slotNum]=itemLink
+      items[slotNum] = PermutSimcNames[slotNum] .. "=" .. table.concat(itemString, ',')
     end
   end
 
-  return items
+  return items,itemsLinks
 end
 
 -- get the list of items of a slot
@@ -698,15 +715,23 @@ end
 -- generates the string of all permutations
 function SimPermut:GetPermutationString(permuttable)
 	local returnString="\n"
+	local copynumber=1
 
 	for i=1,#permuttable do
-		returnString =  returnString.."copy=copy"..i.."\n"
-		for j=1,#permuttable[i] do
-			local itemString=SimPermut:GetItemString(permuttable[i][j],PermutSimcNames[j],false)
-			returnString = returnString..PermutSimcNames[j] .. "=" .. table.concat(itemString, ',').."\n"
+		if SimPermut:CheckUsability(permuttable[i],tableBaseLink) then
+			returnString =  returnString.."copy=copy"..copynumber.."\n"
+			for j=1,#permuttable[i] do
+				local itemString=SimPermut:GetItemString(permuttable[i][j],PermutSimcNames[j],false)
+				returnString = returnString..PermutSimcNames[j] .. "=" .. table.concat(itemString, ',').."\n"
+			end
+			
+			returnString =  returnString.."\n"
+			copynumber=copynumber+1
 		end
-		
-		returnString =  returnString.."\n"
+	end
+	
+	if copynumber > COPY_THRESHOLD then
+		mainframe:SetStatusText("Large number of copy, you may not have every copy (frame limitation).")
 	end
 	
 	return returnString
@@ -725,18 +750,18 @@ function SimPermut:GetBaseString()
 	local _, playerRace = UnitRace('player')
 	-- fix some races to match SimC format
 	if playerRace == 'BloodElf' then
-	playerRace = 'Blood Elf'
+		playerRace = 'Blood Elf'
 	elseif playerRace == 'NightElf' then
-	playerRace = 'Night Elf'
+		playerRace = 'Night Elf'
 	elseif playerRace == 'Scourge' then
-	playerRace = 'Undead'
+		playerRace = 'Undead'
 	end
 
 	-- Spec info
 	local role, globalSpecID
 	local specId = GetSpecialization()
 	if specId then
-	globalSpecID,_,_,_,_,role = GetSpecializationInfo(specId)
+		globalSpecID,_,_,_,_,role = GetSpecializationInfo(specId)
 	end
 	local playerSpec = specNames[ globalSpecID ]
 
@@ -744,10 +769,10 @@ function SimPermut:GetBaseString()
 	local pid1, pid2 = GetProfessions()
 	local firstProf, firstProfRank, secondProf, secondProfRank, profOneId, profTwoId
 	if pid1 then
-	_,_,firstProfRank,_,_,_,profOneId = GetProfessionInfo(pid1)
+		_,_,firstProfRank,_,_,_,profOneId = GetProfessionInfo(pid1)
 	end
 	if pid2 then
-	secondProf,_,secondProfRank,_,_,_,profTwoId = GetProfessionInfo(pid2)
+		secondProf,_,secondProfRank,_,_,_,profTwoId = GetProfessionInfo(pid2)
 	end
 
 	firstProf = profNames[ profOneId ]
@@ -755,15 +780,15 @@ function SimPermut:GetBaseString()
 
 	local playerProfessions = ''
 	if pid1 or pid2 then
-	playerProfessions = 'professions='
-	if pid1 then
-	  playerProfessions = playerProfessions..PersoLib:tokenize(firstProf)..'='..tostring(firstProfRank)..'/'
-	end
-	if pid2 then
-	  playerProfessions = playerProfessions..PersoLib:tokenize(secondProf)..'='..tostring(secondProfRank)
-	end
+		playerProfessions = 'professions='
+		if pid1 then
+			playerProfessions = playerProfessions..PersoLib:tokenize(firstProf)..'='..tostring(firstProfRank)..'/'
+		end
+		if pid2 then
+			playerProfessions = playerProfessions..PersoLib:tokenize(secondProf)..'='..tostring(secondProfRank)
+		end
 	else
-	playerProfessions = ''
+		playerProfessions = ''
 	end
 
 	-- Construct SimC-compatible strings from the basic information
@@ -790,22 +815,22 @@ function SimPermut:GetBaseString()
 	SimPermutProfile = SimPermutProfile .. playerTalents .. '\n'
 	SimPermutProfile = SimPermutProfile .. playerSpec .. '\n'
 	if playerArtifact ~= nil then
-	SimPermutProfile = SimPermutProfile .. playerArtifact .. '\n'
+		SimPermutProfile = SimPermutProfile .. playerArtifact .. '\n'
 	end
 	SimPermutProfile = SimPermutProfile .. '\n'
 
 	-- Method that gets gear information
-	local items = SimPermut:GetItemStrings()
+	local items,itemsLinks = SimPermut:GetItemStrings()
 
 	SimPermutProfile = SimPermutProfile .. "name=Base \n"
 	-- output gear
-	for slotNum=1, #slotNames do
+	for slotNum=1, #PermutSlotNames do
 		if items[slotNum] then
-		  SimPermutProfile = SimPermutProfile .. items[slotNum] .. '\n'
+			SimPermutProfile = SimPermutProfile .. items[slotNum] .. '\n'
 		end
 	end
 
-	return SimPermutProfile
+	return SimPermutProfile,itemsLinks
 end
 
 -- generates the string of base + permutations
@@ -813,3 +838,46 @@ function SimPermut:GetFinalString(basestring,permutstring)
 	return basestring..'\n'..permutstring
 end
 
+-- check if table is usefull to simulate (same ring, same trinket, dupplicate from base)
+function SimPermut:CheckUsability(table1,table2)
+	local returnvalue = true
+	local duplicate = true
+	
+	--checking different size
+	if returnvalue then
+		if #table1~=#table2 then
+			returnvalue=false
+		end
+	end
+	
+	--checking same ring
+	if returnvalue then
+		if table1[11]==table1[12] then
+			returnvalue=false
+		end
+	end
+	
+	--checking same trinket
+	if returnvalue then
+		if table1[13]==table1[14] then
+			returnvalue=false
+		end
+	end
+	
+	--checking Duplicate
+	if returnvalue then
+		for i=1,#table1 do
+			if duplicate then
+				if table1[i]~=table2[i] then
+					duplicate=false
+				end
+			end
+		end
+		
+		if duplicate then
+			returnvalue=false
+		end
+	end
+
+	return returnvalue
+end

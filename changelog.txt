@@ -1,0 +1,20 @@
+v1.2 12/08/2016
+[UI]Close string frame if you close main frame
+[UI]Split the item list in two columns to scroll less
+[UI]Added a warning if there is too much copies (fextframe can't handle more than 137 copies)
+[CODE]Code cleanup, removed unused functions
+[FIX]Removed some duplicated copies (same ring, same trinket, same as base)
+[FIX]Fixed warning label size
+
+
+v1.1 12/07/2016
+[UI]Added a toggle visibility with /simpermut
+[UI]Added a warning if too many items are selected
+[FIX]Fixed frame setppoint so they are not on each other anymore
+[FIX]Fixed an issue with ring and trinket permutations
+
+
+v1.0 12/06/2016
+Added multi-slot comparison support
+Created a file for a personnal library
+Bump version
