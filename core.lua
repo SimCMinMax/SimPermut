@@ -745,6 +745,8 @@ function SimPermut:GetBaseString()
 	local playerRealm = GetRealmName()
 	local playerRegion = regionString[GetCurrentRegion()]
 	local bPermut=false
+	local slotId,itemLink
+	local itemString = {}
 
 	-- Race info
 	local _, playerRace = UnitRace('player')
@@ -829,6 +831,27 @@ function SimPermut:GetBaseString()
 			SimPermutProfile = SimPermutProfile .. items[slotNum] .. '\n'
 		end
 	end
+	
+	--add weapons
+	slotId = GetInventorySlotInfo("MainHandSlot")
+    itemLink = GetInventoryItemLink('player', slotId)
+	itemString = {}
+
+    -- if we don't have an item link, we don't care
+    if itemLink then
+	  itemString=SimPermut:GetItemString(itemLink,PermutSimcNames[slotNum],true)
+      SimPermutProfile = SimPermutProfile .. "main_hand=" .. table.concat(itemString, ',').. '\n'
+    end
+	
+	slotId = GetInventorySlotInfo("SecondaryHandSlot")
+    itemLink = GetInventoryItemLink('player', slotId)
+	itemString = {}
+
+    -- if we don't have an item link, we don't care
+    if itemLink then
+	  itemString=SimPermut:GetItemString(itemLink,PermutSimcNames[slotNum],true)
+      SimPermutProfile = SimPermutProfile .. "off_hand=" .. table.concat(itemString, ',').. '\n'
+    end
 
 	return SimPermutProfile,itemsLinks
 end

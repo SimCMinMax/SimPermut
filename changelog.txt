@@ -1,3 +1,6 @@
+v1.2.1 12/09/2016
+[FIX]Fixed a bug where weapon were not correctly added in base string
+
 v1.2 12/08/2016
 [UI]Close string frame if you close main frame
 [UI]Split the item list in two columns to scroll less
