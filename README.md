@@ -25,13 +25,11 @@ Copy the text and paste in simc.
 
 ## Known issues and developement plan
 
--Keep selected/unselected items when adding/removing slots to permut
+-Rework UI to show every item at launch and pre-select equiped items
 
 -Clean copies (remove duplicated copies due to finger/trinket inversion)
 
 -Clip the text frame on the right of the frame
-
--Add gems and enchant to the item list to select for each item
 
 -Rename copy to add stat rating for a better overlook in simc
 

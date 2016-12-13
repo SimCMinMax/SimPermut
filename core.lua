@@ -487,24 +487,24 @@ function SimPermut:GetItemString(itemLink,itemType,base)
 		rest_offset = rest_offset + 1 -- An unknown field
 		local relic_str = ''
 		while rest_offset < #itemSplit do
-		  local n_bonus_ids = tonumber(itemSplit[rest_offset])
-		  rest_offset = rest_offset + 1
+			local n_bonus_ids = tonumber(itemSplit[rest_offset])
+			rest_offset = rest_offset + 1
 
-		  if n_bonus_ids == 0 then
-			relic_str = relic_str .. 0
-		  else
-			for rbid = 1, n_bonus_ids do
-			  relic_str = relic_str .. itemSplit[rest_offset]
-			  if rbid < n_bonus_ids then
-				relic_str = relic_str .. ':'
-			  end
-			  rest_offset = rest_offset + 1
+			if n_bonus_ids == 0 then
+				relic_str = relic_str .. 0
+			else
+				for rbid = 1, n_bonus_ids do
+					relic_str = relic_str .. itemSplit[rest_offset]
+					if rbid < n_bonus_ids then
+						relic_str = relic_str .. ':'
+					end
+					rest_offset = rest_offset + 1
+				end
 			end
-		  end
 
-		  if rest_offset < #itemSplit then
-			relic_str = relic_str .. '/'
-		  end
+			if rest_offset < #itemSplit then
+				relic_str = relic_str .. '/'
+			end
 		end
 
 		if relic_str ~= '' then
@@ -513,21 +513,37 @@ function SimPermut:GetItemString(itemLink,itemType,base)
 	end
 
 	-- Gems
-	if base then
-		if tonumber(itemSplit[OFFSET_GEM_ID_1]) ~= 0 then
-			simcItemOptions[#simcItemOptions + 1] = 'gem_id=' .. itemSplit[OFFSET_GEM_ID_1]
+	if itemType=="main_hand" then --exception for relics
+		local gems = {}
+		for i=1, 4 do -- hardcoded here to just grab all 4 sockets
+			local _,gemLink = GetItemGem(itemLink, i)
+			if gemLink then
+				local gemDetail = string.match(gemLink, "item[%-?%d:]+")
+				gems[#gems + 1] = string.match(gemDetail, "item:(%d+):" )
+			elseif flags == 256 then
+				gems[#gems + 1] = "0"
+			end
+		end
+		if #gems > 0 then
+			simcItemOptions[#simcItemOptions + 1] = 'gem_id=' .. table.concat(gems, '/')
 		end
 	else
-		if actualForce and actualGem~=0 then
-			if actualGem~=0 and (hasGem or tonumber(itemSplit[OFFSET_GEM_ID_1]) ~= 0) then
-				simcItemOptions[#simcItemOptions + 1] = 'gem_id=' .. actualGem
-			end
-		else
+		if base then
 			if tonumber(itemSplit[OFFSET_GEM_ID_1]) ~= 0 then
 				simcItemOptions[#simcItemOptions + 1] = 'gem_id=' .. itemSplit[OFFSET_GEM_ID_1]
-			else
-				if actualGem~=0 and hasGem then
+			end
+		else
+			if actualForce and actualGem~=0 then
+				if actualGem~=0 and (hasGem or tonumber(itemSplit[OFFSET_GEM_ID_1]) ~= 0) then
 					simcItemOptions[#simcItemOptions + 1] = 'gem_id=' .. actualGem
+				end
+			else
+				if tonumber(itemSplit[OFFSET_GEM_ID_1]) ~= 0 then
+					simcItemOptions[#simcItemOptions + 1] = 'gem_id=' .. itemSplit[OFFSET_GEM_ID_1]
+				else
+					if actualGem~=0 and hasGem then
+						simcItemOptions[#simcItemOptions + 1] = 'gem_id=' .. actualGem
+					end
 				end
 			end
 		end
@@ -839,7 +855,7 @@ function SimPermut:GetBaseString()
 
     -- if we don't have an item link, we don't care
     if itemLink then
-	  itemString=SimPermut:GetItemString(itemLink,PermutSimcNames[slotNum],true)
+	  itemString=SimPermut:GetItemString(itemLink,'main_hand',true)
       SimPermutProfile = SimPermutProfile .. "main_hand=" .. table.concat(itemString, ',').. '\n'
     end
 	
@@ -849,7 +865,7 @@ function SimPermut:GetBaseString()
 
     -- if we don't have an item link, we don't care
     if itemLink then
-	  itemString=SimPermut:GetItemString(itemLink,PermutSimcNames[slotNum],true)
+	  itemString=SimPermut:GetItemString(itemLink,'off_hand',true)
       SimPermutProfile = SimPermutProfile .. "off_hand=" .. table.concat(itemString, ',').. '\n'
     end
 

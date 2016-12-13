@@ -1,3 +1,6 @@
+v1.2.2 12/13/2016
+[FIX]Fixed a bug where artifact relics where not properly addes to base string
+
 v1.2.1 12/09/2016
 [FIX]Fixed a bug where weapon were not correctly added in base string
 
