@@ -1,3 +1,7 @@
+v1.3 12/14/2016
+[UI]Simplified the UI by deleting the dropdown and listing every items directly. Pre-select equiped items. If no item is selected in a slot, it will permut with equiped item.
+[FIX]Improved socket detection for crafted items and legendary
+
 v1.2.2 12/13/2016
 [FIX]Fixed a bug where artifact relics where not properly addes to base string
 
@@ -21,6 +25,6 @@ v1.1 12/07/2016
 
 
 v1.0 12/06/2016
-Added multi-slot comparison support
-Created a file for a personnal library
-Bump version
+[UI]Added multi-slot comparison support
+[CODE]Created a file for a personnal library
+[GH]Bump version

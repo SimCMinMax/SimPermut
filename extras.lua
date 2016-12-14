@@ -139,6 +139,17 @@ SimPermut.simcSlotNames = {'head','neck','shoulder','back','chest','shirt','taba
 SimPermut.listNames = {'head','neck','shoulder','back','chest','wrist','hands','waist','legs','feet','finger','trinket'}
 SimPermut.PermutSimcNames = {'head','neck','shoulder','back','chest','wrist','hands','waist','legs','feet','finger1','finger2','trinket1','trinket2'}
 SimPermut.PermutSlotNames = {"HeadSlot", "NeckSlot", "ShoulderSlot", "BackSlot", "ChestSlot", "WristSlot", "HandsSlot", "WaistSlot", "LegsSlot", "FeetSlot", "Finger0Slot", "Finger1Slot", "Trinket0Slot", "Trinket1Slot"}
+SimPermut.statsString= {"ITEM_MOD_INTELLECT_SHORT", "ITEM_MOD_AGILITY_SHORT", "ITEM_MOD_STRENGTH_SHORT", "ITEM_MOD_HASTE_RATING_SHORT", "ITEM_MOD_CRIT_RATING_SHORT", "ITEM_MOD_MASTERY_RATING_SHORT", "ITEM_MOD_VERSATILITY"}
+
+SimPermut.statsStringCorres= {
+["ITEM_MOD_INTELLECT_SHORT"]='Int', 
+["ITEM_MOD_AGILITY_SHORT"]='Agi', 
+["ITEM_MOD_STRENGTH_SHORT"]='Str', 
+["ITEM_MOD_HASTE_RATING_SHORT"]='Hast', 
+["ITEM_MOD_CRIT_RATING_SHORT"]='Crit', 
+["ITEM_MOD_MASTERY_RATING_SHORT"]='Mast', 
+["ITEM_MOD_VERSATILITY"]='Vers'
+}
 
 SimPermut.enchantNeck = {
   [0] 	 = 'Untouched',
@@ -158,17 +169,19 @@ SimPermut.enchantCloak = {
 SimPermut.enchantRing = {
   [0] 	 = 'Untouched',
   [5427] = '+200 Crit',
-  [5428] = '+200 Haste',
-  [5429] = '+200 Mastery',
-  [5430] = '+200 Versatility'
+  [5428] = '+200 Hast',
+  [5429] = '+200 Mast',
+  [5430] = '+200 Vers'
 }
 SimPermut.gemList = {
   [0] 	 = 'Untouched',
   [130219] = '+150 Crit',
-  [130220] = '+150 Haste',
-  [130222] = '+150 Mastery',
-  [130221] = '+150 Versatility',
+  [130220] = '+150 Hast',
+  [130222] = '+150 Mast',
+  [130221] = '+150 Vers',
   [130246] = '+200 Str',
   [130247] = '+200 Agi',
   [130248] = '+200 Int'
 }
+
+
