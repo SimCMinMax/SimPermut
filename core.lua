@@ -767,6 +767,7 @@ function SimPermut:GetPermutationString(permuttable)
 	local stats
 	local pool={}
 	local bonuspool={}
+	local currentString=""
 	
 	
 
@@ -776,9 +777,10 @@ function SimPermut:GetPermutationString(permuttable)
 				pool[value]=0
 				bonuspool[value]=0
 			end
+			currentString=""
 			for j=1,#permuttable[i] do
 				local itemString,bonuspool=SimPermut:GetItemString(permuttable[i][j],PermutSimcNames[j],false)
-				returnString = returnString..PermutSimcNames[j] .. "=" .. table.concat(itemString, ',').."\n"
+				currentString = currentString..PermutSimcNames[j] .. "=" .. table.concat(itemString, ',').."\n"
 				
 				--stats
 				stats={}
@@ -791,7 +793,7 @@ function SimPermut:GetPermutationString(permuttable)
 			end
 
 			
-			returnString =  SimPermut:GetCopyName(copynumber,pool) .. returnString.."\n"
+			returnString =  returnString .. SimPermut:GetCopyName(copynumber,pool) .. "\n".. currentString.."\n"
 			copynumber=copynumber+1
 		end
 	end

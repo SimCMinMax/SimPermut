@@ -1,3 +1,7 @@
+v1.3.1 12/16/2016
+[FIX]Fixed copy name being written incorrectly
+[FIX]Fixed Artifact update event incorrectly managed
+
 v1.3 12/14/2016
 [UI]Simplified the UI by deleting the dropdown and listing every items directly. Pre-select equiped items. If no item is selected in a slot, it will permut with equiped item.
 [FIX]Improved socket detection for crafted items and legendary

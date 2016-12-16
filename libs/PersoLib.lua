@@ -200,7 +200,7 @@ function PersoLib:GetArtifactString()
     
   -- Unregister the events to prevent unwanted call. (thx Aethys :o)
   --UIParent:UnregisterEvent("ARTIFACT_UPDATE");
-  UIParent:RegisterEvent("ARTIFACT_UPDATE");
+  UIParent:UnregisterEvent("ARTIFACT_UPDATE");
   if not PersoLib:IsArtifactFrameOpen() then
     SocketInventoryItem(INVSLOT_MAINHAND)
   end
@@ -227,9 +227,9 @@ function PersoLib:GetArtifactString()
     end
   end
   
-  ArtifactFrame:Hide()
-  CloseSocketInfo()
-  UIParent:UnregisterEvent("ARTIFACT_UPDATE");
+  --ArtifactFrame:Hide()
+  --CloseSocketInfo()
+  UIParent:RegisterEvent("ARTIFACT_UPDATE");
 
   return str
 end
