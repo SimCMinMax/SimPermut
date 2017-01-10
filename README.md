@@ -25,11 +25,15 @@ Copy the text and paste in simc.
 
 ## Known issues and developement plan
 
+-Add relic comparison
+
 -Clean copies (remove duplicated copies due to finger/trinket inversion)
 
--Clip the text frame on the right of the frame
+-Faster algorithm for string generation
 
--Rename copy to add stat rating for a better overlook in simc
+[-Clip the text frame on the right of the frame]
+
+[-Rename copy to add stat rating for a better overlook in simc]
 
 
 ## Credits

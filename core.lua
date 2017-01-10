@@ -13,7 +13,8 @@ local OFFSET_FLAGS 		= 11
 local OFFSET_BONUS_ID 	= 13
 local ITEM_THRESHOLD 	= 800
 local ITEM_COUNT_THRESHOLD = 21
-local COPY_THRESHOLD = 136
+local COPY_THRESHOLD 	= 136
+local LEGENDARY_MAX		= 2
 
 -- Libs
 local ArtifactUI          = _G.C_ArtifactUI
@@ -41,6 +42,7 @@ local tableLabel={}
 local tableCheckBoxes={}
 local tableLinkPermut={}
 local tableBaseLink={}
+local tableBaseString={}
 local labelCount
 local selecteditems=0
 local errorMessage=""
@@ -587,6 +589,7 @@ function SimPermut:GetItemStrings()
 		-- if we don't have an item link, we don't care
 		if itemLink then
 			itemString=SimPermut:GetItemString(itemLink,PermutSimcNames[slotNum],true)
+			tableBaseString[slotNum]=table.concat(itemString, ',')
 			itemsLinks[slotNum]=itemLink
 			items[slotNum] = PermutSimcNames[slotNum] .. "=" .. table.concat(itemString, ',')
 
@@ -639,6 +642,8 @@ function SimPermut:GetListItem(strItem,itemLine)
 		slotID=13
 	elseif strItem=="trinket" then
 		slotID=15
+	--elseif strItem=="relic" then
+	--	slotID=15
 	end
 	blizzardname=SimPermut.slotNames[slotID]
 	simcname=simcSlotNames[slotID]
@@ -768,7 +773,8 @@ function SimPermut:GetPermutationString(permuttable)
 	local pool={}
 	local bonuspool={}
 	local currentString=""
-	
+	local nbLeg
+	local itemRarity
 	
 
 	for i=1,#permuttable do
@@ -778,23 +784,32 @@ function SimPermut:GetPermutationString(permuttable)
 				bonuspool[value]=0
 			end
 			currentString=""
+			nbLeg=0
 			for j=1,#permuttable[i] do
-				local itemString,bonuspool=SimPermut:GetItemString(permuttable[i][j],PermutSimcNames[j],false)
-				currentString = currentString..PermutSimcNames[j] .. "=" .. table.concat(itemString, ',').."\n"
+				local _,_,itemRarity = GetItemInfo(permuttable[i][j])
+				if(itemRarity==5) then 
+					nbLeg=nbLeg+1
+				end
 				
-				--stats
-				stats={}
-				stats = GetItemStats(permuttable[i][j])
-				for stat, value in pairs(statsString) do 
-					if stats[value] then
-						pool[value]=pool[value]+stats[value]
+				local itemString,bonuspool=SimPermut:GetItemString(permuttable[i][j],PermutSimcNames[j],false)
+				if ( table.concat(itemString, ',') ~= tableBaseString[j]) then
+					currentString = currentString..PermutSimcNames[j] .. "=" .. table.concat(itemString, ',').."\n"
+					
+					--stats
+					stats={}
+					stats = GetItemStats(permuttable[i][j])
+					for stat, value in pairs(statsString) do 
+						if stats[value] then
+							pool[value]=pool[value]+stats[value]
+						end
 					end
 				end
 			end
 
-			
-			returnString =  returnString .. SimPermut:GetCopyName(copynumber,pool) .. "\n".. currentString.."\n"
-			copynumber=copynumber+1
+			if(nbLeg<=LEGENDARY_MAX) then
+				returnString =  returnString .. SimPermut:GetCopyName(copynumber,pool) .. "\n".. currentString.."\n"
+				copynumber=copynumber+1
+			end
 		end
 	end
 	
@@ -807,7 +822,7 @@ end
 
 -- get copy's stat
 function SimPermut:GetCopyName(copynumber,pool)
-	local returnString="copy=copy"..copynumber.."_"
+	local returnString="copy=copy"..copynumber..",Base".."_"
 	
 	--for i, value in pairs(statsString) do 
 	--	if pool[value]~=0 then
@@ -954,7 +969,6 @@ function SimPermut:GetBaseString()
     if itemLink then
 		itemString=SimPermut:GetItemString(itemLink,'off_hand',true)
 		SimPermutProfile = SimPermutProfile .. "off_hand=" .. table.concat(itemString, ',').. '\n'
-
     end
 	
 	--for i, value in pairs(statsString) do 

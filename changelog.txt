@@ -1,3 +1,7 @@
+v1.4 01/10/2017
+[FIX]Remove the pieces that are from the base string from copy chain
+[FIX]Removed impossible copy (2 leg max)
+
 v1.3.1 12/16/2016
 [FIX]Fixed copy name being written incorrectly
 [FIX]Fixed Artifact update event incorrectly managed
