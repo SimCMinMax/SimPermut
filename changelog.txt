@@ -1,3 +1,6 @@
+v1.5.1 01/17/2017
+[FIX]Fixed a bug when no ring/trinket where selected no generating the copy properly
+
 v1.5 01/17/2017
 [FIX]Removed a significant amount of copy due to ring/trinket inversion
 

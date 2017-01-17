@@ -805,7 +805,7 @@ function SimPermut:GetPermutationString(permuttable)
 				
 				local itemString,bonuspool=SimPermut:GetItemString(permuttable[i][j],PermutSimcNames[j],false)
 				-- don't write if item = base except for rings and trinkets
-				if ( table.concat(itemString, ',') ~= tableBaseString[j] ) then
+				if ( table.concat(itemString, ',') ~= tableBaseString[j] or j>10) then
 					currentString = currentString..PermutSimcNames[j] .. "=" .. table.concat(itemString, ',').."\n"
 					itemname = GetItemInfo(permuttable[i][j])
 					nbitem=nbitem+1
@@ -843,9 +843,9 @@ function SimPermut:GetCopyName(copynumber,pool,nbitem,itemList)
 	local returnString="copy="
 	
 	--if nbitem<3 then
-		--returnString=returnString..itemList
+		returnString=returnString..itemList
 	--else
-		returnString=returnString.."copy"..copynumber
+		--returnString=returnString.."copy"..copynumber
 	--end
 	
 	--for i, value in pairs(statsString) do 
@@ -1024,7 +1024,13 @@ function SimPermut:CheckUsability(table1,table2)
 	
 	--checking same ring
 	if returnvalue then
-		if table1[11]<=table1[12] then
+		if table1[11]==table1[12] then
+			returnvalue=false
+		end
+	end
+	
+	if returnvalue then
+		if table1[11]<table1[12] and (table1[11]~=table2[11] or table1[12]~=table2[12]) then
 			returnvalue=false
 		end
 	end
@@ -1038,7 +1044,13 @@ function SimPermut:CheckUsability(table1,table2)
 	
 	--checking same trinket
 	if returnvalue then
-		if table1[13]<=table1[14] then
+		if table1[13]==table1[14] then
+			returnvalue=false
+		end
+	end
+	
+	if returnvalue then
+		if table1[13]<table1[14] and (table1[13]~=table2[13] or table1[14]~=table2[14]) then
 			returnvalue=false
 		end
 	end
