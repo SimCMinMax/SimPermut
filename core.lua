@@ -805,7 +805,7 @@ function SimPermut:GetPermutationString(permuttable)
 				
 				local itemString,bonuspool=SimPermut:GetItemString(permuttable[i][j],PermutSimcNames[j],false)
 				-- don't write if item = base except for rings and trinkets
-				if ( (table.concat(itemString, ',') ~= tableBaseString[j] ) or j> 10) then
+				if ( table.concat(itemString, ',') ~= tableBaseString[j] ) then
 					currentString = currentString..PermutSimcNames[j] .. "=" .. table.concat(itemString, ',').."\n"
 					itemname = GetItemInfo(permuttable[i][j])
 					nbitem=nbitem+1
