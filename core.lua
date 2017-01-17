@@ -2,6 +2,7 @@ local _, SimPermut = ...
 
 SimPermut = LibStub("AceAddon-3.0"):NewAddon(SimPermut, "SimPermut", "AceConsole-3.0", "AceEvent-3.0")
 
+
 local OFFSET_ITEM_ID 	= 1
 local OFFSET_ENCHANT_ID = 2
 local OFFSET_GEM_ID_1 	= 3
@@ -12,17 +13,18 @@ local OFFSET_SUFFIX_ID 	= 7
 local OFFSET_FLAGS 		= 11
 local OFFSET_BONUS_ID 	= 13
 local ITEM_THRESHOLD 	= 800
-local ITEM_COUNT_THRESHOLD = 21
-local COPY_THRESHOLD 	= 136
+local ITEM_COUNT_THRESHOLD = 22
+local COPY_THRESHOLD 	= 500
 local LEGENDARY_MAX		= 2
 
 -- Libs
-local ArtifactUI          = _G.C_ArtifactUI
-local HasArtifactEquipped = _G.HasArtifactEquipped
-local SocketInventoryItem = _G.SocketInventoryItem
-local Timer               = _G.C_Timer
-local AceGUI 			  = LibStub("AceGUI-3.0")
-local PersoLib			  = LibStub("PersoLib")
+local ArtifactUI          	= _G.C_ArtifactUI
+local HasArtifactEquipped 	= _G.HasArtifactEquipped
+local SocketInventoryItem 	= _G.SocketInventoryItem
+local Timer               	= _G.C_Timer
+local AceGUI 			  	= LibStub("AceGUI-3.0")
+local LAD					= LibStub("LibArtifactData-1.0")
+local PersoLib			  	= LibStub("PersoLib")
 
 --UI
 local mainframe 
@@ -46,6 +48,8 @@ local tableBaseString={}
 local labelCount
 local selecteditems=0
 local errorMessage=""
+local artifactData={}
+local artifactID
 
 -- load stuff from extras.lua
 local slotNames     	= SimPermut.slotNames
@@ -62,19 +66,18 @@ local enchantRing 		= SimPermut.enchantRing
 local enchantCloak 		= SimPermut.enchantCloak
 local enchantNeck 		= SimPermut.enchantNeck
 local statsString		= SimPermut.statsString
-local statsStringCorres	=SimPermut.statsStringCorres
+local statsStringCorres	= SimPermut.statsStringCorres
+local RelicTypes		= SimPermut.RelicTypes
+local RelicSlots		= SimPermut.RelicSlots
 
 SLASH_SIMPERMUTSLASH1 = "/SimPermut"
 
 -------------Test-----------------
 SLASH_SIMPERMUTSLASHTEST1 = "/Simtest"
 SlashCmdList["SIMPERMUTSLASHTEST"] = function (arg)
-	local t = {}
-	for word in arg:gmatch("%w+") do table.insert(t, word) end
-	local stats = {}
-	stats = GetItemStats(GetInventoryItemLink("player", t[1]))
-	print(GetInventoryItemLink("player", t[1]))
-	for stat, value in pairs(stats) do print( stat,value) end
+	local id1, data = LAD:GetArtifactInfo(artifactID)
+
+	--SimPermut:PrintPermut(SimPermut:GetArtifactString())
 end
 -------------Test-----------------
 
@@ -105,6 +108,8 @@ end
 ----------------------------
 -- Main Frame construction
 function SimPermut:BuildFrame()
+	artifactID,artifactData = LAD:GetArtifactInfo() 
+	
 	mainframe = AceGUI:Create("Frame")
 	mainframe:SetTitle("SimPermut")
 	mainframe:SetPoint("CENTER",-150,0)
@@ -302,6 +307,8 @@ function SimPermut:BuildItemFrame()
 		end
 		--end
 	end
+
+	
 end
 
 -- check if the item is selected
@@ -772,9 +779,12 @@ function SimPermut:GetPermutationString(permuttable)
 	local stats
 	local pool={}
 	local bonuspool={}
-	local currentString=""
+	local currentString
 	local nbLeg
 	local itemRarity
+	local nbitem
+	local itemList
+	local itemname
 	
 
 	for i=1,#permuttable do
@@ -785,6 +795,8 @@ function SimPermut:GetPermutationString(permuttable)
 			end
 			currentString=""
 			nbLeg=0
+			nbitem=0
+			itemList=""
 			for j=1,#permuttable[i] do
 				local _,_,itemRarity = GetItemInfo(permuttable[i][j])
 				if(itemRarity==5) then 
@@ -792,9 +804,12 @@ function SimPermut:GetPermutationString(permuttable)
 				end
 				
 				local itemString,bonuspool=SimPermut:GetItemString(permuttable[i][j],PermutSimcNames[j],false)
-				if ( table.concat(itemString, ',') ~= tableBaseString[j]) then
+				-- don't write if item = base except for rings and trinkets
+				if ( (table.concat(itemString, ',') ~= tableBaseString[j] ) or j> 10) then
 					currentString = currentString..PermutSimcNames[j] .. "=" .. table.concat(itemString, ',').."\n"
-					
+					itemname = GetItemInfo(permuttable[i][j])
+					nbitem=nbitem+1
+					itemList=itemList..PersoLib:tokenize(itemname).."-"
 					--stats
 					stats={}
 					stats = GetItemStats(permuttable[i][j])
@@ -804,10 +819,13 @@ function SimPermut:GetPermutationString(permuttable)
 						end
 					end
 				end
+				
 			end
-
+			
+			itemList=itemList:sub(1, -2)
+			
 			if(nbLeg<=LEGENDARY_MAX) then
-				returnString =  returnString .. SimPermut:GetCopyName(copynumber,pool) .. "\n".. currentString.."\n"
+				returnString =  returnString .. SimPermut:GetCopyName(copynumber,pool,nbitem,itemList) .. "\n".. currentString.."\n"
 				copynumber=copynumber+1
 			end
 		end
@@ -821,17 +839,24 @@ function SimPermut:GetPermutationString(permuttable)
 end
 
 -- get copy's stat
-function SimPermut:GetCopyName(copynumber,pool)
-	local returnString="copy=copy"..copynumber..",Base".."_"
+function SimPermut:GetCopyName(copynumber,pool,nbitem,itemList)
+	local returnString="copy="
+	
+	--if nbitem<3 then
+		--returnString=returnString..itemList
+	--else
+		returnString=returnString.."copy"..copynumber
+	--end
 	
 	--for i, value in pairs(statsString) do 
 	--	if pool[value]~=0 then
 	--		returnString=returnString..statsStringCorres[statsString[i]]..pool[value].."_"
 	--	end
 	--end
+	--returnString=returnString:sub(1, -2)
 	
-	--remove last _
-	return returnString:sub(1, -2)
+	returnString=returnString..",Base"
+	return returnString
 end
 
 -- add enchant or gem to the stat pool
@@ -923,7 +948,7 @@ function SimPermut:GetBaseString()
 
 	-- Talents are more involved - method to handle them
 	local playerTalents = PersoLib:CreateSimcTalentString()
-	local playerArtifact = PersoLib:GetArtifactString()
+	local playerArtifact = SimPermut:GetArtifactString()
 
 	-- Build the output string for the player (not including gear)
 	local SimPermutProfile = player .. '\n'
@@ -983,8 +1008,10 @@ function SimPermut:GetFinalString(basestring,permutstring)
 	return basestring..'\n'..permutstring
 end
 
--- check if table is usefull to simulate (same ring, same trinket, dupplicate from base)
+-- check if table is usefull to simulate (same ring, same trinket)
 function SimPermut:CheckUsability(table1,table2)
+
+
 	local returnvalue = true
 	local duplicate = true
 	
@@ -997,14 +1024,28 @@ function SimPermut:CheckUsability(table1,table2)
 	
 	--checking same ring
 	if returnvalue then
-		if table1[11]==table1[12] then
+		if table1[11]<=table1[12] then
+			returnvalue=false
+		end
+	end
+	
+	--base inversion ring
+	if returnvalue then
+		if table1[11]==table2[12] and table1[12]==table2[11] then
 			returnvalue=false
 		end
 	end
 	
 	--checking same trinket
 	if returnvalue then
-		if table1[13]==table1[14] then
+		if table1[13]<=table1[14] then
+			returnvalue=false
+		end
+	end
+	
+	--base inversion trinket
+	if returnvalue then
+		if table1[13]==table2[14] and table1[14]==table2[13] then
 			returnvalue=false
 		end
 	end
@@ -1025,4 +1066,17 @@ function SimPermut:CheckUsability(table1,table2)
 	end
 
 	return returnvalue
+end
+
+-- get Simc artifact string
+function SimPermut:GetArtifactString()
+	local str=""
+	if #artifactData.traits then
+		str='artifact=' .. artifactTable[artifactID] .. ':0:0:0:0:'
+		for i=1,#artifactData.traits do
+			str = str..artifactData.traits[i].traitID..":"..(artifactData.traits[i].currentRank-artifactData.traits[i].bonusRanks)..":"
+		end
+		str = str:sub(1, -2)
+	end
+	return str
 end

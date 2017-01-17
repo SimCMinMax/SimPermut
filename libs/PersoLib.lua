@@ -3,11 +3,11 @@ local PersoLib = LibStub:NewLibrary(MAJOR, MINOR)
 
 if not PersoLib then return end
 
-local ArtifactUI          = _G.C_ArtifactUI
-local HasArtifactEquipped = _G.HasArtifactEquipped
-local SocketInventoryItem = _G.SocketInventoryItem
-local Timer               = _G.C_Timer
-local artifactTable 	  = {
+local ArtifactUI          	= _G.C_ArtifactUI
+local HasArtifactEquipped 	= _G.HasArtifactEquipped
+local SocketInventoryItem 	= _G.SocketInventoryItem
+local Timer               	= _G.C_Timer
+local artifactTable 	  	= {
 	-- Death Knight
 	[128402] = 15,
 	[128292] = 12,
@@ -181,7 +181,7 @@ function PersoLib:translateRole(str)
   elseif str == 'HEALER' then
     return 'healer'
   else
-    return ''
+    return 'spell'
   end
 end
 
@@ -193,7 +193,6 @@ end
 
 -- simc, generates artifact string
 function PersoLib:GetArtifactString()
-  
   if not HasArtifactEquipped() then
     return nil
   end
@@ -230,8 +229,6 @@ function PersoLib:GetArtifactString()
   --ArtifactFrame:Hide()
   --CloseSocketInfo()
   UIParent:RegisterEvent("ARTIFACT_UPDATE");
-
-  return str
 end
 
 -- get item id from link

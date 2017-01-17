@@ -1,3 +1,6 @@
+v1.5 01/17/2017
+[FIX]Removed a significant amount of copy due to ring/trinket inversion
+
 v1.4 01/10/2017
 [FIX]Remove the pieces that are from the base string from copy chain
 [FIX]Removed impossible copy (2 leg max)

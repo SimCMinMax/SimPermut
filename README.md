@@ -26,14 +26,14 @@ Copy the text and paste in simc.
 ## Known issues and developement plan
 
 -Add relic comparison
-
--Clean copies (remove duplicated copies due to finger/trinket inversion)
-
--Faster algorithm for string generation
+ 
+ 
+[-Faster algorithm for string generation]
 
 [-Clip the text frame on the right of the frame]
 
 [-Rename copy to add stat rating for a better overlook in simc]
+
 
 
 ## Credits
