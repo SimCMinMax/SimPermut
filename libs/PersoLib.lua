@@ -160,7 +160,7 @@ function PersoLib:CreateSimcTalentString()
     end
   end
 
-  local str = 'talents='
+  local str = ''
   for i = 1, maxTiers do
     if talentInfo[i] then
       str = str .. talentInfo[i]
@@ -183,6 +183,30 @@ function PersoLib:translateRole(str)
   else
     return 'spell'
   end
+end
+
+function PersoLib:getRace()
+	-- Race info
+	local _, playerRace = UnitRace('player')
+	-- fix some races to match SimC format
+	if playerRace == 'BloodElf' then
+		playerRace = 'Blood Elf'
+	elseif playerRace == 'NightElf' then
+		playerRace = 'Night Elf'
+	elseif playerRace == 'Scourge' then
+		playerRace = 'Undead'
+	end
+	
+	return playerRace
+end
+
+function PersoLib:getSpecID()
+	local role, globalSpecID
+	local specId = GetSpecialization()
+	if specId then
+		globalSpecID,_,_,_,_,role = GetSpecializationInfo(specId)
+	end
+	return globalSpecID
 end
 
 -- simc, Artifact Information

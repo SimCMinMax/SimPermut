@@ -2,7 +2,6 @@ local _, SimPermut = ...
 
 SimPermut = LibStub("AceAddon-3.0"):NewAddon(SimPermut, "SimPermut", "AceConsole-3.0", "AceEvent-3.0")
 
-
 local OFFSET_ITEM_ID 	= 1
 local OFFSET_ENCHANT_ID = 2
 local OFFSET_GEM_ID_1 	= 3
@@ -16,6 +15,10 @@ local ITEM_THRESHOLD 	= 800
 local ITEM_COUNT_THRESHOLD = 22
 local COPY_THRESHOLD 	= 500
 local LEGENDARY_MAX		= 2
+
+
+local report_type		= 2
+
 
 -- Libs
 local ArtifactUI          	= _G.C_ArtifactUI
@@ -220,7 +223,14 @@ function SimPermut:BuildFrame()
 	
 	labelCount= AceGUI:Create("Label")
 	labelCount:SetText(" ")
-	labelCount:SetWidth(250)
+	labelCount:SetWidth(255)
+	
+	local buttonGenerateRaw = AceGUI:Create("Button")
+	buttonGenerateRaw:SetText("AutoSimc Export")
+	buttonGenerateRaw:SetWidth(150)
+	buttonGenerateRaw:SetCallback("OnClick", function()
+		SimPermut:GenerateRaw()
+	end)
 	
 	mainGroup:AddChild(labelEnchantNeck)
 	mainGroup:AddChild(dropdownEnchantNeck)
@@ -235,6 +245,7 @@ function SimPermut:BuildFrame()
 	mainGroup:AddChild(checkBoxForce)
 	mainGroup:AddChild(buttonGenerate)
 	mainGroup:AddChild(labelCount)
+	mainGroup:AddChild(buttonGenerateRaw)
 	
 	mainframe:AddChild(mainGroup)
 	
@@ -345,6 +356,24 @@ function SimPermut:Generate()
 		SimPermut:PrintPermut(finalString)
 	else --error
 		mainframe:SetStatusText(errorMessage)
+	end
+end
+
+-- clic btn generate raw
+function SimPermut:GenerateRaw()
+	mainframe:SetStatusText("")
+	
+	local itemList=""
+	local baseString=""
+	local finalString=""
+	local AutoSimcString=""
+	
+	if SimPermut:GetTableLink() then
+		baseString,tableBaseLink=SimPermut:GetBaseString()
+		AutoSimcString=SimPermut:GetAutoSimcString()
+		itemList=SimPermut:GetItemListString()
+		finalString=SimPermut:GetFinalString(AutoSimcString,itemList)
+		SimPermut:PrintPermut(finalString)
 	end
 end
 
@@ -762,6 +791,70 @@ function SimPermut:GetTableLink()
 	return returnvalue
 end
 
+-- generates a raw list of all selected items for autoSimc
+function SimPermut:GetItemListString()
+	local returnString=""
+	local actualString
+	for i=1,#tableLinkPermut do
+		actualString=""
+		for j=1,#tableLinkPermut[i] do
+			local _,_,itemRarity = GetItemInfo(tableLinkPermut[i][j])
+			local itemString=SimPermut:GetItemString(tableLinkPermut[i][j],PermutSimcNames[i],false)
+			actualString = actualString .. ((itemRarity== 5) and "L" or "")..table.concat(itemString, ',').."|"
+		end
+		actualString=actualString:sub(1, -2)
+		returnString = returnString..PermutSimcNames[i] .. "="..actualString.."\n"
+		
+	end
+	
+	--mainhand
+    local itemLink = GetInventoryItemLink('player', INVSLOT_MAINHAND)
+	local itemString = {}
+
+    -- if we don't have an item link, we don't care
+    if itemLink then
+		itemString=SimPermut:GetItemString(itemLink,'main_hand',true)
+		returnString = returnString .. "main_hand=" .. table.concat(itemString, ',').. '\n'
+    end
+	
+	--offhand
+    itemLink = GetInventoryItemLink('player', INVSLOT_OFFHAND)
+	itemString = {}
+
+    -- if we don't have an item link, we don't care
+    if itemLink then
+		itemString=SimPermut:GetItemString(itemLink,'off_hand',true)
+		returnString = returnString .. "off_hand=" .. table.concat(itemString, ',').. '\n'
+    end
+	
+	
+	return returnString
+--SimPermut:GetItemString(itemLink,itemType,base)
+end
+
+-- generates the init string from autosimc
+function SimPermut:GetAutoSimcString()
+
+
+	local autoSimcString=""
+	autoSimcString=autoSimcString .. "[Profile]".."\n"
+	autoSimcString=autoSimcString .. "profilename="..UnitName('player').."\n"
+	autoSimcString=autoSimcString .. "profileid=1".."\n"
+	local _, playerClass = UnitClass('player')
+	autoSimcString=autoSimcString .. "class="..PersoLib:tokenize(playerClass) .."\n"
+	autoSimcString=autoSimcString .. "race="..PersoLib:tokenize(PersoLib:getRace()).."\n"
+	autoSimcString=autoSimcString .. "level="..UnitLevel('player').."\n"
+	autoSimcString=autoSimcString .. "spec="..PersoLib:tokenize(specNames[ PersoLib:getSpecID() ]).."\n"
+	autoSimcString=autoSimcString .. "role="..PersoLib:translateRole(role).."\n"
+	autoSimcString=autoSimcString .. "position=back".."\n"
+	autoSimcString=autoSimcString .. "talents="..PersoLib:CreateSimcTalentString().."\n"
+	autoSimcString=autoSimcString .. "artifact="..SimPermut:GetArtifactString().."\n"
+	autoSimcString=autoSimcString .. "other=".."\n"
+	autoSimcString=autoSimcString .. "[Gear]".."\n"
+	
+	return autoSimcString
+end
+
 -- generates all permutations for the tableLinkPermut
 function SimPermut:GetAllPermutations()
 	local returnTable={}
@@ -804,8 +897,7 @@ function SimPermut:GetPermutationString(permuttable)
 				end
 				
 				local itemString,bonuspool=SimPermut:GetItemString(permuttable[i][j],PermutSimcNames[j],false)
-				-- don't write if item = base except for rings and trinkets
-				if ( table.concat(itemString, ',') ~= tableBaseString[j] or j>10) then
+				if ( table.concat(itemString, ',') ~= tableBaseString[j] ) then
 					currentString = currentString..PermutSimcNames[j] .. "=" .. table.concat(itemString, ',').."\n"
 					itemname = GetItemInfo(permuttable[i][j])
 					nbitem=nbitem+1
@@ -842,10 +934,16 @@ end
 function SimPermut:GetCopyName(copynumber,pool,nbitem,itemList)
 	local returnString="copy="
 	
-	--if nbitem<3 then
+	if report_type==1 then
 		returnString=returnString..itemList
+	else 
+		returnString=returnString.."copy"..copynumber
+	end
+	
+	--if nbitem<3 then
+		--
 	--else
-		--returnString=returnString.."copy"..copynumber
+		
 	--end
 	
 	--for i, value in pairs(statsString) do 
@@ -892,63 +990,25 @@ function SimPermut:GetBaseString()
 	local stats={}
 	local StatPool={}
 
-	-- Race info
-	local _, playerRace = UnitRace('player')
-	-- fix some races to match SimC format
-	if playerRace == 'BloodElf' then
-		playerRace = 'Blood Elf'
-	elseif playerRace == 'NightElf' then
-		playerRace = 'Night Elf'
-	elseif playerRace == 'Scourge' then
-		playerRace = 'Undead'
-	end
-
-	-- Spec info
-	local role, globalSpecID
-	local specId = GetSpecialization()
-	if specId then
-		globalSpecID,_,_,_,_,role = GetSpecializationInfo(specId)
-	end
-	local playerSpec = specNames[ globalSpecID ]
-
-	-- Professions
-	local pid1, pid2 = GetProfessions()
-	local firstProf, firstProfRank, secondProf, secondProfRank, profOneId, profTwoId
-	if pid1 then
-		_,_,firstProfRank,_,_,_,profOneId = GetProfessionInfo(pid1)
-	end
-	if pid2 then
-		secondProf,_,secondProfRank,_,_,_,profTwoId = GetProfessionInfo(pid2)
-	end
-
-	firstProf = profNames[ profOneId ]
-	secondProf = profNames[ profTwoId ]
-
-	local playerProfessions = ''
-	if pid1 or pid2 then
-		playerProfessions = 'professions='
-		if pid1 then
-			playerProfessions = playerProfessions..PersoLib:tokenize(firstProf)..'='..tostring(firstProfRank)..'/'
-		end
-		if pid2 then
-			playerProfessions = playerProfessions..PersoLib:tokenize(secondProf)..'='..tostring(secondProfRank)
-		end
-	else
-		playerProfessions = ''
-	end
+	local playerRace = PersoLib:getRace()
+	local playerTalents = PersoLib:CreateSimcTalentString()
+	local playerArtifact = SimPermut:GetArtifactString()
+	local playerSpec = specNames[ PersoLib:getSpecID() ]
 
 	-- Construct SimC-compatible strings from the basic information
-	local player = PersoLib:tokenize(playerClass) .. '="' .. playerName .. '"'
+	local player = ""
+	playerClass = PersoLib:tokenize(playerClass) 
+	player = playerClass .. '="' .. playerName .. '"'
 	playerLevel = 'level=' .. playerLevel
 	playerRace = 'race=' .. PersoLib:tokenize(playerRace)
 	playerRole = 'role=' .. PersoLib:translateRole(role)
 	playerSpec = 'spec=' .. PersoLib:tokenize(playerSpec)
 	playerRealm = 'server=' .. PersoLib:tokenize(playerRealm)
 	playerRegion = 'region=' .. PersoLib:tokenize(playerRegion)
+	playerTalents = 'talents=' .. playerTalents
 
 	-- Talents are more involved - method to handle them
-	local playerTalents = PersoLib:CreateSimcTalentString()
-	local playerArtifact = SimPermut:GetArtifactString()
+	
 
 	-- Build the output string for the player (not including gear)
 	local SimPermutProfile = player .. '\n'
@@ -957,7 +1017,6 @@ function SimPermut:GetBaseString()
 	SimPermutProfile = SimPermutProfile .. playerRegion .. '\n'
 	SimPermutProfile = SimPermutProfile .. playerRealm .. '\n'
 	SimPermutProfile = SimPermutProfile .. playerRole .. '\n'
-	SimPermutProfile = SimPermutProfile .. playerProfessions .. '\n'
 	SimPermutProfile = SimPermutProfile .. playerTalents .. '\n'
 	SimPermutProfile = SimPermutProfile .. playerSpec .. '\n'
 	if playerArtifact ~= nil then
