@@ -22,11 +22,22 @@ Click Generate.
 
 Copy the text and paste in simc.
 
+## AutoSimC Export
+
+You can now export selected gear to an AutoSimC data (settings.ini) to externalize simc string generation. For a large number of items, it will be faster.
+
+See [AutoSimC on GitHub](https://github.com/SimCMinMax/AutoSimC)
+
+
 
 ## Known issues and developement plan
 
 -Add relic comparison
- 
+
+-Add an information when no copy are generated because there is no other valid combination)
+
+-Put back to inversion checker
+
  
 [-Faster algorithm for string generation]
 

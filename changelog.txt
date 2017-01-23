@@ -1,5 +1,9 @@
+v1.6.1 01/23/2017
+[FIX]Removed ring/trinket inversion check as it was causing too much problem that it solved. I'm working on a better solution
+[FIX]Fixed a bug where ring/trinket would be added in generated chain even if they didn't change
+
 v1.6-beta 01/19/2017
-[UI]Added a Raw string button that generates a string of all item selected to export and do a permutation with AutoSimc
+[UI]Added an AutoSimcExport button that generates a string of all item selected to export and do a permutation with AutoSimc
 [UI]Added a var to select copy name type (number or item changed) in core.lua (ln 20). I will add a config panel later.
 	report_type		= 1  -> list of item changed
 	report_type		= 2  -> number (copyX)

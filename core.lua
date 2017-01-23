@@ -394,7 +394,7 @@ end
 -- Check if item count is not too high
 function SimPermut:CheckItemCount()
 	if selecteditems >= ITEM_COUNT_THRESHOLD then
-		labelCount:SetText("     Warning : Too many items selected ("..selecteditems..")")
+		labelCount:SetText("     Warning : Too many items selected ("..selecteditems.."). Consider using AutoSimC Export")
 	else
 		labelCount:SetText("     ".. selecteditems.. " items selected")
 	end
@@ -871,6 +871,10 @@ function SimPermut:GetPermutationString(permuttable)
 	local copynumber=1
 	local stats
 	local pool={}
+	local itemString
+	local itemStringFinal
+	local itemString2
+	local itemStringFinal2
 	local bonuspool={}
 	local currentString
 	local nbLeg
@@ -878,10 +882,15 @@ function SimPermut:GetPermutationString(permuttable)
 	local nbitem
 	local itemList
 	local itemname
+	local result
+	local draw = true
+	
 	
 
 	for i=1,#permuttable do
-		if SimPermut:CheckUsability(permuttable[i],tableBaseLink) then
+		--print(i)
+		result=SimPermut:CheckUsability(permuttable[i],tableBaseLink)
+		if result=="" then
 			for i, value in pairs(statsString) do 
 				pool[value]=0
 				bonuspool[value]=0
@@ -890,14 +899,31 @@ function SimPermut:GetPermutationString(permuttable)
 			nbLeg=0
 			nbitem=0
 			itemList=""
+			
 			for j=1,#permuttable[i] do
+				draw = true
 				local _,_,itemRarity = GetItemInfo(permuttable[i][j])
 				if(itemRarity==5) then 
 					nbLeg=nbLeg+1
 				end
 				
-				local itemString,bonuspool=SimPermut:GetItemString(permuttable[i][j],PermutSimcNames[j],false)
-				if ( table.concat(itemString, ',') ~= tableBaseString[j] ) then
+				itemString,bonuspool=SimPermut:GetItemString(permuttable[i][j],PermutSimcNames[j],false)
+				itemStringFinal=table.concat(itemString, ',')
+				if (j>10) then
+					if (j==11 or j==13) then
+						itemString2 =SimPermut:GetItemString(permuttable[i][j+1],PermutSimcNames[j+1],false)
+						itemStringFinal2 = table.concat(itemString2, ',')
+						draw = ((itemStringFinal~= tableBaseString[j+1]) or (itemStringFinal2~=tableBaseString[j]))
+					else
+						itemString2 =SimPermut:GetItemString(permuttable[i][j-1],PermutSimcNames[j-1],false)
+						itemStringFinal2 = table.concat(itemString2, ',')
+						draw = ((itemStringFinal~= tableBaseString[j-1]) or (itemStringFinal2~=tableBaseString[j]))
+					end
+				else
+					draw = (itemStringFinal ~= tableBaseString[j])
+				end
+				
+				if ( draw ) then
 					currentString = currentString..PermutSimcNames[j] .. "=" .. table.concat(itemString, ',').."\n"
 					itemname = GetItemInfo(permuttable[i][j])
 					nbitem=nbitem+1
@@ -920,11 +946,13 @@ function SimPermut:GetPermutationString(permuttable)
 				returnString =  returnString .. SimPermut:GetCopyName(copynumber,pool,nbitem,itemList) .. "\n".. currentString.."\n"
 				copynumber=copynumber+1
 			end
+		--else
+			--print("Impossible combination : "..result)
 		end
 	end
 	
 	if copynumber > COPY_THRESHOLD then
-		mainframe:SetStatusText("Large number of copy, you may not have every copy (frame limitation).")
+		mainframe:SetStatusText("Large number of copy, you may not have every copy (frame limitation). Consider using AutoSimC Export")
 	end
 	
 	return returnString
@@ -1069,55 +1097,71 @@ end
 
 -- check if table is usefull to simulate (same ring, same trinket)
 function SimPermut:CheckUsability(table1,table2)
-
-
-	local returnvalue = true
+	local returnvalue = ""
 	local duplicate = true
+	local itemString 
+	local itemSplit = {}
+	local itemIdR111,itemIdR112,itemIdR211,itemIdR212
+	local itemIdT111,itemIdT112,itemIdT211,itemIdT212
 	
 	--checking different size
 	if returnvalue then
 		if #table1~=#table2 then
-			returnvalue=false
+			returnvalue="different size"
 		end
 	end
 	
 	--checking same ring
 	if returnvalue then
 		if table1[11]==table1[12] then
-			returnvalue=false
+			returnvalue="same ring"
 		end
 	end
 	
 	if returnvalue then
-		if table1[11]<table1[12] and (table1[11]~=table2[11] or table1[12]~=table2[12]) then
-			returnvalue=false
+		itemIdR111 = PersoLib:GetIDFromLink(table1[11])
+		itemIdR112 = PersoLib:GetIDFromLink(table1[12])
+		itemIdR211 = PersoLib:GetIDFromLink(table2[11])
+		itemIdR212 = PersoLib:GetIDFromLink(table2[12])
+		
+		--print("ring",itemIdR111,itemIdR112,itemIdR211,itemIdR212)
+		
+		if itemIdR111<itemIdR112 and (itemIdR111~=itemIdR211 or itemIdR112~=itemIdR212) then
+			--returnvalue="ring inversion"
 		end
 	end
 	
 	--base inversion ring
 	if returnvalue then
-		if table1[11]==table2[12] and table1[12]==table2[11] then
-			returnvalue=false
+		if (table1[11]==table2[12] and table1[12]==table2[11]) then
+			--returnvalue="ring inversion from base"
 		end
 	end
 	
 	--checking same trinket
 	if returnvalue then
 		if table1[13]==table1[14] then
-			returnvalue=false
+			returnvalue="same trinket"
 		end
 	end
 	
 	if returnvalue then
-		if table1[13]<table1[14] and (table1[13]~=table2[13] or table1[14]~=table2[14]) then
-			returnvalue=false
+		itemIdT111 = PersoLib:GetIDFromLink(table1[13])
+		itemIdT112 = PersoLib:GetIDFromLink(table1[14])
+		itemIdT211 = PersoLib:GetIDFromLink(table2[13])
+		itemIdT212 = PersoLib:GetIDFromLink(table2[14])
+		
+		--print("trinket",itemIdT111,itemIdT112,itemIdT211,itemIdT212)
+
+		if itemIdT111<itemIdT112 and (itemIdT111~=itemIdT211 or itemIdT112~=itemIdT212) then
+			--returnvalue="trinket inversion"
 		end
 	end
 	
 	--base inversion trinket
 	if returnvalue then
 		if table1[13]==table2[14] and table1[14]==table2[13] then
-			returnvalue=false
+			--returnvalue="trinket inversion from base"
 		end
 	end
 	
@@ -1132,7 +1176,7 @@ function SimPermut:CheckUsability(table1,table2)
 		end
 		
 		if duplicate then
-			returnvalue=false
+			returnvalue="duplicate from base"
 		end
 	end
 

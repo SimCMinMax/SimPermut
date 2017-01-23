@@ -269,5 +269,5 @@ function PersoLib:GetIDFromLink(itemLink)
 		end
 	end
 
-	return itemSplit[OFFSET_ITEM_ID]
+	return itemSplit[1]
 end
