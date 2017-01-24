@@ -1033,10 +1033,7 @@ function SimPermut:GetBaseString()
 	playerSpec = 'spec=' .. PersoLib:tokenize(playerSpec)
 	playerRealm = 'server=' .. PersoLib:tokenize(playerRealm)
 	playerRegion = 'region=' .. PersoLib:tokenize(playerRegion)
-	playerTalents = 'talents=' .. playerTalents
-
-	-- Talents are more involved - method to handle them
-	
+	playerTalents = 'talents=' .. playerTalents	
 
 	-- Build the output string for the player (not including gear)
 	local SimPermutProfile = player .. '\n'
@@ -1048,7 +1045,7 @@ function SimPermut:GetBaseString()
 	SimPermutProfile = SimPermutProfile .. playerTalents .. '\n'
 	SimPermutProfile = SimPermutProfile .. playerSpec .. '\n'
 	if playerArtifact ~= nil then
-		SimPermutProfile = SimPermutProfile .. playerArtifact .. '\n'
+		SimPermutProfile = SimPermutProfile .. "artifact=".. playerArtifact .. '\n'
 	end
 	SimPermutProfile = SimPermutProfile .. '\n'
 
@@ -1187,7 +1184,7 @@ end
 function SimPermut:GetArtifactString()
 	local str=""
 	if #artifactData.traits then
-		str='artifact=' .. artifactTable[artifactID] .. ':0:0:0:0:'
+		str=artifactTable[artifactID] .. ':0:0:0:0:'
 		for i=1,#artifactData.traits do
 			str = str..artifactData.traits[i].traitID..":"..(artifactData.traits[i].currentRank-artifactData.traits[i].bonusRanks)..":"
 		end

@@ -1,3 +1,6 @@
+v1.6.2 01/24/2017
+[FIX]Fixed AutoSimc Export's artifact writing
+
 v1.6.1 01/23/2017
 [FIX]Removed ring/trinket inversion check as it was causing too much problem that it solved. I'm working on a better solution
 [FIX]Fixed a bug where ring/trinket would be added in generated chain even if they didn't change
