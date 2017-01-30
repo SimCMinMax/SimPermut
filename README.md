@@ -34,14 +34,10 @@ See [AutoSimC on GitHub](https://github.com/SimCMinMax/AutoSimC)
 
 -Add relic comparison
 
--Add an information when no copy are generated because there is no other valid combination)
-
 -Put back to inversion checker
 
  
 [-Faster algorithm for string generation]
-
-[-Clip the text frame on the right of the frame]
 
 [-Rename copy to add stat rating for a better overlook in simc]
 
@@ -50,4 +46,4 @@ See [AutoSimC on GitHub](https://github.com/SimCMinMax/AutoSimC)
 ## Credits
 Kutikuti 
 
-[Quichons guild](http://www.quichons.fr/) from Elune.
+[Quichons guild](http://www.quichons.fr/) from EU-Elune (fr).

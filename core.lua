@@ -35,6 +35,7 @@ local mainframeCreated=false
 local stringframeCreated=false
 local scroll1
 local scroll2
+local scroll3
 local checkBoxForce
 local actualEnchantNeck=0
 local actualEnchantFinger=0
@@ -53,6 +54,7 @@ local selecteditems=0
 local errorMessage=""
 local artifactData={}
 local artifactID
+local resultBox
 
 -- load stuff from extras.lua
 local slotNames     	= SimPermut.slotNames
@@ -99,7 +101,6 @@ function SimPermut:OnInitialize()
 end
 
 function SimPermut:OnEnable()
-  SimPermutTooltip:SetOwner(_G.UIParent,"ANCHOR_LEFT")
 end
 
 function SimPermut:OnDisable()
@@ -115,7 +116,7 @@ function SimPermut:BuildFrame()
 	
 	mainframe = AceGUI:Create("Frame")
 	mainframe:SetTitle("SimPermut")
-	mainframe:SetPoint("CENTER",-150,0)
+	mainframe:SetPoint("CENTER")
 	mainframe:SetCallback("OnClose", function(widget) 
 		AceGUI:Release(widget) 
 		if stringframeCreated and SimcCopyFrame:IsShown() then
@@ -123,13 +124,12 @@ function SimPermut:BuildFrame()
 		end
 	end)
 	mainframe:SetLayout("Flow")
-	mainframe:SetWidth(1000)
+	mainframe:SetWidth(1700)
 	mainframe:SetHeight(750)
 	
 	local mainGroup = AceGUI:Create("SimpleGroup")
-    mainGroup:SetFullWidth(true)
     mainGroup:SetLayout("Flow")
-    mainGroup:SetWidth(200)
+    mainGroup:SetRelativeWidth(0.6)
 	
 	local scrollcontainer1 = AceGUI:Create("SimpleGroup")
 	scrollcontainer1:SetRelativeWidth(0.5)
@@ -150,7 +150,42 @@ function SimPermut:BuildFrame()
 	scroll2 = AceGUI:Create("ScrollFrame")
 	scroll2:SetLayout("Flow")
 	scrollcontainer2:AddChild(scroll2)
+	
+	
+	
+	local resultGroup = AceGUI:Create("SimpleGroup")
+    resultGroup:SetLayout("Flow")
+    resultGroup:SetRelativeWidth(0.4)
+	
+	local scrollcontainer3 = AceGUI:Create("SimpleGroup")
+	scrollcontainer3:SetRelativeWidth(1)
+	scrollcontainer3:SetHeight(600)
+	scrollcontainer3:SetLayout("Fill")
+	resultGroup:AddChild(scrollcontainer3)
+	
+	resultBox= AceGUI:Create("MultiLineEditBox")
+	resultBox:SetText("")
+	resultBox:SetLabel("")
+	resultBox:DisableButton(true)
+	resultBox:SetRelativeWidth(1)
+	scrollcontainer3:AddChild(resultBox)
+	
+	local labelSpacerResult= AceGUI:Create("Label")
+	labelSpacerResult:SetText(" ")
+	labelSpacerResult:SetRelativeWidth(0.7)
+	
+	local buttonGenerateRaw = AceGUI:Create("Button")
+	buttonGenerateRaw:SetText("AutoSimc Export")
+	buttonGenerateRaw:SetRelativeWidth(0.3)
+	buttonGenerateRaw:SetCallback("OnClick", function()
+		SimPermut:GenerateRaw()
+	end)
+	
+	resultGroup:AddChild(labelSpacerResult)
+	resultGroup:AddChild(buttonGenerateRaw)
 
+	
+	------ Items + param
 	local labelEnchantNeck= AceGUI:Create("Label")
 	labelEnchantNeck:SetText("Enchant Neck")
 	labelEnchantNeck:SetWidth(100)
@@ -225,12 +260,7 @@ function SimPermut:BuildFrame()
 	labelCount:SetText(" ")
 	labelCount:SetWidth(255)
 	
-	local buttonGenerateRaw = AceGUI:Create("Button")
-	buttonGenerateRaw:SetText("AutoSimc Export")
-	buttonGenerateRaw:SetWidth(150)
-	buttonGenerateRaw:SetCallback("OnClick", function()
-		SimPermut:GenerateRaw()
-	end)
+
 	
 	mainGroup:AddChild(labelEnchantNeck)
 	mainGroup:AddChild(dropdownEnchantNeck)
@@ -245,9 +275,11 @@ function SimPermut:BuildFrame()
 	mainGroup:AddChild(checkBoxForce)
 	mainGroup:AddChild(buttonGenerate)
 	mainGroup:AddChild(labelCount)
-	mainGroup:AddChild(buttonGenerateRaw)
+
+	
 	
 	mainframe:AddChild(mainGroup)
+	mainframe:AddChild(resultGroup)
 	
 	tableTitres={}
 	tableLabel={}
@@ -402,13 +434,15 @@ end
 
 -- draw the frame and print the text
 function SimPermut:PrintPermut(finalString)
-	SimcCopyFrame:Show()
-	SimcCopyFrame:SetPoint("RIGHT")
-	stringframeCreated=true
-	SimcCopyFrameScroll:Show()
-	SimcCopyFrameScrollText:Show()
-	SimcCopyFrameScrollText:SetText(finalString)
-	SimcCopyFrameScrollText:HighlightText()
+	--SimcCopyFrame:Show()
+	--SimcCopyFrame:SetPoint("RIGHT")
+	--stringframeCreated=true
+	--SimcCopyFrameScroll:Show()
+	--SimcCopyFrameScrollText:Show()
+	--SimcCopyFrameScrollText:SetText(finalString)
+	--SimcCopyFrameScrollText:HighlightText()
+	resultBox:SetText(finalString)
+	resultBox:HighlightText()
 end
 
 ----------------------------
@@ -946,13 +980,15 @@ function SimPermut:GetPermutationString(permuttable)
 				returnString =  returnString .. SimPermut:GetCopyName(copynumber,pool,nbitem,itemList) .. "\n".. currentString.."\n"
 				copynumber=copynumber+1
 			end
-		--else
-			--print("Impossible combination : "..result)
 		end
 	end
 	
 	if copynumber > COPY_THRESHOLD then
 		mainframe:SetStatusText("Large number of copy, you may not have every copy (frame limitation). Consider using AutoSimC Export")
+	end
+	
+	if copynumber==0 and selecteditems>14 then
+		mainframe:SetStatusText("No copy generated because no other possible combination were found (3 legendaries, same ring/trinket...)")
 	end
 	
 	return returnString
