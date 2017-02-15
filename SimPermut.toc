@@ -2,7 +2,7 @@
 ## Title: SimPermut
 ## Notes: Constructs SimC export strings with permutations for items in inventory. Based on SimulationCraft's Addon. 
 ## Author: Kutikuti
-## Version: 1.6.2
+## Version: 1.6.3
 ## OptionalDependencies: Ace3
 
 libs\LibStub\LibStub.lua
@@ -18,6 +18,5 @@ libs\CallbackHandler-1.0\CallbackHandler-1.0.lua
 libs\LibArtifactData-1.0\LibArtifactData-1.0.lua
 #@end-no-lib-strip@
 
-embeds.xml
 extras.lua
 core.lua

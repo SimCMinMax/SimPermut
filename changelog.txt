@@ -1,3 +1,6 @@
+v1.6.3 02/15/2017
+[FIX]Reduced Window size overall
+
 v1.6.2 01/30/2017
 [FIX]Fixed AutoSimc Export's artifact writing
 [UI]Add an information when no copy are generated because there is no other valid combination
