@@ -1,3 +1,9 @@
+v1.7 xx/xx/2017
+[UI]Added relic comparison
+
+v1.6.4 02/16/2017
+[FIX]Fixed ring and trinket print if not selected
+
 v1.6.3 02/15/2017
 [FIX]Reduced Window size overall
 

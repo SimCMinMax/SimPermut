@@ -80,9 +80,12 @@ SLASH_SIMPERMUTSLASH1 = "/SimPermut"
 -------------Test-----------------
 SLASH_SIMPERMUTSLASHTEST1 = "/Simtest"
 SlashCmdList["SIMPERMUTSLASHTEST"] = function (arg)
-	local id1, data = LAD:GetArtifactInfo(artifactID)
+	local artifactID,artifactData = LAD:GetArtifactInfo() 
+	
+	for i=1,#artifactData.relics do
+		print(artifactData.relics[i].name ,artifactData.relics[i].type)
+	end
 
-	--SimPermut:PrintPermut(SimPermut:GetArtifactString())
 end
 -------------Test-----------------
 
@@ -947,11 +950,23 @@ function SimPermut:GetPermutationString(permuttable)
 					if (j==11 or j==13) then
 						itemString2 =SimPermut:GetItemString(permuttable[i][j+1],PermutSimcNames[j+1],false)
 						itemStringFinal2 = table.concat(itemString2, ',')
-						draw = ((itemStringFinal~= tableBaseString[j+1]) or (itemStringFinal2~=tableBaseString[j]))
+						if(itemStringFinal==tableBaseString[j] or (itemStringFinal==tableBaseString[j+1] and itemStringFinal2==tableBaseString[j]))then
+							draw=false
+						else
+							draw=true
+						end
+						
+						--draw = ((itemStringFinal~= tableBaseString[j+1]) or (itemStringFinal2~=tableBaseString[j]))
 					else
 						itemString2 =SimPermut:GetItemString(permuttable[i][j-1],PermutSimcNames[j-1],false)
 						itemStringFinal2 = table.concat(itemString2, ',')
-						draw = ((itemStringFinal~= tableBaseString[j-1]) or (itemStringFinal2~=tableBaseString[j]))
+
+						if(itemStringFinal==tableBaseString[j] or (itemStringFinal==tableBaseString[j-1] and itemStringFinal2==tableBaseString[j]))then
+							draw=false
+						else
+							draw=true
+						end
+						--draw = ((itemStringFinal~= tableBaseString[j-1]) or (itemStringFinal2~=tableBaseString[j]))
 					end
 				else
 					draw = (itemStringFinal ~= tableBaseString[j])
@@ -976,7 +991,7 @@ function SimPermut:GetPermutationString(permuttable)
 			
 			itemList=itemList:sub(1, -2)
 			
-			if(nbLeg<=LEGENDARY_MAX) then
+			if(nbLeg<=LEGENDARY_MAX and nbitem>0) then
 				returnString =  returnString .. SimPermut:GetCopyName(copynumber,pool,nbitem,itemList) .. "\n".. currentString.."\n"
 				copynumber=copynumber+1
 			end
