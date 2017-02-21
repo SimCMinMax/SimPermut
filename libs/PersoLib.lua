@@ -7,7 +7,6 @@ local ArtifactUI          	= _G.C_ArtifactUI
 local HasArtifactEquipped 	= _G.HasArtifactEquipped
 local SocketInventoryItem 	= _G.SocketInventoryItem
 local Timer               	= _G.C_Timer
-local affDebug				= false
 local artifactTable 	  	= {
 	-- Death Knight
 	[128402] = 15,
@@ -94,12 +93,8 @@ function PersoLib:doCartesianALACON(tableToPermut)
 															tableReturn[#tableReturn][8]=tableToPermut[8][i8]
 															tableReturn[#tableReturn][9]=tableToPermut[9][i9]
 															tableReturn[#tableReturn][10]=tableToPermut[10][i10]
-															
-															--ring
 															tableReturn[#tableReturn][11]=tableToPermut[11][i11]
 															tableReturn[#tableReturn][12]=tableToPermut[12][i12]
-															
-															--trinket
 															tableReturn[#tableReturn][13]=tableToPermut[13][i13]
 															tableReturn[#tableReturn][14]=tableToPermut[14][i14]
 															--print(tableToPermut[1][i1].." "..tableToPermut[2][i2].." "..tableToPermut[3][i3].." "..tableToPermut[4][i4].." "..tableToPermut[5][i5].." "..tableToPermut[6][i6].." "..tableToPermut[7][i7].." "..tableToPermut[8][i8].." "..tableToPermut[9][i9].." "..tableToPermut[10][i10].." "..tableToPermut[11][i11].." "..tableToPermut[12][i12])
@@ -275,10 +270,4 @@ function PersoLib:GetIDFromLink(itemLink)
 	end
 
 	return itemSplit[1]
-end
-
-function PersoLib:debugPrint(str)
-	if affDebug then
-		print(str)
-	end
 end
