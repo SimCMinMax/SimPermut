@@ -32,9 +32,7 @@ See [AutoSimC on GitHub](https://github.com/SimCMinMax/AutoSimC)
 
 ## Known issues and developement plan
 
--Add relic comparison
-
--Put back inversion checker
+- Add relic comparison
 
  
 [-Faster algorithm for string generation]

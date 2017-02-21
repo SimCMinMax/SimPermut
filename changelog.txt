@@ -1,5 +1,5 @@
-v1.7 xx/xx/2017
-[UI]Added relic comparison
+v1.7 02/21/2017
+[UI]Put back inversion checker
 
 v1.6.4 02/16/2017
 [FIX]Fixed ring and trinket print if not selected
