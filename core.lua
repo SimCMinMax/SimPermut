@@ -55,6 +55,8 @@ local errorMessage=""
 local artifactData={}
 local artifactID
 local resultBox
+local fingerInf = false
+local trinketInf = false
 
 -- load stuff from extras.lua
 local slotNames     	= SimPermut.slotNames
@@ -384,11 +386,15 @@ function SimPermut:Generate()
 	local baseString=""
 	local finalString=""
 	if SimPermut:GetTableLink() then
+		PersoLib:debugPrint("--------------------")
+		PersoLib:debugPrint("Generating string...")
 		baseString,tableBaseLink=SimPermut:GetBaseString()
 		permuttable=SimPermut:GetAllPermutations()
 		permutString=SimPermut:GetPermutationString(permuttable)
 		finalString=SimPermut:GetFinalString(baseString,permutString)
 		SimPermut:PrintPermut(finalString)
+		PersoLib:debugPrint("End of generation")
+		PersoLib:debugPrint("--------------------")
 	else --error
 		mainframe:SetStatusText(errorMessage)
 	end
@@ -404,11 +410,15 @@ function SimPermut:GenerateRaw()
 	local AutoSimcString=""
 	
 	if SimPermut:GetTableLink() then
+		PersoLib:debugPrint("--------------------")
+		PersoLib:debugPrint("Generating string...")
 		baseString,tableBaseLink=SimPermut:GetBaseString()
 		AutoSimcString=SimPermut:GetAutoSimcString()
 		itemList=SimPermut:GetItemListString()
 		finalString=SimPermut:GetFinalString(AutoSimcString,itemList)
 		SimPermut:PrintPermut(finalString)
+		PersoLib:debugPrint("End of generation")
+		PersoLib:debugPrint("--------------------")
 	end
 end
 
@@ -922,12 +932,11 @@ function SimPermut:GetPermutationString(permuttable)
 	local result
 	local draw = true
 	
-	
-
 	for i=1,#permuttable do
 		--print(i)
 		result=SimPermut:CheckUsability(permuttable[i],tableBaseLink)
 		if result=="" then
+		
 			for i, value in pairs(statsString) do 
 				pool[value]=0
 				bonuspool[value]=0
@@ -994,7 +1003,11 @@ function SimPermut:GetPermutationString(permuttable)
 			if(nbLeg<=LEGENDARY_MAX and nbitem>0) then
 				returnString =  returnString .. SimPermut:GetCopyName(copynumber,pool,nbitem,itemList) .. "\n".. currentString.."\n"
 				copynumber=copynumber+1
+			elseif(nbLeg>LEGENDARY_MAX) then
+				PersoLib:debugPrint("Not printed:Too much Leg ("..nbLeg..")")
 			end
+		else
+			PersoLib:debugPrint("Not printed:"..result)
 		end
 	end
 	
@@ -1018,12 +1031,6 @@ function SimPermut:GetCopyName(copynumber,pool,nbitem,itemList)
 	else 
 		returnString=returnString.."copy"..copynumber
 	end
-	
-	--if nbitem<3 then
-		--
-	--else
-		
-	--end
 	
 	--for i, value in pairs(statsString) do 
 	--	if pool[value]~=0 then
@@ -1131,6 +1138,21 @@ function SimPermut:GetBaseString()
 		SimPermutProfile = SimPermutProfile .. "off_hand=" .. table.concat(itemString, ',').. '\n'
     end
 	
+	--prepare inversion checker
+	local itemIdRing1,itemIdRing2
+	local itemIdTrinket1,itemIdTrinket2 
+	--print(tableBaseLink[11],tableBaseLink[12],tableBaseLink[13],tableBaseLink[14])
+	itemIdRing1 = PersoLib:GetIDFromLink(GetInventoryItemLink('player', INVSLOT_FINGER1))
+	itemIdRing2 = PersoLib:GetIDFromLink(GetInventoryItemLink('player', INVSLOT_FINGER2))
+	itemIdTrinket1 = PersoLib:GetIDFromLink(GetInventoryItemLink('player', INVSLOT_TRINKET1))
+	itemIdTrinket2 = PersoLib:GetIDFromLink(GetInventoryItemLink('player', INVSLOT_TRINKET2))	
+	if itemIdRing1<itemIdRing2 then
+		fingerInf=true
+	end
+	if itemIdTrinket1<itemIdTrinket2 then
+		trinketInf=true
+	end
+		
 	--for i, value in pairs(statsString) do 
 	--	print(statsString[i],StatPool[value])
 	--end
@@ -1149,67 +1171,58 @@ function SimPermut:CheckUsability(table1,table2)
 	local duplicate = true
 	local itemString 
 	local itemSplit = {}
-	local itemIdR111,itemIdR112,itemIdR211,itemIdR212
-	local itemIdT111,itemIdT112,itemIdT211,itemIdT212
+	local itemIdR111,itemIdR112
+	local itemIdT111,itemIdT112
 	
 	--checking different size
 	if returnvalue then
 		if #table1~=#table2 then
-			returnvalue="different size"
+			returnvalue="Different size"
 		end
 	end
 	
 	--checking same ring
 	if returnvalue then
 		if table1[11]==table1[12] then
-			returnvalue="same ring"
+			returnvalue="Same ring "..table1[11]
 		end
 	end
 	
+	--checking ring inf
 	if returnvalue then
 		itemIdR111 = PersoLib:GetIDFromLink(table1[11])
 		itemIdR112 = PersoLib:GetIDFromLink(table1[12])
-		itemIdR211 = PersoLib:GetIDFromLink(table2[11])
-		itemIdR212 = PersoLib:GetIDFromLink(table2[12])
 		
-		--print("ring",itemIdR111,itemIdR112,itemIdR211,itemIdR212)
-		
-		if itemIdR111<itemIdR112 and (itemIdR111~=itemIdR211 or itemIdR112~=itemIdR212) then
-			--returnvalue="ring inversion"
-		end
-	end
-	
-	--base inversion ring
-	if returnvalue then
-		if (table1[11]==table2[12] and table1[12]==table2[11]) then
-			--returnvalue="ring inversion from base"
+		if fingerInf then
+			if itemIdR111>itemIdR112 then
+				return "Ring copy duplication ("..itemIdR111.."-"..itemIdR112..")"
+			end
+		else
+			if itemIdR111<itemIdR112 then
+				return "Ring copy duplication ("..itemIdR111.."-"..itemIdR112..")"
+			end
 		end
 	end
 	
 	--checking same trinket
 	if returnvalue then
 		if table1[13]==table1[14] then
-			returnvalue="same trinket"
+			returnvalue="Same trinket "..table1[13]
 		end
 	end
 	
 	if returnvalue then
 		itemIdT111 = PersoLib:GetIDFromLink(table1[13])
 		itemIdT112 = PersoLib:GetIDFromLink(table1[14])
-		itemIdT211 = PersoLib:GetIDFromLink(table2[13])
-		itemIdT212 = PersoLib:GetIDFromLink(table2[14])
 		
-		--print("trinket",itemIdT111,itemIdT112,itemIdT211,itemIdT212)
-
-		if itemIdT111<itemIdT112 and (itemIdT111~=itemIdT211 or itemIdT112~=itemIdT212) then
-			--returnvalue="trinket inversion"
-		end
-	end
-	
-	--base inversion trinket
-	if returnvalue then
-		if table1[13]==table2[14] and table1[14]==table2[13] then
-			--returnvalue="trinket inversion from base"
+		if fingerInf then
+			if itemIdT111>itemIdT112 then
+				return "Trinket copy duplication ("..itemIdT111.."-"..itemIdT112..")"
+			end
+		else
+			if itemIdT111<itemIdT112 then
+				return "Trinket copy duplication ("..itemIdT111.."-"..itemIdT112..")"
+			end
 		end
 	end
 	
@@ -1224,7 +1237,7 @@ function SimPermut:CheckUsability(table1,table2)
 		end
 		
 		if duplicate then
-			returnvalue="duplicate from base"
+			returnvalue="Duplicate from base"
 		end
 	end
 
