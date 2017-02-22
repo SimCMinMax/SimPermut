@@ -931,6 +931,7 @@ function SimPermut:GetPermutationString(permuttable)
 	local itemname
 	local result
 	local draw = true
+	local str
 	
 	for i=1,#permuttable do
 		--print(i)
@@ -994,6 +995,8 @@ function SimPermut:GetPermutationString(permuttable)
 							pool[value]=pool[value]+stats[value]
 						end
 					end
+				else
+					PersoLib:debugPrint("Not printed: not drawn")
 				end
 				
 			end
@@ -1012,11 +1015,15 @@ function SimPermut:GetPermutationString(permuttable)
 	end
 	
 	if copynumber > COPY_THRESHOLD then
-		mainframe:SetStatusText("Large number of copy, you may not have every copy (frame limitation). Consider using AutoSimC Export")
+		str="Large number of copy, you may not have every copy (frame limitation). Consider using AutoSimC Export"
+		mainframe:SetStatusText(str)
+		PersoLib:debugPrint(str)
 	end
 	
 	if copynumber==0 and selecteditems>14 then
-		mainframe:SetStatusText("No copy generated because no other possible combination were found (3 legendaries, same ring/trinket...)")
+		str="No copy generated because no other possible combination were found (3 legendaries, same ring/trinket...)"
+		mainframe:SetStatusText(str)
+		PersoLib:debugPrint(str)
 	end
 	
 	return returnString
@@ -1152,6 +1159,7 @@ function SimPermut:GetBaseString()
 	if itemIdTrinket1<itemIdTrinket2 then
 		trinketInf=true
 	end
+	PersoLib:debugPrint(tostring(fingerInf).."  "..tostring(trinketInf))
 		
 	--for i, value in pairs(statsString) do 
 	--	print(statsString[i],StatPool[value])
@@ -1211,11 +1219,12 @@ function SimPermut:CheckUsability(table1,table2)
 		end
 	end
 	
+	--checking trinket inf
 	if returnvalue then
 		itemIdT111 = PersoLib:GetIDFromLink(table1[13])
 		itemIdT112 = PersoLib:GetIDFromLink(table1[14])
 		
-		if fingerInf then
+		if trinketInf then
 			if itemIdT111>itemIdT112 then
 				return "Trinket copy duplication ("..itemIdT111.."-"..itemIdT112..")"
 			end

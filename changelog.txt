@@ -1,3 +1,7 @@
+v1.7.1 02/22/2017
+[FIX]Corrected a small typo that broke inversion checker...
+[CODE]Added some debug print
+
 v1.7 02/21/2017
 [UI]Put back inversion checker
 
