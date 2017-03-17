@@ -49,6 +49,7 @@ local tableCheckBoxes={}
 local tableLinkPermut={}
 local tableBaseLink={}
 local tableBaseString={}
+local tableNumberSelected={}
 local labelCount
 local selecteditems=0
 local errorMessage=""
@@ -57,6 +58,7 @@ local artifactID
 local resultBox
 local fingerInf = false
 local trinketInf = false
+local ad=false
 
 -- load stuff from extras.lua
 local slotNames     	= SimPermut.slotNames
@@ -78,6 +80,7 @@ local RelicTypes		= SimPermut.RelicTypes
 local RelicSlots		= SimPermut.RelicSlots
 
 SLASH_SIMPERMUTSLASH1 = "/SimPermut"
+SLASH_SIMPERMUTSLASHDEBUG1 = "/SimPermutDebug"
 
 -------------Test-----------------
 SLASH_SIMPERMUTSLASHTEST1 = "/Simtest"
@@ -98,6 +101,16 @@ SlashCmdList["SIMPERMUTSLASH"] = function (arg)
 	else
 		SimPermut:BuildFrame()
 		mainframeCreated=true
+	end
+end
+
+SlashCmdList["SIMPERMUTSLASHDEBUG"] = function (arg)
+	if ad then
+		ad = false
+		print("SimpPermut:Desactivated debug")
+	else
+		ad = true
+		print("SimpPermut:Activated debug")
 	end
 end
 
@@ -386,15 +399,16 @@ function SimPermut:Generate()
 	local baseString=""
 	local finalString=""
 	if SimPermut:GetTableLink() then
-		PersoLib:debugPrint("--------------------")
-		PersoLib:debugPrint("Generating string...")
+		PersoLib:debugPrint("--------------------",ad)
+		PersoLib:debugPrint("Generating string...",ad)
+		SimPermut:GetSelectedCount()
 		baseString,tableBaseLink=SimPermut:GetBaseString()
 		permuttable=SimPermut:GetAllPermutations()
 		permutString=SimPermut:GetPermutationString(permuttable)
 		finalString=SimPermut:GetFinalString(baseString,permutString)
 		SimPermut:PrintPermut(finalString)
-		PersoLib:debugPrint("End of generation")
-		PersoLib:debugPrint("--------------------")
+		PersoLib:debugPrint("End of generation",ad)
+		PersoLib:debugPrint("--------------------",ad)
 	else --error
 		mainframe:SetStatusText(errorMessage)
 	end
@@ -410,25 +424,28 @@ function SimPermut:GenerateRaw()
 	local AutoSimcString=""
 	
 	if SimPermut:GetTableLink() then
-		PersoLib:debugPrint("--------------------")
-		PersoLib:debugPrint("Generating string...")
+		PersoLib:debugPrint("--------------------",ad)
+		PersoLib:debugPrint("Generating string...",ad)
 		baseString,tableBaseLink=SimPermut:GetBaseString()
 		AutoSimcString=SimPermut:GetAutoSimcString()
 		itemList=SimPermut:GetItemListString()
 		finalString=SimPermut:GetFinalString(AutoSimcString,itemList)
 		SimPermut:PrintPermut(finalString)
-		PersoLib:debugPrint("End of generation")
-		PersoLib:debugPrint("--------------------")
+		PersoLib:debugPrint("End of generation",ad)
+		PersoLib:debugPrint("--------------------",ad)
 	end
 end
 
 -- Get the count of selected items
 function SimPermut:GetSelectedCount()
 	selecteditems = 0
+	tableNumberSelected={}
 	for i=1,#listNames do
+		tableNumberSelected[i]=0
 		for j=1,#tableListItems[i] do
 			if tableCheckBoxes[i][j]:GetValue() then
 				selecteditems=selecteditems+1
+				tableNumberSelected[i]=tableNumberSelected[i]+1
 			end
 		end
 	end
@@ -911,6 +928,29 @@ function SimPermut:GetAllPermutations()
 	return returnTable
 end
 
+-- georganize ring and trinket before print if only two
+function SimPermut:ReorganizeEquip(tabletoPermut)
+	PersoLib:debugPrint("Nb of rings:"..tableNumberSelected[11],ad)
+	if tableNumberSelected[11]<=2 then
+		if (fingerInf and tabletoPermut[11]>tabletoPermut[12]) or (not fingerInf and tabletoPermut[11]<tabletoPermut[12]) then
+			local tempring = tabletoPermut[11]
+			tabletoPermut[11] = tabletoPermut[12]
+			tabletoPermut[12] = tempring
+		end
+	end
+	
+	PersoLib:debugPrint("Nb of trinkets:"..tableNumberSelected[12],ad)
+	if tableNumberSelected[12]<=2 then
+		if (trinketInf and tabletoPermut[13]>tabletoPermut[14]) or (not trinketInf and tabletoPermut[13]<tabletoPermut[14]) then
+			local temptrinket = tabletoPermut[13]
+			tabletoPermut[13] = tabletoPermut[14]
+			tabletoPermut[14] = temptrinket
+		end
+	end
+	
+	
+end
+
 -- generates the string of all permutations
 function SimPermut:GetPermutationString(permuttable)
 	local returnString="\n"
@@ -935,6 +975,7 @@ function SimPermut:GetPermutationString(permuttable)
 	
 	for i=1,#permuttable do
 		--print(i)
+		SimPermut:ReorganizeEquip(permuttable[i])
 		result=SimPermut:CheckUsability(permuttable[i],tableBaseLink)
 		if result=="" then
 		
@@ -961,7 +1002,7 @@ function SimPermut:GetPermutationString(permuttable)
 						itemString2 =SimPermut:GetItemString(permuttable[i][j+1],PermutSimcNames[j+1],false)
 						itemStringFinal2 = table.concat(itemString2, ',')
 						if(itemStringFinal==tableBaseString[j] or (itemStringFinal==tableBaseString[j+1] and itemStringFinal2==tableBaseString[j]))then
-							draw=false
+							--draw=false
 						else
 							draw=true
 						end
@@ -972,14 +1013,14 @@ function SimPermut:GetPermutationString(permuttable)
 						itemStringFinal2 = table.concat(itemString2, ',')
 
 						if(itemStringFinal==tableBaseString[j] or (itemStringFinal==tableBaseString[j-1] and itemStringFinal2==tableBaseString[j]))then
-							draw=false
+							--draw=false
 						else
 							draw=true
 						end
 						--draw = ((itemStringFinal~= tableBaseString[j-1]) or (itemStringFinal2~=tableBaseString[j]))
 					end
 				else
-					draw = (itemStringFinal ~= tableBaseString[j])
+					--draw = (itemStringFinal ~= tableBaseString[j])
 				end
 				
 				if ( draw ) then
@@ -996,7 +1037,7 @@ function SimPermut:GetPermutationString(permuttable)
 						end
 					end
 				else
-					PersoLib:debugPrint("Not printed: not drawn")
+					PersoLib:debugPrint("Not printed: not drawn",ad)
 				end
 				
 			end
@@ -1007,23 +1048,23 @@ function SimPermut:GetPermutationString(permuttable)
 				returnString =  returnString .. SimPermut:GetCopyName(copynumber,pool,nbitem,itemList) .. "\n".. currentString.."\n"
 				copynumber=copynumber+1
 			elseif(nbLeg>LEGENDARY_MAX) then
-				PersoLib:debugPrint("Not printed:Too much Leg ("..nbLeg..")")
+				PersoLib:debugPrint("Not printed:Too much Leg ("..nbLeg..")",ad)
 			end
 		else
-			PersoLib:debugPrint("Not printed:"..result)
+			PersoLib:debugPrint("Not printed:"..result,ad)
 		end
 	end
 	
 	if copynumber > COPY_THRESHOLD then
 		str="Large number of copy, you may not have every copy (frame limitation). Consider using AutoSimC Export"
 		mainframe:SetStatusText(str)
-		PersoLib:debugPrint(str)
+		PersoLib:debugPrint(str,ad)
 	end
 	
 	if copynumber==0 and selecteditems>14 then
 		str="No copy generated because no other possible combination were found (3 legendaries, same ring/trinket...)"
 		mainframe:SetStatusText(str)
-		PersoLib:debugPrint(str)
+		PersoLib:debugPrint(str,ad)
 	end
 	
 	return returnString
@@ -1159,7 +1200,7 @@ function SimPermut:GetBaseString()
 	if itemIdTrinket1<itemIdTrinket2 then
 		trinketInf=true
 	end
-	PersoLib:debugPrint(tostring(fingerInf).."  "..tostring(trinketInf))
+	PersoLib:debugPrint(tostring(fingerInf).."  "..tostring(trinketInf),ad)
 		
 	--for i, value in pairs(statsString) do 
 	--	print(statsString[i],StatPool[value])

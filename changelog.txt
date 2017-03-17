@@ -1,3 +1,6 @@
+v1.7.2 03/17/2017
+[FIX]Fixed inversion checker if only 2 rings/trinkets selected
+
 v1.7.1 02/22/2017
 [FIX]Corrected a small typo that broke inversion checker...
 [CODE]Added some debug print
