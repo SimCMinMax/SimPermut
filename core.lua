@@ -473,6 +473,7 @@ function SimPermut:PrintPermut(finalString)
 	--SimcCopyFrameScrollText:HighlightText()
 	resultBox:SetText(finalString)
 	resultBox:HighlightText()
+	resultBox:SetFocus()
 end
 
 ----------------------------
