@@ -1003,25 +1003,25 @@ function SimPermut:GetPermutationString(permuttable)
 						itemString2 =SimPermut:GetItemString(permuttable[i][j+1],PermutSimcNames[j+1],false)
 						itemStringFinal2 = table.concat(itemString2, ',')
 						if(itemStringFinal==tableBaseString[j] or (itemStringFinal==tableBaseString[j+1] and itemStringFinal2==tableBaseString[j]))then
-							--draw=false
+							draw=false
 						else
 							draw=true
 						end
 						
-						--draw = ((itemStringFinal~= tableBaseString[j+1]) or (itemStringFinal2~=tableBaseString[j]))
+						draw = ((itemStringFinal~= tableBaseString[j+1]) or (itemStringFinal2~=tableBaseString[j]))
 					else
 						itemString2 =SimPermut:GetItemString(permuttable[i][j-1],PermutSimcNames[j-1],false)
 						itemStringFinal2 = table.concat(itemString2, ',')
 
 						if(itemStringFinal==tableBaseString[j] or (itemStringFinal==tableBaseString[j-1] and itemStringFinal2==tableBaseString[j]))then
-							--draw=false
+							draw=false
 						else
 							draw=true
 						end
-						--draw = ((itemStringFinal~= tableBaseString[j-1]) or (itemStringFinal2~=tableBaseString[j]))
+						draw = ((itemStringFinal~= tableBaseString[j-1]) or (itemStringFinal2~=tableBaseString[j]))
 					end
 				else
-					--draw = (itemStringFinal ~= tableBaseString[j])
+					draw = (itemStringFinal ~= tableBaseString[j])
 				end
 				
 				if ( draw ) then
