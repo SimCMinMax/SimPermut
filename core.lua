@@ -360,11 +360,17 @@ function SimPermut:BuildItemFrame()
 			end)
 			tableLabel[j][i]:SetCallback("OnLeave", function() GameTooltip:Hide()  end)
 			
+			if (j>=11 and ad) then
+				PersoLib:debugPrint(listNames[j]..i.." : "..PersoLib:GetIDFromLink(tableListItems[j][i]),ad)
+			end
+			
 			if(j<7) then
 				scroll1:AddChild(tableLabel[j][i])
 			else
 				scroll2:AddChild(tableLabel[j][i])
 			end
+			
+			
 		end
 		--end
 	end
@@ -748,12 +754,12 @@ function SimPermut:GetListItem(strItem,itemLine)
 	end
 	blizzardname=SimPermut.slotNames[slotID]
 	simcname=simcSlotNames[slotID]
-	local id, texture, checkRelic = GetInventorySlotInfo(blizzardname)
+	local id, _, _ = GetInventorySlotInfo(blizzardname)
 	GetInventoryItemsForSlot(id, equippableItems)
 	for locationBitstring, itemID in pairs(equippableItems) do
 		local player, bank, bags, voidstorage, slot, bag = EquipmentManager_UnpackLocation(locationBitstring)
 		if bags then
-			texture, count, locked, quality, readable, lootable, itemLink, isFiltered, hasNoValue, itemId = GetContainerItemInfo(bag, slot)
+			_, _, _, _, _, _, itemLink, _, _, itemId = GetContainerItemInfo(bag, slot)
 			if itemLink~=nil then
 				_,_,_,ilvl = GetItemInfo(itemLink)
 				if ilvl>= ITEM_THRESHOLD then
@@ -899,8 +905,6 @@ end
 
 -- generates the init string from autosimc
 function SimPermut:GetAutoSimcString()
-
-
 	local autoSimcString=""
 	autoSimcString=autoSimcString .. "[Profile]".."\n"
 	autoSimcString=autoSimcString .. "profilename="..UnitName('player').."\n"
@@ -978,7 +982,7 @@ function SimPermut:GetPermutationString(permuttable)
 		--print(i)
 		SimPermut:ReorganizeEquip(permuttable[i])
 		result=SimPermut:CheckUsability(permuttable[i],tableBaseLink)
-		if result=="" then
+		if result=="" or ad then
 		
 			for i, value in pairs(statsString) do 
 				pool[value]=0
@@ -1008,24 +1012,27 @@ function SimPermut:GetPermutationString(permuttable)
 							draw=true
 						end
 						
-						draw = ((itemStringFinal~= tableBaseString[j+1]) or (itemStringFinal2~=tableBaseString[j]))
+						--draw = ((itemStringFinal~= tableBaseString[j+1]) or (itemStringFinal2~=tableBaseString[j]))
 					else
 						itemString2 =SimPermut:GetItemString(permuttable[i][j-1],PermutSimcNames[j-1],false)
 						itemStringFinal2 = table.concat(itemString2, ',')
-
 						if(itemStringFinal==tableBaseString[j] or (itemStringFinal==tableBaseString[j-1] and itemStringFinal2==tableBaseString[j]))then
 							draw=false
 						else
 							draw=true
 						end
-						draw = ((itemStringFinal~= tableBaseString[j-1]) or (itemStringFinal2~=tableBaseString[j]))
+						--draw = ((itemStringFinal~= tableBaseString[j-1]) or (itemStringFinal2~=tableBaseString[j]))
 					end
 				else
 					draw = (itemStringFinal ~= tableBaseString[j])
 				end
 				
-				if ( draw ) then
-					currentString = currentString..PermutSimcNames[j] .. "=" .. table.concat(itemString, ',').."\n"
+				if draw or ad then
+					local adString=""
+					if ad and not draw then
+						adString=" # Debug not drawn : "
+					end
+					currentString = currentString.. adString ..PermutSimcNames[j] .. "=" .. table.concat(itemString, ',').."\n"
 					itemname = GetItemInfo(permuttable[i][j])
 					nbitem=nbitem+1
 					itemList=itemList..PersoLib:tokenize(itemname).."-"
@@ -1045,8 +1052,12 @@ function SimPermut:GetPermutationString(permuttable)
 			
 			itemList=itemList:sub(1, -2)
 			
-			if(nbLeg<=LEGENDARY_MAX and nbitem>0) then
-				returnString =  returnString .. SimPermut:GetCopyName(copynumber,pool,nbitem,itemList) .. "\n".. currentString.."\n"
+			if((nbLeg<=LEGENDARY_MAX and nbitem>0) or ad) then
+				local adString=""
+				if ad and result ~= "" then
+					adString=" # Debut print : "..result.."\n"
+				end
+				returnString =  returnString .. adString..SimPermut:GetCopyName(copynumber,pool,nbitem,itemList) .. "\n".. currentString.."\n"
 				copynumber=copynumber+1
 			elseif(nbLeg>LEGENDARY_MAX) then
 				PersoLib:debugPrint("Not printed:Too much Leg ("..nbLeg..")",ad)
@@ -1201,7 +1212,7 @@ function SimPermut:GetBaseString()
 	if itemIdTrinket1<itemIdTrinket2 then
 		trinketInf=true
 	end
-	PersoLib:debugPrint(tostring(fingerInf).."  "..tostring(trinketInf),ad)
+	PersoLib:debugPrint(tostring(fingerInf).."("..itemIdRing1.."-"..itemIdRing2..")  "..tostring(trinketInf).."("..itemIdTrinket1.."-"..itemIdTrinket2..")",ad)
 		
 	--for i, value in pairs(statsString) do 
 	--	print(statsString[i],StatPool[value])
@@ -1217,7 +1228,6 @@ end
 
 -- check if table is usefull to simulate (same ring, same trinket)
 function SimPermut:CheckUsability(table1,table2)
-	local returnvalue = ""
 	local duplicate = true
 	local itemString 
 	local itemSplit = {}
@@ -1225,74 +1235,64 @@ function SimPermut:CheckUsability(table1,table2)
 	local itemIdT111,itemIdT112
 	
 	--checking different size
-	if returnvalue then
-		if #table1~=#table2 then
-			returnvalue="Different size"
-		end
+	if #table1~=#table2 then
+		return "Different size"
 	end
 	
 	--checking same ring
-	if returnvalue then
-		if table1[11]==table1[12] then
-			returnvalue="Same ring "..table1[11]
-		end
+	if table1[11]==table1[12] then
+		return "Same ring "..table1[11]
 	end
+
 	
 	--checking ring inf
-	if returnvalue then
-		itemIdR111 = PersoLib:GetIDFromLink(table1[11])
-		itemIdR112 = PersoLib:GetIDFromLink(table1[12])
-		
-		if fingerInf then
-			if itemIdR111>itemIdR112 then
-				return "Ring copy duplication ("..itemIdR111.."-"..itemIdR112..")"
-			end
-		else
-			if itemIdR111<itemIdR112 then
-				return "Ring copy duplication ("..itemIdR111.."-"..itemIdR112..")"
-			end
+	itemIdR111 = PersoLib:GetIDFromLink(table1[11])
+	itemIdR112 = PersoLib:GetIDFromLink(table1[12])
+	
+	if fingerInf then
+		if itemIdR111>itemIdR112 then
+			return "Ring copy duplication ("..itemIdR111.."-"..itemIdR112.." /fi: "..fingerInf..")"
+		end
+	else
+		if itemIdR111<itemIdR112 then
+			return "Ring copy duplication ("..itemIdR111.."-"..itemIdR112.." /fi: "..fingerInf..")"
 		end
 	end
 	
 	--checking same trinket
-	if returnvalue then
-		if table1[13]==table1[14] then
-			returnvalue="Same trinket "..table1[13]
-		end
+	if table1[13]==table1[14] then
+		return "Same trinket "..table1[13]
 	end
 	
 	--checking trinket inf
-	if returnvalue then
-		itemIdT111 = PersoLib:GetIDFromLink(table1[13])
-		itemIdT112 = PersoLib:GetIDFromLink(table1[14])
-		
-		if trinketInf then
-			if itemIdT111>itemIdT112 then
-				return "Trinket copy duplication ("..itemIdT111.."-"..itemIdT112..")"
-			end
-		else
-			if itemIdT111<itemIdT112 then
-				return "Trinket copy duplication ("..itemIdT111.."-"..itemIdT112..")"
+	itemIdT111 = PersoLib:GetIDFromLink(table1[13])
+	itemIdT112 = PersoLib:GetIDFromLink(table1[14])
+	
+	if trinketInf then
+		if itemIdT111>itemIdT112 then
+			return "Trinket copy duplication ("..itemIdT111.."-"..itemIdT112.." /ti: "..trinketInf..") "
+		end
+	else
+		if itemIdT111<itemIdT112 then
+			return "Trinket copy duplication ("..itemIdT111.."-"..itemIdT112.." /ti: "..trinketInf..")"
+		end
+	end
+
+	
+	--checking Duplicate
+	for i=1,#table1 do
+		if duplicate then
+			if table1[i]~=table2[i] then
+				duplicate=false
 			end
 		end
 	end
 	
-	--checking Duplicate
-	if returnvalue then
-		for i=1,#table1 do
-			if duplicate then
-				if table1[i]~=table2[i] then
-					duplicate=false
-				end
-			end
-		end
-		
-		if duplicate then
-			returnvalue="Duplicate from base"
-		end
+	if duplicate then
+		return "Duplicate from base"
 	end
 
-	return returnvalue
+	return ""
 end
 
 -- get Simc artifact string
