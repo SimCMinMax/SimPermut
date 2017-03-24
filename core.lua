@@ -930,13 +930,17 @@ function SimPermut:GetAllPermutations()
 
 	returnTable=PersoLib:doCartesianALACON(tableLinkPermut)
 	
+	PersoLib:debugPrint("Nb of rings:"..tableNumberSelected[11],ad)
+	PersoLib:debugPrint("Nb of trinkets:"..tableNumberSelected[12],ad)
+	
 	return returnTable
 end
 
 -- georganize ring and trinket before print if only two
 function SimPermut:ReorganizeEquip(tabletoPermut)
-	PersoLib:debugPrint("Nb of rings:"..tableNumberSelected[11],ad)
+	
 	if tableNumberSelected[11]<=2 then
+		PersoLib:debugPrint(tableNumberSelected[11].." rings. Re-organize",ad)
 		if (fingerInf and tabletoPermut[11]>tabletoPermut[12]) or (not fingerInf and tabletoPermut[11]<tabletoPermut[12]) then
 			local tempring = tabletoPermut[11]
 			tabletoPermut[11] = tabletoPermut[12]
@@ -944,8 +948,8 @@ function SimPermut:ReorganizeEquip(tabletoPermut)
 		end
 	end
 	
-	PersoLib:debugPrint("Nb of trinkets:"..tableNumberSelected[12],ad)
 	if tableNumberSelected[12]<=2 then
+		PersoLib:debugPrint(tableNumberSelected[12].." trinkets. Re-organize",ad)
 		if (trinketInf and tabletoPermut[13]>tabletoPermut[14]) or (not trinketInf and tabletoPermut[13]<tabletoPermut[14]) then
 			local temptrinket = tabletoPermut[13]
 			tabletoPermut[13] = tabletoPermut[14]
@@ -1055,7 +1059,7 @@ function SimPermut:GetPermutationString(permuttable)
 			if((nbLeg<=LEGENDARY_MAX and nbitem>0) or ad) then
 				local adString=""
 				if ad and result ~= "" then
-					adString=" # Debut print : "..result.."\n"
+					adString=" # Debug print : "..result.."\n"
 				end
 				returnString =  returnString .. adString..SimPermut:GetCopyName(copynumber,pool,nbitem,itemList) .. "\n".. currentString.."\n"
 				copynumber=copynumber+1
@@ -1212,7 +1216,7 @@ function SimPermut:GetBaseString()
 	if itemIdTrinket1<itemIdTrinket2 then
 		trinketInf=true
 	end
-	PersoLib:debugPrint(tostring(fingerInf).."("..itemIdRing1.."-"..itemIdRing2..")  "..tostring(trinketInf).."("..itemIdTrinket1.."-"..itemIdTrinket2..")",ad)
+	PersoLib:debugPrint("fingerInf:"..tostring(fingerInf).."("..itemIdRing1.."-"..itemIdRing2..")  ".."trinketInf:"..tostring(trinketInf).."("..itemIdTrinket1.."-"..itemIdTrinket2..")",ad)
 		
 	--for i, value in pairs(statsString) do 
 	--	print(statsString[i],StatPool[value])
@@ -1251,11 +1255,11 @@ function SimPermut:CheckUsability(table1,table2)
 	
 	if fingerInf then
 		if itemIdR111>itemIdR112 then
-			return "Ring copy duplication ("..itemIdR111.."-"..itemIdR112.." /fi: "..fingerInf..")"
+			return "Ring copy duplication ("..itemIdR111.."-"..itemIdR112.." /fi: "..tostring(fingerInf)..")"
 		end
 	else
 		if itemIdR111<itemIdR112 then
-			return "Ring copy duplication ("..itemIdR111.."-"..itemIdR112.." /fi: "..fingerInf..")"
+			return "Ring copy duplication ("..itemIdR111.."-"..itemIdR112.." /fi: "..tostring(fingerInf)..")"
 		end
 	end
 	
@@ -1270,11 +1274,11 @@ function SimPermut:CheckUsability(table1,table2)
 	
 	if trinketInf then
 		if itemIdT111>itemIdT112 then
-			return "Trinket copy duplication ("..itemIdT111.."-"..itemIdT112.." /ti: "..trinketInf..") "
+			return "Trinket copy duplication ("..itemIdT111.."-"..itemIdT112.." /ti: "..tostring(trinketInf)..") "
 		end
 	else
 		if itemIdT111<itemIdT112 then
-			return "Trinket copy duplication ("..itemIdT111.."-"..itemIdT112.." /ti: "..trinketInf..")"
+			return "Trinket copy duplication ("..itemIdT111.."-"..itemIdT112.." /ti: "..tostring(trinketInf)..")"
 		end
 	end
 
