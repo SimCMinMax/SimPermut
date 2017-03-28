@@ -249,9 +249,9 @@ function PersoLib:GetArtifactString()
   local powers = ArtifactUI.GetPowers()
   for i = 1, #powers do
     local power_id = powers[i]
-    local _, _, currentRank, _, bonusRanks = ArtifactUI.GetPowerInfo(power_id)
-    if currentRank > 0 and currentRank - bonusRanks > 0 then
-      str = str .. ':' .. power_id .. ':' .. (currentRank - bonusRanks)
+    local info = ArtifactUI.GetPowerInfo(power_id)
+    if info.currentRank > 0 and info.currentRank - info.bonusRanks > 0 then
+      str = str .. ':' .. power_id .. ':' .. (info.currentRank - info.bonusRanks)
     end
   end
   

@@ -22,6 +22,7 @@ local report_type		= 2
 
 -- Libs
 local ArtifactUI          	= _G.C_ArtifactUI
+local Clear                 = ArtifactUI.Clear
 local HasArtifactEquipped 	= _G.HasArtifactEquipped
 local SocketInventoryItem 	= _G.SocketInventoryItem
 local Timer               	= _G.C_Timer
@@ -601,33 +602,33 @@ function SimPermut:GetItemString(itemLink,itemType,base)
 
 	-- Artifacts use this
 	if bit.band(flags, 256) == 256 then
-		rest_offset = rest_offset + 1 -- An unknown field
-		local relic_str = ''
-		while rest_offset < #itemSplit do
-			local n_bonus_ids = tonumber(itemSplit[rest_offset])
-			rest_offset = rest_offset + 1
+        rest_offset = rest_offset + 1 -- An unknown field
+        local relic_str = ''
+        while rest_offset < #itemSplit do
+          local n_bonus_ids = tonumber(itemSplit[rest_offset])
+          rest_offset = rest_offset + 1
 
-			if n_bonus_ids == 0 then
-				relic_str = relic_str .. 0
-			else
-				for rbid = 1, n_bonus_ids do
-					relic_str = relic_str .. itemSplit[rest_offset]
-					if rbid < n_bonus_ids then
-						relic_str = relic_str .. ':'
-					end
-					rest_offset = rest_offset + 1
-				end
-			end
+          if n_bonus_ids == 0 then
+            relic_str = relic_str .. 0
+          else
+            for rbid = 1, n_bonus_ids do
+              relic_str = relic_str .. itemSplit[rest_offset]
+              if rbid < n_bonus_ids then
+                relic_str = relic_str .. ':'
+              end
+              rest_offset = rest_offset + 1
+            end
+          end
 
-			if rest_offset < #itemSplit then
-				relic_str = relic_str .. '/'
-			end
-		end
+          if rest_offset < #itemSplit then
+            relic_str = relic_str .. '/'
+          end
+        end
 
-		if relic_str ~= '' then
-		  simcItemOptions[#simcItemOptions + 1] = 'relic_id=' .. relic_str
-		end
-	end
+        if relic_str ~= '' then
+          simcItemOptions[#simcItemOptions + 1] = 'relic_id=' .. relic_str
+        end
+      end
 
 	-- Gems
 	if itemType=="main_hand" then --exception for relics
@@ -1324,13 +1325,38 @@ end
 
 -- get Simc artifact string
 function SimPermut:GetArtifactString()
-	local str=""
-	if #artifactData.traits then
-		str=artifactTable[artifactID] .. ':0:0:0:0:'
-		for i=1,#artifactData.traits do
-			str = str..artifactData.traits[i].traitID..":"..(artifactData.traits[i].currentRank-artifactData.traits[i].bonusRanks)..":"
+	
+	SocketInventoryItem(INVSLOT_MAINHAND)
+	
+	local str = artifactTable[artifactID] .. ':0:0:0:0'
+
+	local powers = ArtifactUI.GetPowers()
+	for i = 1, #powers do
+		local power_id = powers[i]
+		local info = ArtifactUI.GetPowerInfo(power_id)
+		
+		if info.currentRank > 0 and info.currentRank - info.bonusRanks > 0 then
+			str = str .. ':' .. power_id .. ':' .. (info.currentRank - info.bonusRanks)
 		end
-		str = str:sub(1, -2)
 	end
+	--print (str)
+	Clear()
+	-- local str=""
+	-- local current=0
+	-- if #artifactData.traits then
+		-- str=artifactTable[artifactID] .. ':0:0:0:0:'
+		-- for i=1,#artifactData.traits do
+			-- current=0
+			-- print (artifactData.traits[i].currentRank,artifactData.traits[i].bonusRanks)
+			-- if artifactData.traits[i].isFinal then
+				-- current=artifactData.traits[i].currentRank
+			-- else
+				-- current=(artifactData.traits[i].currentRank - artifactData.traits[i].bonusRanks)
+			-- end
+			-- print (current)
+			-- str = str..artifactData.traits[i].traitID..":"..current..":"
+		-- end
+		-- str = str:sub(1, -2)
+	-- end
 	return str
 end
