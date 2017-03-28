@@ -410,6 +410,7 @@ function SimPermut:Generate()
 		SimPermut:GetSelectedCount()
 		baseString,tableBaseLink=SimPermut:GetBaseString()
 		permuttable=SimPermut:GetAllPermutations()
+		SimPermut:PreparePermutations(permuttable)
 		permutString=SimPermut:GetPermutationString(permuttable)
 		finalString=SimPermut:GetFinalString(baseString,permutString)
 		SimPermut:PrintPermut(finalString)
@@ -936,7 +937,7 @@ function SimPermut:GetAllPermutations()
 	return returnTable
 end
 
--- georganize ring and trinket before print if only two
+-- reorganize ring and trinket before print if only two
 function SimPermut:ReorganizeEquip(tabletoPermut)
 	
 	if tableNumberSelected[11]<=2 then
@@ -958,6 +959,43 @@ function SimPermut:ReorganizeEquip(tabletoPermut)
 	end
 	
 	
+end
+
+-- prepare variables for permutations
+function SimPermut:PreparePermutations(permuttable)
+	local itemIdRing1,itemIdRing2
+	local itemIdTrinket1,itemIdTrinket2 
+	--preparing rings
+	if (GetInventoryItemLink('player', INVSLOT_FINGER1)==permuttable[1][11] and GetInventoryItemLink('player', INVSLOT_FINGER2)==permuttable[1][12]) or 
+		(GetInventoryItemLink('player', INVSLOT_FINGER1)==permuttable[1][12] and GetInventoryItemLink('player', INVSLOT_FINGER2)==permuttable[1][11]) then
+		
+		itemIdRing1 = PersoLib:GetIDFromLink(GetInventoryItemLink('player', INVSLOT_FINGER1))
+		itemIdRing2 = PersoLib:GetIDFromLink(GetInventoryItemLink('player', INVSLOT_FINGER2))
+	else
+		itemIdRing1 = PersoLib:GetIDFromLink(permuttable[1][11])
+		itemIdRing2 = PersoLib:GetIDFromLink(permuttable[1][12])
+	end
+	if itemIdRing1<itemIdRing2 then
+		fingerInf=true
+	end
+	
+	--prepare trinkets
+	if (GetInventoryItemLink('player', INVSLOT_TRINKET1)==permuttable[1][13] and GetInventoryItemLink('player', INVSLOT_TRINKET2)==permuttable[1][14]) or 
+		(GetInventoryItemLink('player', INVSLOT_TRINKET1)==permuttable[1][14] and GetInventoryItemLink('player', INVSLOT_TRINKET2)==permuttable[1][13]) then
+		
+		itemIdTrinket1 = PersoLib:GetIDFromLink(GetInventoryItemLink('player', INVSLOT_TRINKET1))
+		itemIdTrinket2 = PersoLib:GetIDFromLink(GetInventoryItemLink('player', INVSLOT_TRINKET2))
+	else
+		itemIdTrinket1 = PersoLib:GetIDFromLink(permuttable[1][13])
+		itemIdTrinket2 = PersoLib:GetIDFromLink(permuttable[1][14])
+	end
+	
+	if itemIdTrinket1<itemIdTrinket2 then
+		trinketInf=true
+	end
+
+	PersoLib:debugPrint("fingerInf:"..tostring(fingerInf).."("..itemIdRing1.."-"..itemIdRing2..")  ".."trinketInf:"..tostring(trinketInf).."("..itemIdTrinket1.."-"..itemIdTrinket2..")",ad)
+		
 end
 
 -- generates the string of all permutations
@@ -1202,22 +1240,7 @@ function SimPermut:GetBaseString()
 		SimPermutProfile = SimPermutProfile .. "off_hand=" .. table.concat(itemString, ',').. '\n'
     end
 	
-	--prepare inversion checker
-	local itemIdRing1,itemIdRing2
-	local itemIdTrinket1,itemIdTrinket2 
-	--print(tableBaseLink[11],tableBaseLink[12],tableBaseLink[13],tableBaseLink[14])
-	itemIdRing1 = PersoLib:GetIDFromLink(GetInventoryItemLink('player', INVSLOT_FINGER1))
-	itemIdRing2 = PersoLib:GetIDFromLink(GetInventoryItemLink('player', INVSLOT_FINGER2))
-	itemIdTrinket1 = PersoLib:GetIDFromLink(GetInventoryItemLink('player', INVSLOT_TRINKET1))
-	itemIdTrinket2 = PersoLib:GetIDFromLink(GetInventoryItemLink('player', INVSLOT_TRINKET2))	
-	if itemIdRing1<itemIdRing2 then
-		fingerInf=true
-	end
-	if itemIdTrinket1<itemIdTrinket2 then
-		trinketInf=true
-	end
-	PersoLib:debugPrint("fingerInf:"..tostring(fingerInf).."("..itemIdRing1.."-"..itemIdRing2..")  ".."trinketInf:"..tostring(trinketInf).."("..itemIdTrinket1.."-"..itemIdTrinket2..")",ad)
-		
+	
 	--for i, value in pairs(statsString) do 
 	--	print(statsString[i],StatPool[value])
 	--end

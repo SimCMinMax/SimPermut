@@ -1,7 +1,10 @@
-v1.7.5r2-beta 03/24/2017
+v1.7.7-beta 03/28/2017
+[FIX]Attempt to fix ring/trinket permutation
+
+v1.7.6-beta 03/24/2017
 [FIX]Fix lua error in debug mode
 
-v1.7.5r1-beta 03/23/2017
+v1.7.5-beta 03/23/2017
 [FIX]Follow yesterday's fix for ring/trinkets
 [CODE]Added debugging stuff
 
