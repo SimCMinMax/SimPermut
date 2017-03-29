@@ -603,9 +603,13 @@ function SimPermut:GetItemString(itemLink,itemType,base)
 	-- Artifacts use this
 	if bit.band(flags, 256) == 256 then
         rest_offset = rest_offset + 1 -- An unknown field
+        local n_bonus_ids = tonumber(itemSplit[rest_offset])
+		if n_bonus_ids==1 then --unlocked traits field
+			rest_offset = rest_offset + 1 
+		end
         local relic_str = ''
         while rest_offset < #itemSplit do
-          local n_bonus_ids = tonumber(itemSplit[rest_offset])
+          n_bonus_ids = tonumber(itemSplit[rest_offset])
           rest_offset = rest_offset + 1
 
           if n_bonus_ids == 0 then
