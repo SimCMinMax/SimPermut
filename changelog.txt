@@ -1,3 +1,6 @@
+v1.8.2 04/03/2017
+[FIX]Fixed a bug with ring/trinket profile duplication detection
+
 v1.8.1 03/29/2017
 [FIX]Fix for 7.2 when you have unlocked new traits
 

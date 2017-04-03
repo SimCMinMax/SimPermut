@@ -7,7 +7,6 @@ local ArtifactUI          	= _G.C_ArtifactUI
 local HasArtifactEquipped 	= _G.HasArtifactEquipped
 local SocketInventoryItem 	= _G.SocketInventoryItem
 local Timer               	= _G.C_Timer
-local affDebug				= false
 local artifactTable 	  	= {
 	-- Death Knight
 	[128402] = 15,
@@ -277,8 +276,8 @@ function PersoLib:GetIDFromLink(itemLink)
 	return itemSplit[1]
 end
 
-function PersoLib:debugPrint(str)
-	if affDebug then
+function PersoLib:debugPrint(str,affichedebug)
+	if affichedebug then
 		print(str)
 	end
 end

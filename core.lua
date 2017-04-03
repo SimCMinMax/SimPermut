@@ -944,19 +944,25 @@ end
 
 -- reorganize ring and trinket before print if only two
 function SimPermut:ReorganizeEquip(tabletoPermut)
-	
+	local itemIdRing1,itemIdRing2
+	local itemIdTrinket1,itemIdTrinket2 
 	if tableNumberSelected[11]<=2 then
 		PersoLib:debugPrint(tableNumberSelected[11].." rings. Re-organize",ad)
-		if (fingerInf and tabletoPermut[11]>tabletoPermut[12]) or (not fingerInf and tabletoPermut[11]<tabletoPermut[12]) then
+		itemIdRing1 = PersoLib:GetIDFromLink(tabletoPermut[11])
+		itemIdRing2 = PersoLib:GetIDFromLink(tabletoPermut[12])
+		PersoLib:debugPrint("fingerInf:"..tostring(fingerInf).."("..itemIdRing1.."-"..itemIdRing2..")",ad)
+		if (fingerInf and itemIdRing1>itemIdRing2) or (not fingerInf and itemIdRing1<itemIdRing2) then
 			local tempring = tabletoPermut[11]
 			tabletoPermut[11] = tabletoPermut[12]
 			tabletoPermut[12] = tempring
 		end
 	end
-	
 	if tableNumberSelected[12]<=2 then
 		PersoLib:debugPrint(tableNumberSelected[12].." trinkets. Re-organize",ad)
-		if (trinketInf and tabletoPermut[13]>tabletoPermut[14]) or (not trinketInf and tabletoPermut[13]<tabletoPermut[14]) then
+		itemIdTrinket1 = PersoLib:GetIDFromLink(tabletoPermut[13])
+		itemIdTrinket2 = PersoLib:GetIDFromLink(tabletoPermut[14])
+		PersoLib:debugPrint("trinketInf:"..tostring(trinketInf).."("..itemIdTrinket1.."-"..itemIdTrinket2..")",ad)
+		if (trinketInf and itemIdTrinket1>itemIdTrinket2) or (not trinketInf and itemIdTrinket1<itemIdTrinket2) then
 			local temptrinket = tabletoPermut[13]
 			tabletoPermut[13] = tabletoPermut[14]
 			tabletoPermut[14] = temptrinket
@@ -994,11 +1000,10 @@ function SimPermut:PreparePermutations(permuttable)
 		itemIdTrinket1 = PersoLib:GetIDFromLink(permuttable[1][13])
 		itemIdTrinket2 = PersoLib:GetIDFromLink(permuttable[1][14])
 	end
-	
 	if itemIdTrinket1<itemIdTrinket2 then
 		trinketInf=true
 	end
-
+	
 	PersoLib:debugPrint("fingerInf:"..tostring(fingerInf).."("..itemIdRing1.."-"..itemIdRing2..")  ".."trinketInf:"..tostring(trinketInf).."("..itemIdTrinket1.."-"..itemIdTrinket2..")",ad)
 		
 end
