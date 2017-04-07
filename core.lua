@@ -309,6 +309,7 @@ function SimPermut:BuildFrame()
 	SimPermut:BuildItemFrame()
 	SimPermut:GetSelectedCount()
 	
+	SimPermut:Generate()
 end
 
 -- Load Item list
