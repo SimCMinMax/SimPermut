@@ -34,6 +34,7 @@ See [AutoSimC on GitHub](https://github.com/SimCMinMax/AutoSimC)
 
 - Add relic comparison
 
+- Detect number of equiped leg to auto set min
  
 [-Faster algorithm for string generation]
 

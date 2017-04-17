@@ -14,7 +14,7 @@ local OFFSET_BONUS_ID 	= 13
 local ITEM_THRESHOLD 	= 800
 local ITEM_COUNT_THRESHOLD = 22
 local COPY_THRESHOLD 	= 500
-local LEGENDARY_MAX		= 2
+-- local LEGENDARY_MAX		= 2
 
 
 local report_type		= 2
@@ -43,6 +43,11 @@ local actualEnchantFinger=0
 local actualEnchantBack=0
 local actualGem=0
 local actualForce=false
+local editLegMin
+local editLegMax
+local actualLegMin=0
+local actualLegMax=0
+local actualSets=0
 local tableListItems={}
 local tableTitres={}
 local tableLabel={}
@@ -72,6 +77,7 @@ local PermutSlotNames   = SimPermut.PermutSlotNames
 local regionString  	= SimPermut.RegionString
 local artifactTable 	= SimPermut.ArtifactTable
 local gemList 			= SimPermut.gemList
+local SetsList				= SimPermut.Sets
 local enchantRing 		= SimPermut.enchantRing
 local enchantCloak 		= SimPermut.enchantCloak
 local enchantNeck 		= SimPermut.enchantNeck
@@ -144,7 +150,7 @@ function SimPermut:BuildFrame()
 	end)
 	mainframe:SetLayout("Flow")
 	mainframe:SetWidth(1300)
-	mainframe:SetHeight(750)
+	mainframe:SetHeight(780)
 	
 	local mainGroup = AceGUI:Create("SimpleGroup")
     mainGroup:SetLayout("Flow")
@@ -267,6 +273,50 @@ function SimPermut:BuildFrame()
 	checkBoxForce:SetCallback("OnValueChanged", function (this, event, item)
 		actualForce=checkBoxForce:GetValue()
     end)
+	
+	local labelLeg= AceGUI:Create("Label")
+	labelLeg:SetText("Legendaries")
+	labelLeg:SetWidth(87)
+	
+	editLegMin= AceGUI:Create("EditBox")
+	editLegMin:SetText("0")
+	editLegMin:SetWidth(20)
+	editLegMin:DisableButton(true)
+	editLegMin:SetMaxLetters(1)
+	editLegMin:SetCallback("OnTextChanged", function (this, event, item)
+		editLegMin:SetText(string.match(item, '%d'))
+		if editLegMin:GetText()=="" then
+			editLegMin:SetText(0)
+		end
+    end)
+	
+	editLegMax= AceGUI:Create("EditBox")
+	editLegMax:SetText("2")
+	editLegMax:SetWidth(20)
+	editLegMax:DisableButton(true)
+	editLegMax:SetMaxLetters(1)
+	editLegMax:SetCallback("OnTextChanged", function (this, event, item)
+		editLegMax:SetText(string.match(item, '%d'))
+		if editLegMax:GetText()=="" then
+			editLegMax:SetText(0)
+		end
+    end)
+	
+	local labelSets= AceGUI:Create("Label")
+	labelSets:SetText("      Sets (min)")
+	labelSets:SetWidth(100)
+	
+	local dropdownSets = AceGUI:Create("Dropdown")
+	dropdownSets:SetList(SetsList)
+	dropdownSets:SetWidth(130)
+	dropdownSets:SetCallback("OnValueChanged", function (this, event, item)
+		actualSets=item
+    end)
+	dropdownSets:SetValue(0)
+	
+	local labelSpacerline= AceGUI:Create("Label")
+	labelSpacerline:SetText(" ")
+	labelSpacerline:SetWidth(250)
 
 	local buttonGenerate = AceGUI:Create("Button")
 	buttonGenerate:SetText("Generate")
@@ -292,6 +342,12 @@ function SimPermut:BuildFrame()
 	mainGroup:AddChild(dropdownGem)
 	mainGroup:AddChild(labelSpacer2)
 	mainGroup:AddChild(checkBoxForce)
+	mainGroup:AddChild(labelLeg)
+	mainGroup:AddChild(editLegMin)
+	mainGroup:AddChild(editLegMax)
+	mainGroup:AddChild(labelSets)
+	mainGroup:AddChild(dropdownSets)
+	mainGroup:AddChild(labelSpacerline)
 	mainGroup:AddChild(buttonGenerate)
 	mainGroup:AddChild(labelCount)
 
@@ -1031,6 +1087,9 @@ function SimPermut:GetPermutationString(permuttable)
 	local draw = true
 	local str
 	
+	actualLegMin=tonumber(editLegMin:GetText())
+	actualLegMax=tonumber(editLegMax:GetText())
+	
 	for i=1,#permuttable do
 		--print(i)
 		SimPermut:ReorganizeEquip(permuttable[i])
@@ -1105,15 +1164,18 @@ function SimPermut:GetPermutationString(permuttable)
 			
 			itemList=itemList:sub(1, -2)
 			
-			if((nbLeg<=LEGENDARY_MAX and nbitem>0) or ad) then
+			-- if((nbLeg<=LEGENDARY_MAX and nbitem>0) or ad) then
+			if((nbLeg >=actualLegMin and nbLeg<=actualLegMax and nbitem>0) or ad) then
 				local adString=""
 				if ad and result ~= "" then
 					adString=" # Debug print : "..result.."\n"
 				end
 				returnString =  returnString .. adString..SimPermut:GetCopyName(copynumber,pool,nbitem,itemList) .. "\n".. currentString.."\n"
 				copynumber=copynumber+1
-			elseif(nbLeg>LEGENDARY_MAX) then
+			elseif(nbLeg>actualLegMax) then
 				PersoLib:debugPrint("Not printed:Too much Leg ("..nbLeg..")",ad)
+			elseif(nbLeg<actualLegMin) then
+				PersoLib:debugPrint("Not printed:Too few Leg ("..nbLeg..")",ad)
 			end
 		else
 			PersoLib:debugPrint("Not printed:"..result,ad)

@@ -183,6 +183,11 @@ SimPermut.gemList = {
   [130247] = '+200 Agi',
   [130248] = '+200 Int'
 }
+SimPermut.Sets = {
+  [0] = 'All',
+  [2] = 'T19 2P',
+  [4] = 'T19 4P'
+}
 
 SimPermut.RelicSlots = {
 	[127829] = {"Fel","Shadow","Fel"}, -- Havoc DH
