@@ -64,6 +64,7 @@ local artifactID
 local resultBox
 local fingerInf = false
 local trinketInf = false
+local classID=0
 local ad=false
 
 -- load stuff from extras.lua
@@ -85,6 +86,7 @@ local statsString		= SimPermut.statsString
 local statsStringCorres	= SimPermut.statsStringCorres
 local RelicTypes		= SimPermut.RelicTypes
 local RelicSlots		= SimPermut.RelicSlots
+local HasTierSets 		= SimPermut.HasTierSets
 
 SLASH_SIMPERMUTSLASH1 = "/SimPermut"
 SLASH_SIMPERMUTSLASHDEBUG1 = "/SimPermutDebug"
@@ -472,6 +474,8 @@ function SimPermut:Generate()
 		permutString=SimPermut:GetPermutationString(permuttable)
 		finalString=SimPermut:GetFinalString(baseString,permutString)
 		SimPermut:PrintPermut(finalString)
+		
+		
 		PersoLib:debugPrint("End of generation",ad)
 		PersoLib:debugPrint("--------------------",ad)
 	else --error
@@ -767,7 +771,6 @@ function SimPermut:GetItemStrings()
 			stats={}
 			stats = GetItemStats(itemLink)
 			for stat, value in pairs(statsString) do 
-				--print(stat,value,stats[value],statsString[stat])
 				if stats[value] then
 					pool[value]=pool[value]+stats[value]
 				end
@@ -1086,12 +1089,13 @@ function SimPermut:GetPermutationString(permuttable)
 	local result
 	local draw = true
 	local str
+	local T192p,T194p
 	
 	actualLegMin=tonumber(editLegMin:GetText())
 	actualLegMax=tonumber(editLegMax:GetText())
 	
 	for i=1,#permuttable do
-		--print(i)
+		T192p,T194p=SimPermut:HasTier("T19",permuttable[i])
 		SimPermut:ReorganizeEquip(permuttable[i])
 		result=SimPermut:CheckUsability(permuttable[i],tableBaseLink)
 		if result=="" or ad then
@@ -1123,8 +1127,6 @@ function SimPermut:GetPermutationString(permuttable)
 						else
 							draw=true
 						end
-						
-						--draw = ((itemStringFinal~= tableBaseString[j+1]) or (itemStringFinal2~=tableBaseString[j]))
 					else
 						itemString2 =SimPermut:GetItemString(permuttable[i][j-1],PermutSimcNames[j-1],false)
 						itemStringFinal2 = table.concat(itemString2, ',')
@@ -1133,7 +1135,6 @@ function SimPermut:GetPermutationString(permuttable)
 						else
 							draw=true
 						end
-						--draw = ((itemStringFinal~= tableBaseString[j-1]) or (itemStringFinal2~=tableBaseString[j]))
 					end
 				else
 					draw = (itemStringFinal ~= tableBaseString[j])
@@ -1164,18 +1165,24 @@ function SimPermut:GetPermutationString(permuttable)
 			
 			itemList=itemList:sub(1, -2)
 			
-			-- if((nbLeg<=LEGENDARY_MAX and nbitem>0) or ad) then
-			if((nbLeg >=actualLegMin and nbLeg<=actualLegMax and nbitem>0) or ad) then
+			if((nbLeg >=actualLegMin and nbLeg<=actualLegMax and nbitem>0 and (actualSets==0 or (actualSets==2 and T192p) or (actualSets==4 and T194p))) or ad) then
 				local adString=""
-				if ad and result ~= "" then
-					adString=" # Debug print : "..result.."\n"
+				if ad then
+					if result ~= "" then
+						adString=" # Debug print : "..result.."\n"
+					elseif(nbLeg>actualLegMax) then
+						adString=" # Debug print : Not printed:Too much Leg ("..nbLeg..")\n"
+					elseif(nbLeg<actualLegMin) then
+						adString=" # Debug print : Not printed:Too few Leg ("..nbLeg..")\n"
+					elseif(not T192p and actualSets==2) then
+						adString=" # Debug print : Not printed:No 2p T19\n"
+					elseif(not T194p and actualSets==4) then
+						adString=" # Debug print : Not printed:No 4p T19\n"
+					end
 				end
 				returnString =  returnString .. adString..SimPermut:GetCopyName(copynumber,pool,nbitem,itemList) .. "\n".. currentString.."\n"
 				copynumber=copynumber+1
-			elseif(nbLeg>actualLegMax) then
-				PersoLib:debugPrint("Not printed:Too much Leg ("..nbLeg..")",ad)
-			elseif(nbLeg<actualLegMin) then
-				PersoLib:debugPrint("Not printed:Too few Leg ("..nbLeg..")",ad)
+			
 			end
 		else
 			PersoLib:debugPrint("Not printed:"..result,ad)
@@ -1240,7 +1247,8 @@ end
 -- generates the string for artifact, equiped gear and player info
 function SimPermut:GetBaseString()
 	local playerName = UnitName('player')
-	local _, playerClass = UnitClass('player')
+	local playerClass
+	_, playerClass,classID = UnitClass('player')
 	local playerLevel = UnitLevel('player')
 	local playerRealm = GetRealmName()
 	local playerRegion = regionString[GetCurrentRegion()]
@@ -1312,11 +1320,6 @@ function SimPermut:GetBaseString()
 		itemString=SimPermut:GetItemString(itemLink,'off_hand',true)
 		SimPermutProfile = SimPermutProfile .. "off_hand=" .. table.concat(itemString, ',').. '\n'
     end
-	
-	
-	--for i, value in pairs(statsString) do 
-	--	print(statsString[i],StatPool[value])
-	--end
 
 	return SimPermutProfile,itemsLinks,StatPool
 end
@@ -1431,4 +1434,21 @@ function SimPermut:GetArtifactString()
 		-- str = str:sub(1, -2)
 	-- end
 	return str
+end
+
+-- check for Tier Sets
+function SimPermut:HasTier(stier,tableEquip)
+	if HasTierSets[stier][classID] then
+      local Count = 0;
+      local Item;
+      for Slot, ItemID in pairs(HasTierSets[stier][classID]) do
+        Item = tonumber(PersoLib:GetIDFromLink(tableEquip[Slot]));
+        if Item and Item == ItemID then
+          Count = Count + 1;
+        end
+      end
+      return HasTierSets[stier][0](Count);
+    else
+      return false;
+    end
 end
