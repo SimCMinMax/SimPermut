@@ -1180,7 +1180,7 @@ function SimPermut:GetPermutationString(permuttable)
 						adString=" # Debug print : Not printed:No 4p T19\n"
 					end
 				end
-				returnString =  returnString .. adString..SimPermut:GetCopyName(copynumber,pool,nbitem,itemList) .. "\n".. currentString.."\n"
+				returnString =  returnString .. adString..SimPermut:GetCopyName(copynumber,pool,nbitem,itemList,#permuttable) .. "\n".. currentString.."\n"
 				copynumber=copynumber+1
 			
 			end
@@ -1205,13 +1205,17 @@ function SimPermut:GetPermutationString(permuttable)
 end
 
 -- get copy's stat
-function SimPermut:GetCopyName(copynumber,pool,nbitem,itemList)
+function SimPermut:GetCopyName(copynumber,pool,nbitem,itemList,nbitems)
 	local returnString="copy="
 	
 	if report_type==1 then
 		returnString=returnString..itemList
 	else 
-		returnString=returnString.."copy"..copynumber
+		local nbcopies = ''..nbitems
+		local digits = string.len(nbcopies)
+		local mask = '00000000000000000000000000000000000'
+		local maskedProfileID=string.sub(mask..copynumber,-digits)
+		returnString=returnString.."copy"..maskedProfileID
 	end
 	
 	--for i, value in pairs(statsString) do 
