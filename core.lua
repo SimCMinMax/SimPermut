@@ -65,6 +65,7 @@ local resultBox
 local fingerInf = false
 local trinketInf = false
 local classID=0
+local equipedLegendaries=0
 local ad=false
 
 -- load stuff from extras.lua
@@ -367,6 +368,9 @@ function SimPermut:BuildFrame()
 	tableCheckBoxes={}
 	tableLinkPermut={}
 	_,tableBaseLink=SimPermut:GetBaseString()
+	
+	editLegMin:SetText(equipedLegendaries)
+	
 	SimPermut:GetListItems()
 	SimPermut:BuildItemFrame()
 	SimPermut:GetSelectedCount()
@@ -755,6 +759,7 @@ function SimPermut:GetItemStrings()
 	local pool={}
 	local stats = {}
 	
+	equipedLegendaries = 0
 	for i, value in pairs(statsString) do 
 		pool[value]=0
 	end
@@ -762,10 +767,15 @@ function SimPermut:GetItemStrings()
 
 	for slotNum=1, #PermutSlotNames do
 		slotId = GetInventorySlotInfo(PermutSlotNames[slotNum])
-		itemLink = GetInventoryItemLink('player', slotId)
+		itemLink = GetInventoryItemLink('player', slotId) 
 
+		
 		-- if we don't have an item link, we don't care
 		if itemLink then
+			local _,_,itemRarity = GetItemInfo(itemLink)
+			if itemRarity==5 then
+				equipedLegendaries= equipedLegendaries+1
+			end
 			itemString=SimPermut:GetItemString(itemLink,PermutSimcNames[slotNum],true)
 			tableBaseString[slotNum]=table.concat(itemString, ',')
 			itemsLinks[slotNum]=itemLink
@@ -1043,7 +1053,6 @@ function SimPermut:PreparePermutations(permuttable)
 	--preparing rings
 	if (GetInventoryItemLink('player', INVSLOT_FINGER1)==permuttable[1][11] and GetInventoryItemLink('player', INVSLOT_FINGER2)==permuttable[1][12]) or 
 		(GetInventoryItemLink('player', INVSLOT_FINGER1)==permuttable[1][12] and GetInventoryItemLink('player', INVSLOT_FINGER2)==permuttable[1][11]) then
-		
 		itemIdRing1 = PersoLib:GetIDFromLink(GetInventoryItemLink('player', INVSLOT_FINGER1))
 		itemIdRing2 = PersoLib:GetIDFromLink(GetInventoryItemLink('player', INVSLOT_FINGER2))
 	else
@@ -1410,7 +1419,6 @@ end
 function SimPermut:GetArtifactString()
 	
 	SocketInventoryItem(INVSLOT_MAINHAND)
-	
 	local str = artifactTable[artifactID] .. ':0:0:0:0'
 
 	local powers = ArtifactUI.GetPowers()
@@ -1422,25 +1430,7 @@ function SimPermut:GetArtifactString()
 			str = str .. ':' .. power_id .. ':' .. (info.currentRank - info.bonusRanks)
 		end
 	end
-	--print (str)
 	Clear()
-	-- local str=""
-	-- local current=0
-	-- if #artifactData.traits then
-		-- str=artifactTable[artifactID] .. ':0:0:0:0:'
-		-- for i=1,#artifactData.traits do
-			-- current=0
-			-- print (artifactData.traits[i].currentRank,artifactData.traits[i].bonusRanks)
-			-- if artifactData.traits[i].isFinal then
-				-- current=artifactData.traits[i].currentRank
-			-- else
-				-- current=(artifactData.traits[i].currentRank - artifactData.traits[i].bonusRanks)
-			-- end
-			-- print (current)
-			-- str = str..artifactData.traits[i].traitID..":"..current..":"
-		-- end
-		-- str = str:sub(1, -2)
-	-- end
 	return str
 end
 
