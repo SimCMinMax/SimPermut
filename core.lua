@@ -156,7 +156,7 @@ function SimPermut:BuildFrame()
 	
 	local mainGroup = AceGUI:Create("SimpleGroup")
     mainGroup:SetLayout("Flow")
-    mainGroup:SetRelativeWidth(0.6)
+    mainGroup:SetRelativeWidth(0.65)
 	
 	local scrollcontainer1 = AceGUI:Create("SimpleGroup")
 	scrollcontainer1:SetRelativeWidth(0.5)
@@ -182,7 +182,7 @@ function SimPermut:BuildFrame()
 	
 	local resultGroup = AceGUI:Create("SimpleGroup")
     resultGroup:SetLayout("Flow")
-    resultGroup:SetRelativeWidth(0.4)
+    resultGroup:SetRelativeWidth(0.35)
 	
 	local scrollcontainer3 = AceGUI:Create("SimpleGroup")
 	scrollcontainer3:SetRelativeWidth(1)
@@ -215,7 +215,7 @@ function SimPermut:BuildFrame()
 	------ Items + param
 	local labelEnchantNeck= AceGUI:Create("Label")
 	labelEnchantNeck:SetText("Enchant Neck")
-	labelEnchantNeck:SetWidth(100)
+	labelEnchantNeck:SetWidth(80)
 	
 	local dropdownEnchantNeck = AceGUI:Create("Dropdown")
 	dropdownEnchantNeck:SetWidth(130)
@@ -226,11 +226,11 @@ function SimPermut:BuildFrame()
     end)
 		
 	local labelEnchantBack= AceGUI:Create("Label")
-	labelEnchantBack:SetText("      Enchant Back")
-	labelEnchantBack:SetWidth(100)
+	labelEnchantBack:SetText("     Enchant Back")
+	labelEnchantBack:SetWidth(95)
 	
 	local dropdownEnchantBack = AceGUI:Create("Dropdown")
-	dropdownEnchantBack:SetWidth(130)
+	dropdownEnchantBack:SetWidth(110)
 	dropdownEnchantBack:SetList(enchantCloak)
 	dropdownEnchantBack:SetValue(0)
 	dropdownEnchantBack:SetCallback("OnValueChanged", function (this, event, item)
@@ -238,47 +238,47 @@ function SimPermut:BuildFrame()
     end)
 	
 	local labelEnchantFinger= AceGUI:Create("Label")
-	labelEnchantFinger:SetText("      Enchant Ring")
-	labelEnchantFinger:SetWidth(100)
+	labelEnchantFinger:SetText("     Enchant Ring")
+	labelEnchantFinger:SetWidth(95)
 	
 	local dropdownEnchantFinger = AceGUI:Create("Dropdown")
-	dropdownEnchantFinger:SetWidth(130)
+	dropdownEnchantFinger:SetWidth(110)
 	dropdownEnchantFinger:SetList(enchantRing)
 	dropdownEnchantFinger:SetValue(0)
 	dropdownEnchantFinger:SetCallback("OnValueChanged", function (this, event, item)
 		actualEnchantFinger=item
     end)
 	
-	local labelSpacerFull= AceGUI:Create("Label")
-	labelSpacerFull:SetText(" ")
-	labelSpacerFull:SetFullWidth(true)
+	
 	
 	local labelGem= AceGUI:Create("Label")
-	labelGem:SetText("Gem")
-	labelGem:SetWidth(100)
+	labelGem:SetText("     Gem")
+	labelGem:SetWidth(55)
 	
 	local dropdownGem = AceGUI:Create("Dropdown")
 	dropdownGem:SetList(gemList)
-	dropdownGem:SetWidth(130)
+	dropdownGem:SetWidth(110)
 	dropdownGem:SetCallback("OnValueChanged", function (this, event, item)
 		actualGem=item
     end)
 	dropdownGem:SetValue(0)
 	
-	local labelSpacer2= AceGUI:Create("Label")
-	labelSpacer2:SetText(" ")
-	labelSpacer2:SetWidth(17)
+	
 	
 	checkBoxForce = AceGUI:Create("CheckBox")
-	checkBoxForce:SetWidth(85)
-	checkBoxForce:SetLabel("Force")
+	checkBoxForce:SetWidth(250)
+	checkBoxForce:SetLabel("Replace current enchant/gems")
 	checkBoxForce:SetCallback("OnValueChanged", function (this, event, item)
 		actualForce=checkBoxForce:GetValue()
     end)
 	
+	local labelSpacerFull= AceGUI:Create("Label")
+	labelSpacerFull:SetText("")
+	labelSpacerFull:SetWidth(182)
+	
 	local labelLeg= AceGUI:Create("Label")
 	labelLeg:SetText("Legendaries")
-	labelLeg:SetWidth(87)
+	labelLeg:SetWidth(80)
 	
 	editLegMin= AceGUI:Create("EditBox")
 	editLegMin:SetText("0")
@@ -304,13 +304,17 @@ function SimPermut:BuildFrame()
 		end
     end)
 	
+	local labelSpacer2= AceGUI:Create("Label")
+	labelSpacer2:SetText(" ")
+	labelSpacer2:SetWidth(60)
+	
 	local labelSets= AceGUI:Create("Label")
-	labelSets:SetText("      Sets (min)")
-	labelSets:SetWidth(100)
+	labelSets:SetText("Sets (min)")
+	labelSets:SetWidth(63)
 	
 	local dropdownSets = AceGUI:Create("Dropdown")
 	dropdownSets:SetList(SetsList)
-	dropdownSets:SetWidth(130)
+	dropdownSets:SetWidth(110)
 	dropdownSets:SetCallback("OnValueChanged", function (this, event, item)
 		actualSets=item
     end)
@@ -339,14 +343,14 @@ function SimPermut:BuildFrame()
 	mainGroup:AddChild(dropdownEnchantBack)
 	mainGroup:AddChild(labelEnchantFinger)
 	mainGroup:AddChild(dropdownEnchantFinger)
-	mainGroup:AddChild(labelSpacerFull)
 	mainGroup:AddChild(labelGem)
 	mainGroup:AddChild(dropdownGem)
-	mainGroup:AddChild(labelSpacer2)
 	mainGroup:AddChild(checkBoxForce)
+	mainGroup:AddChild(labelSpacerFull)
 	mainGroup:AddChild(labelLeg)
 	mainGroup:AddChild(editLegMin)
 	mainGroup:AddChild(editLegMax)
+	mainGroup:AddChild(labelSpacer2)
 	mainGroup:AddChild(labelSets)
 	mainGroup:AddChild(dropdownSets)
 	mainGroup:AddChild(labelSpacerline)
@@ -715,7 +719,7 @@ function SimPermut:GetItemString(itemLink,itemType,base)
 		local stats = GetItemStats(itemLink)
 		local _,_,itemRarity = GetItemInfo(itemLink)
 		--for some reason, GetItemStats doesn't gives sockets to neck and finger that have one by default
-		if stats['EMPTY_SOCKET_PRISMATIC']==1 or (itemRarity== 5 and (itemType== 'neck' or itemType== 'finger1' or itemType== 'finger2')) then
+		if stats and stats['EMPTY_SOCKET_PRISMATIC']==1 or (itemRarity== 5 and (itemType== 'neck' or itemType== 'finger1' or itemType== 'finger2')) then
 			hasSocket=true 
 		end
 		if base then
