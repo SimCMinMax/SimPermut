@@ -1,3 +1,9 @@
+v1.9.2 04/22/2017
+[UI]Minor UI adjustment
+[UI]Auto set min leg with equiped legendaries
+[FIX]Fix lua error in some rare cases
+
+
 v1.9.1 04/19/2017
 [UI]Added 0s in front of copie names so they are in the right order in simc
 
