@@ -1,3 +1,7 @@
+v1.10 05/05/2017
+[UI]Minor UI adjustment
+[UI]Added an option to make a talent permutation
+
 v1.9.2 04/22/2017
 [UI]Minor UI adjustment
 [UI]Auto set min leg with equiped legendaries
