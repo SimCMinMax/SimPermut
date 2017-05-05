@@ -151,14 +151,19 @@ SimPermut.statsStringCorres= {
 ["ITEM_MOD_VERSATILITY"]='Vers'
 }
 
+SimPermut.FrameMenu={
+	[1]	= "Gear permutation",
+	[2] = "Talent permutation"
+}
+
 SimPermut.enchantNeck = {
-  [0] 	 = 'Untouched',
-  [5891] = 'Ancient Priestess',
-  [5437] = 'Claw',
-  [5438] = 'Distant Army',
-  [5889] = 'Heavy Hide',
-  [5439] = 'Hidden Satyr',
-  [5890] = 'Trained Soldier'
+	[0] 	= 'Untouched',
+	[5891] 	= 'Ancient Priestess',
+	[5437] 	= 'Claw',
+	[5438] 	= 'Distant Army',
+	[5889] 	= 'Heavy Hide',
+	[5439] 	= 'Hidden Satyr',
+	[5890] 	= 'Trained Soldier'
 }
 SimPermut.enchantCloak = {
   [0] 	 = 'Untouched',

@@ -14,7 +14,9 @@ local OFFSET_BONUS_ID 	= 13
 local ITEM_THRESHOLD 	= 800
 local ITEM_COUNT_THRESHOLD = 22
 local COPY_THRESHOLD 	= 500
--- local LEGENDARY_MAX		= 2
+local TALENTS_MAX_COLUMN=3
+local TALENTS_MAX_ROW	=7
+
 
 
 local report_type		= 2
@@ -43,8 +45,8 @@ local actualEnchantFinger=0
 local actualEnchantBack=0
 local actualGem=0
 local actualForce=false
-local editLegMin
-local editLegMax
+local editLegMin=0
+local editLegMax=0
 local actualLegMin=0
 local actualLegMax=0
 local actualSets=0
@@ -67,6 +69,14 @@ local trinketInf = false
 local classID=0
 local equipedLegendaries=0
 local ad=false
+local tableTalentLabel={}
+local tableTalentIcon={}
+local tableTalentcheckbox={}
+local tableTalentSpells={}
+local tableTalentResults={}
+local currentFrame=1
+local mainGroup
+local resultGroup
 
 -- load stuff from extras.lua
 local slotNames     	= SimPermut.slotNames
@@ -79,7 +89,7 @@ local PermutSlotNames   = SimPermut.PermutSlotNames
 local regionString  	= SimPermut.RegionString
 local artifactTable 	= SimPermut.ArtifactTable
 local gemList 			= SimPermut.gemList
-local SetsList				= SimPermut.Sets
+local SetsList			= SimPermut.Sets
 local enchantRing 		= SimPermut.enchantRing
 local enchantCloak 		= SimPermut.enchantCloak
 local enchantNeck 		= SimPermut.enchantNeck
@@ -88,6 +98,7 @@ local statsStringCorres	= SimPermut.statsStringCorres
 local RelicTypes		= SimPermut.RelicTypes
 local RelicSlots		= SimPermut.RelicSlots
 local HasTierSets 		= SimPermut.HasTierSets
+local FrameMenu 		= SimPermut.FrameMenu
 
 SLASH_SIMPERMUTSLASH1 = "/SimPermut"
 SLASH_SIMPERMUTSLASHDEBUG1 = "/SimPermutDebug"
@@ -97,8 +108,11 @@ SLASH_SIMPERMUTSLASHTEST1 = "/Simtest"
 SlashCmdList["SIMPERMUTSLASHTEST"] = function (arg)
 	local artifactID,artifactData = LAD:GetArtifactInfo() 
 	
-	for i=1,#artifactData.relics do
-		print(artifactData.relics[i].name ,artifactData.relics[i].type)
+	for i=1,TALENTS_MAX_ROW do
+		for j=1,TALENTS_MAX_COLUMN do
+			local _,nametalent=GetTalentInfo(i,j,GetActiveSpecGroup())
+			print(nametalent)
+		end
 	end
 
 end
@@ -153,9 +167,40 @@ function SimPermut:BuildFrame()
 	end)
 	mainframe:SetLayout("Flow")
 	mainframe:SetWidth(1300)
-	mainframe:SetHeight(780)
+	mainframe:SetHeight(790)
 	
-	local mainGroup = AceGUI:Create("SimpleGroup")
+	local frameDropdown = AceGUI:Create("Dropdown")
+    frameDropdown:SetWidth(200)
+	frameDropdown:SetList(FrameMenu)
+	frameDropdown:SetLabel("")
+	frameDropdown:SetValue(currentFrame)
+	frameDropdown:SetCallback("OnValueChanged", function (this, event, item)
+		currentFrame=item
+		mainframe:Release()
+		SimPermut:BuildFrame()
+    end)
+	mainframe:AddChild(frameDropdown)
+	local labelSpacer=AceGUI:Create("Label")
+	labelSpacer:SetFullWidth(true)
+	mainframe:AddChild(labelSpacer)
+	
+
+	if currentFrame==1 then
+		currentFrame=1
+		SimPermut:BuildGearFrame()
+		SimPermut:BuildResultFrame(true)
+		SimPermut:InitGearFrame()
+	elseif currentFrame==2 then
+		currentFrame=2
+		SimPermut:BuildTalentFrame()
+		SimPermut:BuildResultFrame(false)
+		SimPermut:GenerateTalents()
+	end
+end
+
+-- Field construction for gear Frame
+function SimPermut:BuildGearFrame()
+	mainGroup = AceGUI:Create("SimpleGroup")
     mainGroup:SetLayout("Flow")
     mainGroup:SetRelativeWidth(0.65)
 	
@@ -178,39 +223,6 @@ function SimPermut:BuildFrame()
 	scroll2 = AceGUI:Create("ScrollFrame")
 	scroll2:SetLayout("Flow")
 	scrollcontainer2:AddChild(scroll2)
-	
-	
-	
-	local resultGroup = AceGUI:Create("SimpleGroup")
-    resultGroup:SetLayout("Flow")
-    resultGroup:SetRelativeWidth(0.35)
-	
-	local scrollcontainer3 = AceGUI:Create("SimpleGroup")
-	scrollcontainer3:SetRelativeWidth(1)
-	scrollcontainer3:SetHeight(600)
-	scrollcontainer3:SetLayout("Fill")
-	resultGroup:AddChild(scrollcontainer3)
-	
-	resultBox= AceGUI:Create("MultiLineEditBox")
-	resultBox:SetText("")
-	resultBox:SetLabel("")
-	resultBox:DisableButton(true)
-	resultBox:SetRelativeWidth(1)
-	scrollcontainer3:AddChild(resultBox)
-	
-	local labelSpacerResult= AceGUI:Create("Label")
-	labelSpacerResult:SetText(" ")
-	labelSpacerResult:SetRelativeWidth(0.7)
-	
-	local buttonGenerateRaw = AceGUI:Create("Button")
-	buttonGenerateRaw:SetText("AutoSimc Export")
-	buttonGenerateRaw:SetRelativeWidth(0.3)
-	buttonGenerateRaw:SetCallback("OnClick", function()
-		SimPermut:GenerateRaw()
-	end)
-	
-	resultGroup:AddChild(labelSpacerResult)
-	resultGroup:AddChild(buttonGenerateRaw)
 
 	
 	------ Items + param
@@ -250,8 +262,6 @@ function SimPermut:BuildFrame()
 		actualEnchantFinger=item
     end)
 	
-	
-	
 	local labelGem= AceGUI:Create("Label")
 	labelGem:SetText("     Gem")
 	labelGem:SetWidth(55)
@@ -263,8 +273,6 @@ function SimPermut:BuildFrame()
 		actualGem=item
     end)
 	dropdownGem:SetValue(0)
-	
-	
 	
 	checkBoxForce = AceGUI:Create("CheckBox")
 	checkBoxForce:SetWidth(250)
@@ -327,7 +335,7 @@ function SimPermut:BuildFrame()
 
 	local buttonGenerate = AceGUI:Create("Button")
 	buttonGenerate:SetText("Generate")
-	buttonGenerate:SetWidth(160)
+	buttonGenerate:SetWidth(165)
 	buttonGenerate:SetCallback("OnClick", function()
 		SimPermut:Generate()
 	end)
@@ -335,8 +343,6 @@ function SimPermut:BuildFrame()
 	labelCount= AceGUI:Create("Label")
 	labelCount:SetText(" ")
 	labelCount:SetWidth(255)
-	
-
 	
 	mainGroup:AddChild(labelEnchantNeck)
 	mainGroup:AddChild(dropdownEnchantNeck)
@@ -357,12 +363,154 @@ function SimPermut:BuildFrame()
 	mainGroup:AddChild(labelSpacerline)
 	mainGroup:AddChild(buttonGenerate)
 	mainGroup:AddChild(labelCount)
-
 	
 	
 	mainframe:AddChild(mainGroup)
-	mainframe:AddChild(resultGroup)
+end
+
+-- Field construction for talent Frame
+function SimPermut:BuildTalentFrame()
 	
+	mainGroup = AceGUI:Create("SimpleGroup")
+    mainGroup:SetLayout("Flow")
+    mainGroup:SetRelativeWidth(0.65)
+	
+	local container1 = AceGUI:Create("SimpleGroup")
+	container1:SetRelativeWidth(0.3)
+	container1:SetHeight(600)
+	container1:SetLayout("Flow")
+	mainGroup:AddChild(container1)
+	
+	local container2 = AceGUI:Create("SimpleGroup")
+	container2:SetRelativeWidth(0.3)
+	container2:SetHeight(600)
+	container2:SetLayout("Flow")
+	mainGroup:AddChild(container2)
+	
+	local container3 = AceGUI:Create("SimpleGroup")
+	container3:SetRelativeWidth(0.3)
+	container3:SetHeight(600)
+	container3:SetLayout("Flow")
+	mainGroup:AddChild(container3)
+	
+	for i=1,TALENTS_MAX_ROW do
+		tableTalentcheckbox[i]={}
+		tableTalentIcon[i]={}
+		tableTalentLabel[i]={}
+		tableTalentSpells[i]={}
+		for j=1,TALENTS_MAX_COLUMN do
+			local talentID, name, texture, selected, available, spellid=GetTalentInfo(i,j,GetActiveSpecGroup())
+			tableTalentSpells[i][j]=spellid
+			tableTalentcheckbox[i][j]=AceGUI:Create("CheckBox")
+			tableTalentcheckbox[i][j]:SetLabel("")
+			tableTalentcheckbox[i][j]:SetRelativeWidth(0.2)
+			if selected then
+				tableTalentcheckbox[i][j]:SetValue(true)
+			end
+			
+			local _, _, Talenticon = GetSpellInfo(spellid)
+			tableTalentIcon[i][j]=AceGUI:Create("Icon")
+			tableTalentIcon[i][j]:SetImage(Talenticon)
+			tableTalentIcon[i][j]:SetImageSize(40,40)
+			tableTalentIcon[i][j]:SetRelativeWidth(0.3)
+			tableTalentIcon[i][j]:SetCallback("OnEnter", function(widget)
+				GameTooltip:SetOwner(widget.frame, "ANCHOR_TOPRIGHT")
+				GameTooltip:SetSpellByID(tableTalentSpells[i][j])
+				GameTooltip:Show()
+			end)			
+			tableTalentIcon[i][j]:SetCallback("OnLeave", function(widget)
+				GameTooltip:Hide()
+			end)
+			
+			tableTalentLabel[i][j]=AceGUI:Create("Label")
+			tableTalentLabel[i][j]:SetText(name)
+			tableTalentLabel[i][j]:SetRelativeWidth(0.5)
+				
+			
+			if j==1 then
+				container1:AddChild(tableTalentcheckbox[i][j])
+				container1:AddChild(tableTalentIcon[i][j])
+				container1:AddChild(tableTalentLabel[i][j])
+			elseif j==2 then
+				container2:AddChild(tableTalentcheckbox[i][j])
+				container2:AddChild(tableTalentIcon[i][j])
+				container2:AddChild(tableTalentLabel[i][j])
+			else
+				container3:AddChild(tableTalentcheckbox[i][j])
+				container3:AddChild(tableTalentIcon[i][j])
+				container3:AddChild(tableTalentLabel[i][j])
+			end
+			--print(nametalent)
+		end
+	end
+	local labelSpacer=AceGUI:Create("Label")
+	labelSpacer:SetRelativeWidth(0.4)
+	mainGroup:AddChild(labelSpacer)
+	
+	local buttonGenerate = AceGUI:Create("Button")
+	buttonGenerate:SetText("Generate")
+	buttonGenerate:SetRelativeWidth(0.2)
+	buttonGenerate:SetCallback("OnClick", function()
+		SimPermut:GenerateTalents()
+	end)
+	mainGroup:AddChild(buttonGenerate)
+	
+	
+	mainframe:AddChild(mainGroup)
+	
+	
+	-- for i=1,TALENTS_MAX_ROW do
+		-- for j=1,TALENTS_MAX_COLUMN do
+			-- print(tableTalentcheckbox[i][j]:GetValue())
+		-- end
+	-- end
+end
+
+-- Field construction for right Panel
+function SimPermut:BuildResultFrame(autoSimcExportVisible)
+	resultGroup = AceGUI:Create("SimpleGroup")
+    resultGroup:SetLayout("Flow")
+    resultGroup:SetRelativeWidth(0.35)
+	
+	local scrollcontainer3 = AceGUI:Create("SimpleGroup")
+	scrollcontainer3:SetRelativeWidth(1)
+	scrollcontainer3:SetHeight(600)
+	scrollcontainer3:SetLayout("Fill")
+	resultGroup:AddChild(scrollcontainer3)
+	
+	resultBox= AceGUI:Create("MultiLineEditBox")
+	resultBox:SetText("")
+	resultBox:SetLabel("")
+	resultBox:DisableButton(true)
+	resultBox:SetRelativeWidth(1)
+	scrollcontainer3:AddChild(resultBox)
+	
+	if autoSimcExportVisible then
+		local labelSpacerResult= AceGUI:Create("Label")
+		labelSpacerResult:SetText(" ")
+		labelSpacerResult:SetRelativeWidth(0.7)
+		
+		local buttonGenerateRaw = AceGUI:Create("Button")
+		buttonGenerateRaw:SetText("AutoSimc Export")
+		buttonGenerateRaw:SetRelativeWidth(0.3)
+		buttonGenerateRaw:SetCallback("OnClick", function()
+			SimPermut:GenerateRaw()
+		end)
+		
+		resultGroup:AddChild(labelSpacerResult)
+		resultGroup:AddChild(buttonGenerateRaw)
+	end
+	
+	mainframe:AddChild(resultGroup)
+end
+
+-- Empty the main frame to draw an other
+function SimPermut:RAZFrame()
+
+end
+
+-- Init the frame for the first time
+function SimPermut:InitGearFrame()
 	tableTitres={}
 	tableLabel={}
 	tableCheckBoxes={}
@@ -376,6 +524,8 @@ function SimPermut:BuildFrame()
 	SimPermut:GetSelectedCount()
 	
 	SimPermut:Generate()
+	
+	SimPermut:CleanVar()
 end
 
 -- Load Item list
@@ -467,14 +617,12 @@ end
 
 -- clic btn generate
 function SimPermut:Generate()
-	mainframe:SetStatusText("")
-	local permuttable={}
 	local permutString=""
 	local baseString=""
 	local finalString=""
 	if SimPermut:GetTableLink() then
 		PersoLib:debugPrint("--------------------",ad)
-		PersoLib:debugPrint("Generating string...",ad)
+		PersoLib:debugPrint("Generating Gear string...",ad)
 		SimPermut:GetSelectedCount()
 		baseString,tableBaseLink=SimPermut:GetBaseString()
 		permuttable=SimPermut:GetAllPermutations()
@@ -510,6 +658,46 @@ function SimPermut:GenerateRaw()
 		SimPermut:PrintPermut(finalString)
 		PersoLib:debugPrint("End of generation",ad)
 		PersoLib:debugPrint("--------------------",ad)
+	end
+end
+
+-- clic btn generate Talent
+function SimPermut:GenerateTalents()
+	local permutString=""
+	local baseString=""
+	local finalString=""
+	tableTalentResults={}
+	
+	PersoLib:debugPrint("--------------------",ad)
+	PersoLib:debugPrint("Generating Talent String...",ad)
+	SimPermut:GenerateTalentsRecursive(1,"")
+	baseString=SimPermut:GetBaseString()
+	permutString=SimPermut:GenerateTalentString()
+	finalString=SimPermut:GetFinalString(baseString,permutString)
+	SimPermut:PrintPermut(finalString)
+	PersoLib:debugPrint("End of generation",ad)
+	PersoLib:debugPrint("--------------------",ad)
+end
+
+-- clic btn generate Talent
+function SimPermut:GenerateTalentsRecursive(stacks,str)
+	local newstacks=stacks
+	local newstr=str
+	if newstacks > TALENTS_MAX_ROW then
+		tableTalentResults[#tableTalentResults+1]=newstr
+		-- print(tableTalentResults[#tableTalentResults])
+	else
+		if tableTalentcheckbox[newstacks][1]:GetValue()==false and tableTalentcheckbox[newstacks][2]:GetValue()==false and tableTalentcheckbox[newstacks][3]:GetValue()==false then
+			newstr=newstr.."0"
+			SimPermut:GenerateTalentsRecursive(newstacks+1,newstr)
+		else
+			for i=1,TALENTS_MAX_COLUMN do
+				if tableTalentcheckbox[newstacks][i]:GetValue() then
+					newstr=str..""..i
+					SimPermut:GenerateTalentsRecursive(newstacks+1,newstr)
+				end
+			end
+		end
 	end
 end
 
@@ -551,6 +739,11 @@ function SimPermut:PrintPermut(finalString)
 	resultBox:SetText(finalString)
 	resultBox:HighlightText()
 	resultBox:SetFocus()
+end
+
+-- Clean all var for memory
+function SimPermut:CleanVar()
+	
 end
 
 ----------------------------
@@ -1217,11 +1410,21 @@ function SimPermut:GetPermutationString(permuttable)
 	return returnString
 end
 
+function SimPermut:GenerateTalentString()
+	local copynb
+	local returnString=""
+	for i=1,#tableTalentResults do
+		copynb = SimPermut:GetCopyName(i,nil,nil,nil,#tableTalentResults)
+		returnString =  returnString.."\n" ..copynb .. "\n".. tableTalentResults[i].."\n"
+	end
+	return returnString
+end
+
 -- get copy's stat
 function SimPermut:GetCopyName(copynumber,pool,nbitem,itemList,nbitems)
 	local returnString="copy="
 	
-	if report_type==1 then
+	if report_type==1 and itemList then
 		returnString=returnString..itemList
 	else 
 		local nbcopies = ''..nbitems
