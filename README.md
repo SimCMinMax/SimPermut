@@ -3,7 +3,7 @@
 ## Overview
 
 This repository is for the addon SimPermut which make a string usable by SimulationCraft with all the different permutations for the items you have in your inventory. This makes easy comparing stuff.
-
+Don't hesitate to go on the [SimcMinMax](https://discordapp.com/invite/tFR2uvK) Discord to ask about specific stuff.
 
 Get it on curse : https://mods.curse.com/addons/wow/254069-simpermut
 
