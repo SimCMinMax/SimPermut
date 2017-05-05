@@ -34,12 +34,13 @@ See [AutoSimC on GitHub](https://github.com/SimCMinMax/AutoSimC)
 
 - Add relic comparison
 
+- Add the ability to add gear from dungeon journal to compare
+
+- Artifact Path Permutation
+
 [- Better way of detecting sets]
  
 [-Faster algorithm for string generation]
-
-[-Rename copy to add stat rating for a better overlook in simc]
-
 
 
 ## Credits
