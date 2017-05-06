@@ -1410,12 +1410,15 @@ function SimPermut:GetPermutationString(permuttable)
 	return returnString
 end
 
+-- generates the string used for talents
 function SimPermut:GenerateTalentString()
 	local copynb
 	local returnString=""
 	for i=1,#tableTalentResults do
-		copynb = SimPermut:GetCopyName(i,nil,nil,nil,#tableTalentResults)
-		returnString =  returnString.."\n" ..copynb .. "\n".. tableTalentResults[i].."\n"
+		if tableTalentResults[i]~=PersoLib:CreateSimcTalentString() then
+			copynb = SimPermut:GetCopyName(i,nil,nil,nil,#tableTalentResults)
+			returnString =  returnString.."\n" ..copynb .. "\n".. "talents="..tableTalentResults[i].."\n"
+		end
 	end
 	return returnString
 end

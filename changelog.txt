@@ -1,3 +1,7 @@
+v1.10.1 05/06/2017
+[FIX]Fixed talent permutation
+[UI]don't print current talents with the talent permut
+
 v1.10 05/05/2017
 [UI]Minor UI adjustment
 [UI]Added an option to make a talent permutation
