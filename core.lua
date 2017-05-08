@@ -440,7 +440,6 @@ function SimPermut:BuildTalentFrame()
 				container3:AddChild(tableTalentIcon[i][j])
 				container3:AddChild(tableTalentLabel[i][j])
 			end
-			--print(nametalent)
 		end
 	end
 	local labelSpacer=AceGUI:Create("Label")
@@ -457,13 +456,6 @@ function SimPermut:BuildTalentFrame()
 	
 	
 	mainframe:AddChild(mainGroup)
-	
-	
-	-- for i=1,TALENTS_MAX_ROW do
-		-- for j=1,TALENTS_MAX_COLUMN do
-			-- print(tableTalentcheckbox[i][j]:GetValue())
-		-- end
-	-- end
 end
 
 -- Field construction for right Panel
