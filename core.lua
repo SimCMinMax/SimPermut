@@ -77,6 +77,7 @@ local tableTalentResults={}
 local currentFrame=1
 local mainGroup
 local resultGroup
+local tablePreCheck={}
 
 -- load stuff from extras.lua
 local slotNames     	= SimPermut.slotNames
@@ -120,9 +121,17 @@ end
 
 -- Command UI
 SlashCmdList["SIMPERMUTSLASH"] = function (arg)
-	if mainframeCreated and mainframe:IsShown()then
+	if mainframeCreated and mainframe:IsShown() then
 		mainframe:Hide()
 	else
+		--handle commandline
+		for i=1,#listNames do
+			if string.match(arg, listNames[i]) then
+				tablePreCheck[i]=true
+			else
+				tablePreCheck[i]=false
+			end
+		end
 		SimPermut:BuildFrame()
 		mainframeCreated=true
 	end
@@ -540,7 +549,7 @@ function SimPermut:BuildItemFrame()
 			tableCheckBoxes[j][i]=AceGUI:Create("CheckBox")
 			tableCheckBoxes[j][i]:SetLabel("")
 			tableCheckBoxes[j][i]:SetRelativeWidth(0.05)
-			if SimPermut:isEquiped(tableListItems[j][i],j) then
+			if SimPermut:isEquiped(tableListItems[j][i],j) or tablePreCheck[j] then
 				tableCheckBoxes[j][i]:SetValue(true)
 			else
 				tableCheckBoxes[j][i]:SetValue(false)
