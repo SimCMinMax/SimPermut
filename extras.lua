@@ -153,7 +153,8 @@ SimPermut.statsStringCorres= {
 
 SimPermut.FrameMenu={
 	[1]	= "Gear permutation",
-	[2] = "Talent permutation"
+	[2] = "Talent permutation",
+	[3] = "Options"
 }
 
 SimPermut.enchantNeck = {
@@ -193,6 +194,11 @@ SimPermut.Sets = {
   [2] = 'T19 2P',
   [4] = 'T19 4P'
 }
+SimPermut.ReportType = {
+  [1] = 'Item names',
+  [2] = 'Copy number'
+}
+
 
 SimPermut.HasTierSets = {
     ["T19"] = {

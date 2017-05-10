@@ -20,7 +20,9 @@ Get it on curse : https://mods.curse.com/addons/wow/254069-simpermut
 
 - Copy the text and paste in simc.
 
->**Note: **
+ 
+
+>**Note:**
 
 >You can also add parameters to pre-select an entire slot.
 

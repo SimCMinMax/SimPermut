@@ -2,6 +2,8 @@ local _, SimPermut = ...
 
 SimPermut = LibStub("AceAddon-3.0"):NewAddon(SimPermut, "SimPermut", "AceConsole-3.0", "AceEvent-3.0")
 
+SimPermutVars={}
+
 local OFFSET_ITEM_ID 	= 1
 local OFFSET_ENCHANT_ID = 2
 local OFFSET_GEM_ID_1 	= 3
@@ -11,15 +13,9 @@ local OFFSET_GEM_ID_4 	= 6
 local OFFSET_SUFFIX_ID 	= 7
 local OFFSET_FLAGS 		= 11
 local OFFSET_BONUS_ID 	= 13
-local ITEM_THRESHOLD 	= 800
-local ITEM_COUNT_THRESHOLD = 22
-local COPY_THRESHOLD 	= 500
 local TALENTS_MAX_COLUMN=3
 local TALENTS_MAX_ROW	=7
 
-
-
-local report_type		= 2
 
 
 -- Libs
@@ -33,6 +29,7 @@ local LAD					= LibStub("LibArtifactData-1.0")
 local PersoLib			  	= LibStub("PersoLib")
 
 --UI
+local variablesLoaded=false
 local mainframe 
 local mainframeCreated=false
 local stringframeCreated=false
@@ -79,6 +76,21 @@ local mainGroup
 local resultGroup
 local tablePreCheck={}
 
+-- Parameters
+local ITEM_COUNT_THRESHOLD 		= 22
+local COPY_THRESHOLD 			= 500
+local defaultSettings={
+	report_type			= 2,
+	ilvl_threshold 		= 800,
+	enchant_neck		= 0,
+	enchant_back		= 0,	
+	enchant_ring		= 0,		
+	gems				= 0,	
+	sets				= 0,
+	generateStart		= true
+}
+local actualSettings={}
+
 -- load stuff from extras.lua
 local slotNames     	= SimPermut.slotNames
 local simcSlotNames 	= SimPermut.simcSlotNames
@@ -107,23 +119,38 @@ SLASH_SIMPERMUTSLASHDEBUG1 = "/SimPermutDebug"
 -------------Test-----------------
 SLASH_SIMPERMUTSLASHTEST1 = "/Simtest"
 SlashCmdList["SIMPERMUTSLASHTEST"] = function (arg)
-	local artifactID,artifactData = LAD:GetArtifactInfo() 
+	-- local artifactID,artifactData = LAD:GetArtifactInfo() 
 	
-	for i=1,TALENTS_MAX_ROW do
-		for j=1,TALENTS_MAX_COLUMN do
-			local _,nametalent=GetTalentInfo(i,j,GetActiveSpecGroup())
-			print(nametalent)
-		end
-	end
-
+	-- for i=1,TALENTS_MAX_ROW do
+		-- for j=1,TALENTS_MAX_COLUMN do
+			-- local _,nametalent=GetTalentInfo(i,j,GetActiveSpecGroup())
+			-- print(nametalent)
+		-- end
+	-- end
+	
+	print(actualSettings.report_type)
+	print(actualSettings.ilvl_threshold)
+	print(actualSettings.enchant_neck)
+	print(actualSettings.enchant_back)
+	print(actualSettings.enchant_ring)
+	print(actualSettings.gems)
+	print(actualSettings.sets)
+	print(actualSettings.generateStart)
 end
 -------------Test-----------------
 
 -- Command UI
 SlashCmdList["SIMPERMUTSLASH"] = function (arg)
+	
 	if mainframeCreated and mainframe:IsShown() then
 		mainframe:Hide()
 	else
+		if not variablesLoaded then
+			if not SimPermutVars then SimPermutVars = {} end
+			PersoLib:MergeTables(defaultSettings,SimPermutVars,actualSettings)
+			variablesLoaded=true
+		end
+	
 		--handle commandline
 		for i=1,#listNames do
 			if string.match(arg, listNames[i]) then
@@ -156,7 +183,6 @@ end
 
 function SimPermut:OnDisable()
 end
-
 
 ----------------------------
 ----------- UI -------------
@@ -194,16 +220,20 @@ function SimPermut:BuildFrame()
 	mainframe:AddChild(labelSpacer)
 	
 
-	if currentFrame==1 then
+	if currentFrame==1 then --gear
 		currentFrame=1
 		SimPermut:BuildGearFrame()
 		SimPermut:BuildResultFrame(true)
 		SimPermut:InitGearFrame()
-	elseif currentFrame==2 then
+	elseif currentFrame==2 then --talents
 		currentFrame=2
 		SimPermut:BuildTalentFrame()
 		SimPermut:BuildResultFrame(false)
 		SimPermut:GenerateTalents()
+	elseif currentFrame==3 then --options
+		currentFrame=3
+		SimPermut:BuildOptionFrame()
+		SimPermut:BuildResultFrame(false)
 	end
 end
 
@@ -242,7 +272,7 @@ function SimPermut:BuildGearFrame()
 	local dropdownEnchantNeck = AceGUI:Create("Dropdown")
 	dropdownEnchantNeck:SetWidth(130)
 	dropdownEnchantNeck:SetList(enchantNeck)
-	dropdownEnchantNeck:SetValue(0)
+	dropdownEnchantNeck:SetValue(actualSettings.enchant_neck)
 	dropdownEnchantNeck:SetCallback("OnValueChanged", function (this, event, item)
 		actualEnchantNeck=item
     end)
@@ -254,7 +284,7 @@ function SimPermut:BuildGearFrame()
 	local dropdownEnchantBack = AceGUI:Create("Dropdown")
 	dropdownEnchantBack:SetWidth(110)
 	dropdownEnchantBack:SetList(enchantCloak)
-	dropdownEnchantBack:SetValue(0)
+	dropdownEnchantBack:SetValue(actualSettings.enchant_back)
 	dropdownEnchantBack:SetCallback("OnValueChanged", function (this, event, item)
 		actualEnchantBack=item
     end)
@@ -266,7 +296,7 @@ function SimPermut:BuildGearFrame()
 	local dropdownEnchantFinger = AceGUI:Create("Dropdown")
 	dropdownEnchantFinger:SetWidth(110)
 	dropdownEnchantFinger:SetList(enchantRing)
-	dropdownEnchantFinger:SetValue(0)
+	dropdownEnchantFinger:SetValue(actualSettings.enchant_ring)
 	dropdownEnchantFinger:SetCallback("OnValueChanged", function (this, event, item)
 		actualEnchantFinger=item
     end)
@@ -278,10 +308,10 @@ function SimPermut:BuildGearFrame()
 	local dropdownGem = AceGUI:Create("Dropdown")
 	dropdownGem:SetList(gemList)
 	dropdownGem:SetWidth(110)
+	dropdownGem:SetValue(actualSettings.gems)
 	dropdownGem:SetCallback("OnValueChanged", function (this, event, item)
 		actualGem=item
     end)
-	dropdownGem:SetValue(0)
 	
 	checkBoxForce = AceGUI:Create("CheckBox")
 	checkBoxForce:SetWidth(250)
@@ -333,10 +363,11 @@ function SimPermut:BuildGearFrame()
 	local dropdownSets = AceGUI:Create("Dropdown")
 	dropdownSets:SetList(SetsList)
 	dropdownSets:SetWidth(110)
+	dropdownSets:SetValue(actualSettings.sets)
 	dropdownSets:SetCallback("OnValueChanged", function (this, event, item)
 		actualSets=item
     end)
-	dropdownSets:SetValue(0)
+	
 	
 	local labelSpacerline= AceGUI:Create("Label")
 	labelSpacerline:SetText(" ")
@@ -467,6 +498,21 @@ function SimPermut:BuildTalentFrame()
 	mainframe:AddChild(mainGroup)
 end
 
+-- Field construction for option Frame
+function SimPermut:BuildOptionFrame()
+--minimum ilvl
+--report type
+--default values
+	--enchant neck
+	--enchant back
+	--enchant ring
+	--gems
+	--sets
+	--generate on startut
+	--replace enchant/gems for base
+
+end
+
 -- Field construction for right Panel
 function SimPermut:BuildResultFrame(autoSimcExportVisible)
 	resultGroup = AceGUI:Create("SimpleGroup")
@@ -505,11 +551,6 @@ function SimPermut:BuildResultFrame(autoSimcExportVisible)
 	mainframe:AddChild(resultGroup)
 end
 
--- Empty the main frame to draw an other
-function SimPermut:RAZFrame()
-
-end
-
 -- Init the frame for the first time
 function SimPermut:InitGearFrame()
 	tableTitres={}
@@ -524,7 +565,9 @@ function SimPermut:InitGearFrame()
 	SimPermut:BuildItemFrame()
 	SimPermut:GetSelectedCount()
 	
-	SimPermut:Generate()
+	if actualSettings.generateStart then
+		SimPermut:Generate()
+	end
 	
 	SimPermut:CleanVar()
 end
@@ -1036,7 +1079,7 @@ function SimPermut:GetListItem(strItem,itemLine)
 			_, _, _, _, _, _, itemLink, _, _, itemId = GetContainerItemInfo(bag, slot)
 			if itemLink~=nil then
 				_,_,_,ilvl = GetItemInfo(itemLink)
-				if ilvl>= ITEM_THRESHOLD then
+				if ilvl>= actualSettings.ilvl_threshold then
 					linkTable[#linkTable+1]=itemLink
 				end
 			end
@@ -1044,7 +1087,7 @@ function SimPermut:GetListItem(strItem,itemLine)
 			itemLink = GetInventoryItemLink('player', slot)
 			if itemLink~=nil then
 				_,_,_,ilvl = GetItemInfo(itemLink)
-				if ilvl>= ITEM_THRESHOLD then
+				if ilvl>= actualSettings.ilvl_threshold then
 					linkTable[#linkTable+1]=itemLink
 				end
 			end
@@ -1428,7 +1471,7 @@ end
 function SimPermut:GetCopyName(copynumber,pool,nbitem,itemList,nbitems)
 	local returnString="copy="
 	
-	if report_type==1 and itemList then
+	if actualSettings.report_type==1 and itemList then
 		returnString=returnString..itemList
 	else 
 		local nbcopies = ''..nbitems

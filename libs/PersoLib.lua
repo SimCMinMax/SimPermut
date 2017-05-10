@@ -281,3 +281,15 @@ function PersoLib:debugPrint(str,affichedebug)
 		print(str)
 	end
 end
+
+function PersoLib:MergeTables(tableDefault,tableVars,tablereception)
+	for k,v in pairs(tableDefault) do
+		if tableVars[k] == nil then
+			tablereception[k]=v
+		else
+			tablereception[k]=tableVars[k]
+		end
+	end
+	return tablereception
+
+end
