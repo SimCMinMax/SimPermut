@@ -10,7 +10,7 @@ Get it on curse : https://mods.curse.com/addons/wow/254069-simpermut
 
 ## How Can I Use It?
 
-/SimPermut
+/SimPermut [X[+Y[+Z]]]
 
 
 Select the slots to permut from the dropdown on the top left.
@@ -22,6 +22,16 @@ Add enchants and gems on items that don't have any (you can force replace enchan
 Click Generate.
 
 Copy the text and paste in simc.
+
+
+
+You can also add parameters to pre-select an entire slot.
+
+ie: /SimPermut finger+trinket
+
+Will auto-select every ring and trinket and do a permutation with default parameters. 
+
+
 
 ## AutoSimC Export
 
