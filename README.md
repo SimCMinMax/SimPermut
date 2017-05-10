@@ -10,32 +10,28 @@ Get it on curse : https://mods.curse.com/addons/wow/254069-simpermut
 
 ## How Can I Use It?
 
-/SimPermut [X[+Y[+Z]]]
+>**/SimPermut** [X[+Y[+Z...]]]
 
+- Select which items you want to sim.
 
-Select the slots to permut from the dropdown on the top left.
+- Add enchants and gems on items that don't have any (you can force replace enchant and gem by ticking the checkbox).
 
-Select which items you want to sim.
+- Click Generate.
 
-Add enchants and gems on items that don't have any (you can force replace enchant and gem by selecting the force checkbox).
+- Copy the text and paste in simc.
 
-Click Generate.
+>**Note: **
 
-Copy the text and paste in simc.
+>You can also add parameters to pre-select an entire slot.
 
+>ie: /SimPermut finger+trinket
 
-
-You can also add parameters to pre-select an entire slot.
-
-ie: /SimPermut finger+trinket
-
-Will auto-select every ring and trinket and do a permutation with default parameters. 
-
+>Will auto-select every ring and trinket and do a permutation with default parameters. 
 
 
 ## AutoSimC Export
 
-You can now export selected gear to an AutoSimC data (settings.ini) to externalize simc string generation. For a large number of items, it will be faster.
+You can now export selected gear to an **AutoSimC** data (settings.ini) to externalize simc string generation. For a large number of items, it will be faster.
 
 See [AutoSimC on GitHub](https://github.com/SimCMinMax/AutoSimC)
 
@@ -44,6 +40,8 @@ See [AutoSimC on GitHub](https://github.com/SimCMinMax/AutoSimC)
 ## Known issues and developement plan
 
 - Add relic comparison
+
+- Add a config panel for default options
 
 - Add the ability to add gear from dungeon journal to compare
 
@@ -57,4 +55,4 @@ See [AutoSimC on GitHub](https://github.com/SimCMinMax/AutoSimC)
 ## Credits
 Kutikuti 
 
-[Quichons guild](http://www.quichons.fr/) from EU-Elune (fr).
+[Quichons guild](http://www.quichons.fr/) from EU-Elune (fr)
