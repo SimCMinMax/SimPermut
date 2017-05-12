@@ -1259,7 +1259,7 @@ end
 
 -- get the list of items of a slot
 function SimPermut:GetListItem(strItem,itemLine)
-	local texture, count, locked, quality, readable, lootable, isFiltered, hasNoValue, itemId, itemLink, itemstring, ilvl, name
+	local texture, count, locked, quality, readable, lootable, isFiltered, hasNoValue, itemId, itemLink, itemstring, ilvl, name, itemRarity
 	local permutTable={}
 	local itemidTable={}
 	local linkTable={}
@@ -1303,16 +1303,16 @@ function SimPermut:GetListItem(strItem,itemLine)
 		if bags then
 			_, _, _, _, _, _, itemLink, _, _, itemId = GetContainerItemInfo(bag, slot)
 			if itemLink~=nil then
-				_,_,_,ilvl = GetItemInfo(itemLink)
-				if ilvl >= actualSettings.ilvl_thresholdMin and ilvl <= actualSettings.ilvl_thresholdMax then
+				_,_,itemRarity,ilvl = GetItemInfo(itemLink)
+				if (ilvl >= actualSettings.ilvl_thresholdMin and ilvl <= actualSettings.ilvl_thresholdMax) or itemRarity==7 then
 					linkTable[#linkTable+1]=itemLink
 				end
 			end
 		else
 			itemLink = GetInventoryItemLink('player', slot)
 			if itemLink~=nil then
-				_,_,_,ilvl = GetItemInfo(itemLink)
-				if ilvl >= actualSettings.ilvl_thresholdMin and ilvl <= actualSettings.ilvl_thresholdMax then
+				_,_,itemRarity,ilvl = GetItemInfo(itemLink)
+				if (ilvl >= actualSettings.ilvl_thresholdMin and ilvl <= actualSettings.ilvl_thresholdMax) or itemRarity==7 then
 					linkTable[#linkTable+1]=itemLink
 				end
 			end
