@@ -175,14 +175,14 @@ SimPermut.enchantCloak = {
 SimPermut.enchantRing = {
   [0] 	 = 'Untouched',
   [5427] = '+200 Crit',
-  [5428] = '+200 Hast',
+  [5428] = '+200 Haste',
   [5429] = '+200 Mast',
   [5430] = '+200 Vers'
 }
 SimPermut.gemList = {
   [0] 	 = 'Untouched',
   [130219] = '+150 Crit',
-  [130220] = '+150 Hast',
+  [130220] = '+150 Haste',
   [130222] = '+150 Mast',
   [130221] = '+150 Vers',
   [130246] = '+200 Str',
