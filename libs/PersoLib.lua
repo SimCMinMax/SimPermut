@@ -291,5 +291,4 @@ function PersoLib:MergeTables(tableDefault,tableVars,tablereception)
 		end
 	end
 	return tablereception
-
 end

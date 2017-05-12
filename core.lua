@@ -81,13 +81,16 @@ local ITEM_COUNT_THRESHOLD 		= 22
 local COPY_THRESHOLD 			= 500
 local defaultSettings={
 	report_type			= 2,
-	ilvl_threshold 		= 800,
+	ilvl_thresholdMin 	= 800,
+	ilvl_thresholdMax 	= 999,
 	enchant_neck		= 0,
 	enchant_back		= 0,	
 	enchant_ring		= 0,		
 	gems				= 0,	
 	sets				= 0,
-	generateStart		= true
+	generateStart		= true,
+	replaceEnchants		= false,
+	replaceEnchantsBase	= false
 }
 local actualSettings={}
 
@@ -112,6 +115,7 @@ local RelicTypes		= SimPermut.RelicTypes
 local RelicSlots		= SimPermut.RelicSlots
 local HasTierSets 		= SimPermut.HasTierSets
 local FrameMenu 		= SimPermut.FrameMenu
+local ReportType 		= SimPermut.ReportType
 
 SLASH_SIMPERMUTSLASH1 = "/SimPermut"
 SLASH_SIMPERMUTSLASHDEBUG1 = "/SimPermutDebug"
@@ -129,7 +133,8 @@ SlashCmdList["SIMPERMUTSLASHTEST"] = function (arg)
 	-- end
 	
 	print(actualSettings.report_type)
-	print(actualSettings.ilvl_threshold)
+	print(actualSettings.ilvl_thresholdMin)
+	print(actualSettings.ilvl_thresholdMax)
 	print(actualSettings.enchant_neck)
 	print(actualSettings.enchant_back)
 	print(actualSettings.enchant_ring)
@@ -211,10 +216,13 @@ function SimPermut:BuildFrame()
 	frameDropdown:SetValue(currentFrame)
 	frameDropdown:SetCallback("OnValueChanged", function (this, event, item)
 		currentFrame=item
-		mainframe:Release()
+		if mainframe:IsVisible() then
+			mainframe:Release()
+		end
 		SimPermut:BuildFrame()
     end)
 	mainframe:AddChild(frameDropdown)
+	
 	local labelSpacer=AceGUI:Create("Label")
 	labelSpacer:SetFullWidth(true)
 	mainframe:AddChild(labelSpacer)
@@ -233,7 +241,7 @@ function SimPermut:BuildFrame()
 	elseif currentFrame==3 then --options
 		currentFrame=3
 		SimPermut:BuildOptionFrame()
-		SimPermut:BuildResultFrame(false)
+		--SimPermut:BuildResultFrame(false)
 	end
 end
 
@@ -316,6 +324,7 @@ function SimPermut:BuildGearFrame()
 	checkBoxForce = AceGUI:Create("CheckBox")
 	checkBoxForce:SetWidth(250)
 	checkBoxForce:SetLabel("Replace current enchant/gems")
+	checkBoxForce:SetValue(actualSettings.replaceEnchants)
 	checkBoxForce:SetCallback("OnValueChanged", function (this, event, item)
 		actualForce=checkBoxForce:GetValue()
     end)
@@ -500,17 +509,224 @@ end
 
 -- Field construction for option Frame
 function SimPermut:BuildOptionFrame()
---minimum ilvl
---report type
---default values
-	--enchant neck
-	--enchant back
-	--enchant ring
-	--gems
-	--sets
-	--generate on startut
-	--replace enchant/gems for base
-
+	mainGroup = AceGUI:Create("SimpleGroup")
+    mainGroup:SetLayout("Fill")
+    mainGroup:SetRelativeWidth(1)
+	
+	local container1 = AceGUI:Create("SimpleGroup")
+	container1:SetFullWidth(true)
+	container1:SetHeight(600)
+	container1:SetLayout("Flow")
+	mainGroup:AddChild(container1)
+	
+	local labeltitre1= AceGUI:Create("Label")
+	labeltitre1:SetText("General options")
+	labeltitre1:SetFullWidth(true)
+	container1:AddChild(labeltitre1)
+	
+	local labelspacer1= AceGUI:Create("Label")
+	labelspacer1:SetFullWidth(true)
+	container1:AddChild(labelspacer1)
+	
+	local labelilvl= AceGUI:Create("Label")
+	labelilvl:SetText("iLvl Threshold")
+	labelilvl:SetWidth(150)
+	container1:AddChild(labelilvl)
+	
+	local ilvlMin= AceGUI:Create("EditBox")
+	ilvlMin:SetText(SimPermutVars.ilvl_thresholdMin)
+	ilvlMin:SetWidth(80)
+	ilvlMin:SetLabel("Min")
+	ilvlMin:SetMaxLetters(3)
+	ilvlMin:SetCallback("OnEnterPressed", function (this, event, item)
+		ilvlMin:SetText(string.match(item, '(%d+)'))
+		if ilvlMin:GetText()=="" then
+			ilvlMin:SetText(SimPermutVars.ilvl_thresholdMin)
+		else
+			SimPermutVars.ilvl_thresholdMin=tonumber(ilvlMin:GetText())
+			PersoLib:MergeTables(defaultSettings,SimPermutVars,actualSettings)
+		end
+    end)
+	container1:AddChild(ilvlMin)
+	
+	local ilvlMax= AceGUI:Create("EditBox")
+	ilvlMax:SetText(SimPermutVars.ilvl_thresholdMax)
+	ilvlMax:SetWidth(80)
+	ilvlMax:SetLabel("Max")
+	ilvlMax:SetMaxLetters(3)
+	ilvlMax:SetCallback("OnEnterPressed", function (this, event, item)
+		ilvlMax:SetText(string.match(item, '(%d+)'))
+		if ilvlMax:GetText()=="" then
+			ilvlMax:SetText(SimPermutVars.ilvl_thresholdMax)
+		else
+			SimPermutVars.ilvl_thresholdMax=tonumber(ilvlMax:GetText())
+			PersoLib:MergeTables(defaultSettings,SimPermutVars,actualSettings)
+		end
+    end)
+	container1:AddChild(ilvlMax)
+	
+	local labelspacer2= AceGUI:Create("Label")
+	labelspacer2:SetFullWidth(true)
+	container1:AddChild(labelspacer2)
+	
+	local labelreportType= AceGUI:Create("Label")
+	labelreportType:SetText("Report Type")
+	labelreportType:SetWidth(150)
+	container1:AddChild(labelreportType)
+	
+	local ReportDropdown = AceGUI:Create("Dropdown")
+    ReportDropdown:SetWidth(160)
+	ReportDropdown:SetList(ReportType)
+	ReportDropdown:SetLabel("")
+	ReportDropdown:SetValue(SimPermutVars.report_type)
+	ReportDropdown:SetCallback("OnValueChanged", function (this, event, item)
+		SimPermutVars.report_type=item
+		PersoLib:MergeTables(defaultSettings,SimPermutVars,actualSettings)
+    end)
+	container1:AddChild(ReportDropdown)
+	
+	local labelspacer3= AceGUI:Create("Label")
+	labelspacer3:SetFullWidth(true)
+	labelspacer3:SetHeight(40)
+	container1:AddChild(labelspacer3)
+	
+	local checkBoxgenerate = AceGUI:Create("CheckBox")
+	checkBoxgenerate:SetWidth(300)
+	checkBoxgenerate:SetLabel("Auto-generate when SimPermut opens")
+	checkBoxgenerate:SetValue(SimPermutVars.generateStart)
+	checkBoxgenerate:SetCallback("OnValueChanged", function (this, event, item)
+		SimPermutVars.generateStart=checkBoxgenerate:GetValue()
+		PersoLib:MergeTables(defaultSettings,SimPermutVars,actualSettings)
+    end)
+	container1:AddChild(checkBoxgenerate)
+	
+	local labelspacer4= AceGUI:Create("Label")
+	labelspacer4:SetFullWidth(true)
+	labelspacer4:SetHeight(40)
+	container1:AddChild(labelspacer4)
+	
+	local checkBoxForceDefault = AceGUI:Create("CheckBox")
+	checkBoxForceDefault:SetWidth(300)
+	checkBoxForceDefault:SetLabel("Replace current enchant/gems for base profile")
+	checkBoxForceDefault:SetValue(SimPermutVars.replaceEnchantsBase)
+	checkBoxForceDefault:SetCallback("OnValueChanged", function (this, event, item)
+		SimPermutVars.replaceEnchantsBase=checkBoxForceDefault:GetValue()
+		PersoLib:MergeTables(defaultSettings,SimPermutVars,actualSettings)
+    end)
+	container1:AddChild(checkBoxForceDefault)
+	
+	
+	local labelspacerInterGrp1= AceGUI:Create("Label")
+	labelspacerInterGrp1:SetFullWidth(true)
+	container1:AddChild(labelspacerInterGrp1)
+	local labelspacerInterGrp2= AceGUI:Create("Label")
+	labelspacerInterGrp2:SetFullWidth(true)
+	container1:AddChild(labelspacerInterGrp2)
+	local labelspacerInterGrp3= AceGUI:Create("Label")
+	labelspacerInterGrp3:SetFullWidth(true)
+	container1:AddChild(labelspacerInterGrp3)
+	
+	
+	local labeltitre2= AceGUI:Create("Label")
+	labeltitre2:SetText("Default values")
+	labeltitre2:SetFullWidth(true)
+	container1:AddChild(labeltitre2)
+	
+	local labelEnchantNeck= AceGUI:Create("Label")
+	labelEnchantNeck:SetText("Enchant Neck")
+	labelEnchantNeck:SetWidth(80)
+	container1:AddChild(labelEnchantNeck)
+	
+	local dropdownEnchantNeck = AceGUI:Create("Dropdown")
+	dropdownEnchantNeck:SetWidth(130)
+	dropdownEnchantNeck:SetList(enchantNeck)
+	dropdownEnchantNeck:SetValue(actualSettings.enchant_neck)
+	dropdownEnchantNeck:SetCallback("OnValueChanged", function (this, event, item)
+		SimPermutVars.enchant_neck=item
+		PersoLib:MergeTables(defaultSettings,SimPermutVars,actualSettings)
+    end)
+	container1:AddChild(dropdownEnchantNeck)
+		
+	local labelEnchantBack= AceGUI:Create("Label")
+	labelEnchantBack:SetText("     Enchant Back")
+	labelEnchantBack:SetWidth(95)
+	container1:AddChild(labelEnchantBack)
+	
+	local dropdownEnchantBack = AceGUI:Create("Dropdown")
+	dropdownEnchantBack:SetWidth(110)
+	dropdownEnchantBack:SetList(enchantCloak)
+	dropdownEnchantBack:SetValue(actualSettings.enchant_back)
+	dropdownEnchantBack:SetCallback("OnValueChanged", function (this, event, item)
+		SimPermutVars.enchant_back=item
+		PersoLib:MergeTables(defaultSettings,SimPermutVars,actualSettings)
+    end)
+	container1:AddChild(dropdownEnchantBack)
+	
+	local labelEnchantFinger= AceGUI:Create("Label")
+	labelEnchantFinger:SetText("     Enchant Ring")
+	labelEnchantFinger:SetWidth(95)
+	container1:AddChild(labelEnchantFinger)
+	
+	local dropdownEnchantFinger = AceGUI:Create("Dropdown")
+	dropdownEnchantFinger:SetWidth(110)
+	dropdownEnchantFinger:SetList(enchantRing)
+	dropdownEnchantFinger:SetValue(actualSettings.enchant_ring)
+	dropdownEnchantFinger:SetCallback("OnValueChanged", function (this, event, item)
+		SimPermutVars.enchant_ring=item
+		PersoLib:MergeTables(defaultSettings,SimPermutVars,actualSettings)
+    end)
+	container1:AddChild(dropdownEnchantFinger)
+	
+	local labelGem= AceGUI:Create("Label")
+	labelGem:SetText("     Gem")
+	labelGem:SetWidth(55)
+	container1:AddChild(labelGem)
+	
+	local dropdownGem = AceGUI:Create("Dropdown")
+	dropdownGem:SetList(gemList)
+	dropdownGem:SetWidth(110)
+	dropdownGem:SetValue(actualSettings.gems)
+	dropdownGem:SetCallback("OnValueChanged", function (this, event, item)
+		SimPermutVars.gems=item
+		PersoLib:MergeTables(defaultSettings,SimPermutVars,actualSettings)
+    end)
+	container1:AddChild(dropdownGem)
+	
+	local labelspacer5= AceGUI:Create("Label")
+	labelspacer5:SetFullWidth(true)
+	labelspacer5:SetHeight(40)
+	container1:AddChild(labelspacer5)
+	
+	local checkBoxForce = AceGUI:Create("CheckBox")
+	checkBoxForce:SetWidth(250)
+	checkBoxForce:SetLabel("Replace current enchant/gems")
+	checkBoxForce:SetCallback("OnValueChanged", function (this, event, item)
+		SimPermutVars.gems=checkBoxForce:GetValue()
+		PersoLib:MergeTables(defaultSettings,SimPermutVars,actualSettings)
+    end)
+	container1:AddChild(checkBoxForce)
+	
+	local labelSpacerFull= AceGUI:Create("Label")
+	labelSpacerFull:SetText("")
+	labelSpacerFull:SetWidth(362)
+	container1:AddChild(labelSpacerFull)
+	
+	local labelSets= AceGUI:Create("Label")
+	labelSets:SetText("Sets (min)")
+	labelSets:SetWidth(63)
+	container1:AddChild(labelSets)
+	
+	local dropdownSets = AceGUI:Create("Dropdown")
+	dropdownSets:SetList(SetsList)
+	dropdownSets:SetWidth(110)
+	dropdownSets:SetValue(actualSettings.sets)
+	dropdownSets:SetCallback("OnValueChanged", function (this, event, item)
+		SimPermutVars.sets=item
+		PersoLib:MergeTables(defaultSettings,SimPermutVars,actualSettings)
+    end)
+	container1:AddChild(dropdownSets)
+	
+	mainframe:AddChild(mainGroup)
 end
 
 -- Field construction for right Panel
@@ -557,6 +773,15 @@ function SimPermut:InitGearFrame()
 	tableLabel={}
 	tableCheckBoxes={}
 	tableLinkPermut={}
+	
+	actualEnchantNeck=SimPermutVars.enchant_neck
+	actualEnchantFinger=SimPermutVars.enchant_ring
+	actualEnchantBack=SimPermutVars.enchant_back
+	actualGem=SimPermutVars.gems
+	actualForce=SimPermutVars.replaceEnchants
+	actualSets=SimPermutVars.sets
+	
+	
 	_,tableBaseLink=SimPermut:GetBaseString()
 	
 	editLegMin:SetText(equipedLegendaries)
@@ -822,7 +1047,7 @@ function SimPermut:GetItemString(itemLink,itemType,base)
 	simcItemOptions[#simcItemOptions + 1] = ',id=' .. itemId
 	
 	-- Enchant
-	if base then 
+	if base and not SimPermutVars.replaceEnchantsBase then 
 		if tonumber(itemSplit[OFFSET_ENCHANT_ID]) > 0 then
 			--simcItemOptions[#simcItemOptions + 1] = 'enchant_id=' .. itemSplit[OFFSET_ENCHANT_ID]
 			enchantID=itemSplit[OFFSET_ENCHANT_ID]
@@ -963,7 +1188,7 @@ function SimPermut:GetItemString(itemLink,itemType,base)
 		if stats and stats['EMPTY_SOCKET_PRISMATIC']==1 or (itemRarity== 5 and (itemType== 'neck' or itemType== 'finger1' or itemType== 'finger2')) then
 			hasSocket=true 
 		end
-		if base then
+		if base and not SimPermutVars.replaceEnchantsBase then
 			if tonumber(itemSplit[OFFSET_GEM_ID_1]) ~= 0 then
 				simcItemOptions[#simcItemOptions + 1] = 'gem_id=' .. itemSplit[OFFSET_GEM_ID_1]
 			end
@@ -1079,7 +1304,7 @@ function SimPermut:GetListItem(strItem,itemLine)
 			_, _, _, _, _, _, itemLink, _, _, itemId = GetContainerItemInfo(bag, slot)
 			if itemLink~=nil then
 				_,_,_,ilvl = GetItemInfo(itemLink)
-				if ilvl>= actualSettings.ilvl_threshold then
+				if ilvl >= actualSettings.ilvl_thresholdMin and ilvl <= actualSettings.ilvl_thresholdMax then
 					linkTable[#linkTable+1]=itemLink
 				end
 			end
@@ -1087,7 +1312,7 @@ function SimPermut:GetListItem(strItem,itemLine)
 			itemLink = GetInventoryItemLink('player', slot)
 			if itemLink~=nil then
 				_,_,_,ilvl = GetItemInfo(itemLink)
-				if ilvl>= actualSettings.ilvl_threshold then
+				if ilvl >= actualSettings.ilvl_thresholdMin and ilvl <= actualSettings.ilvl_thresholdMax then
 					linkTable[#linkTable+1]=itemLink
 				end
 			end
@@ -1223,7 +1448,7 @@ end
 -- generates the init string from autosimc
 function SimPermut:GetAutoSimcString()
 	local autoSimcString=""
-	autoSimcString=autoSimcString .. "[Profile]".."\n"
+	autoSimcString=autoSimcString .. "\r".."[Profile]".."\n".."\r"
 	autoSimcString=autoSimcString .. "profilename="..UnitName('player').."\n"
 	autoSimcString=autoSimcString .. "profileid=1".."\n"
 	local _, playerClass = UnitClass('player')
