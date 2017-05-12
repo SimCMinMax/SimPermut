@@ -43,8 +43,6 @@ See [AutoSimC on GitHub](https://github.com/SimCMinMax/AutoSimC)
 
 - Add relic comparison
 
-- Add a config panel for default options
-
 - Add the ability to add gear from dungeon journal to compare
 
 - Artifact Path Permutation

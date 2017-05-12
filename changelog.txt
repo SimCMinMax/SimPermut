@@ -1,3 +1,8 @@
+v1.11 05/12/2017
+[UI]Added command line support to pre-select an entire slot
+[UI]Added an option panel to personalize default parameters
+[FIX]Fixed Heirloom not listing
+
 v1.10.1 05/06/2017
 [FIX]Fixed talent permutation
 [UI]don't print current talents with the talent permut
