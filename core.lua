@@ -774,12 +774,12 @@ function SimPermut:InitGearFrame()
 	tableCheckBoxes={}
 	tableLinkPermut={}
 	
-	actualEnchantNeck=SimPermutVars.enchant_neck
-	actualEnchantFinger=SimPermutVars.enchant_ring
-	actualEnchantBack=SimPermutVars.enchant_back
-	actualGem=SimPermutVars.gems
-	actualForce=SimPermutVars.replaceEnchants
-	actualSets=SimPermutVars.sets
+	actualEnchantNeck=actualSettings.enchant_neck
+	actualEnchantFinger=actualSettings.enchant_ring
+	actualEnchantBack=actualSettings.enchant_back
+	actualGem=actualSettings.gems
+	actualForce=actualSettings.replaceEnchants
+	actualSets=actualSettings.sets
 	
 	
 	_,tableBaseLink=SimPermut:GetBaseString()
@@ -1054,7 +1054,7 @@ function SimPermut:GetItemString(itemLink,itemType,base)
 		end
 	else
 		if itemType=="neck" then
-			if actualForce and actualEnchantNeck~=0 then
+			if (actualForce or (base and SimPermutVars.replaceEnchantsBase)) and actualEnchantNeck~=0 then
 				--simcItemOptions[#simcItemOptions + 1] = 'enchant_id=' .. actualEnchantNeck
 				enchantID=actualEnchantNeck
 			else	
@@ -1069,7 +1069,7 @@ function SimPermut:GetItemString(itemLink,itemType,base)
 				end
 			end
 		elseif itemType=="back" then
-			if actualForce and actualEnchantBack~=0 then
+			if (actualForce or (base and SimPermutVars.replaceEnchantsBase))  and actualEnchantBack~=0 then
 				--simcItemOptions[#simcItemOptions + 1] = 'enchant_id=' .. actualEnchantBack
 				enchantID=actualEnchantBack
 			else
@@ -1084,7 +1084,7 @@ function SimPermut:GetItemString(itemLink,itemType,base)
 				end
 			end
 		elseif string.match(itemType, 'finger*') then
-			if actualForce and actualEnchantFinger~=0 then
+			if (actualForce or (base and SimPermutVars.replaceEnchantsBase))  and actualEnchantFinger~=0 then
 				--simcItemOptions[#simcItemOptions + 1] = 'enchant_id=' .. actualEnchantFinger
 				enchantID=actualEnchantFinger
 			else
@@ -1106,7 +1106,7 @@ function SimPermut:GetItemString(itemLink,itemType,base)
 		end
 	end
 	
-	if enchantID ~= "" then
+	if enchantID and enchantID ~= "" then
 		simcItemOptions[#simcItemOptions + 1] = 'enchant_id=' .. enchantID
 		--bonuspool=SimPermut:StatAddBonus(bonuspool,"enchant",itemType,enchantID)
 	end
@@ -1193,15 +1193,15 @@ function SimPermut:GetItemString(itemLink,itemType,base)
 				simcItemOptions[#simcItemOptions + 1] = 'gem_id=' .. itemSplit[OFFSET_GEM_ID_1]
 			end
 		else
-			if actualForce and actualGem~=0 then
-				if actualGem~=0 and (hasSocket or tonumber(itemSplit[OFFSET_GEM_ID_1]) ~= 0) then
+			if (actualForce or (base and SimPermutVars.replaceEnchantsBase)) and actualGem~=0 then
+				if actualGem and actualGem~=0 and (hasSocket or tonumber(itemSplit[OFFSET_GEM_ID_1]) ~= 0) then
 					simcItemOptions[#simcItemOptions + 1] = 'gem_id=' .. actualGem
 				end
 			else
 				if tonumber(itemSplit[OFFSET_GEM_ID_1]) ~= 0 then
 					simcItemOptions[#simcItemOptions + 1] = 'gem_id=' .. itemSplit[OFFSET_GEM_ID_1]
 				else
-					if actualGem~=0 and hasSocket then
+					if actualGem and actualGem~=0 and hasSocket then
 						simcItemOptions[#simcItemOptions + 1] = 'gem_id=' .. actualGem
 					end
 				end

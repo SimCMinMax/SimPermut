@@ -1,3 +1,6 @@
+v1.11 05/13/2017
+[FIX]Fix generation
+
 v1.11 05/12/2017
 [UI]Added command line support to pre-select an entire slot
 [UI]Added an option panel to personalize default parameters
