@@ -1,9 +1,9 @@
-## Interface: 70100
+## Interface: 70200
 ## Title: Lib: ArtifactData-1.0
 ## Notes: Provides data about all artifacts in the player's possession.
 ## Author: Rainrider
 ## X-Category: Library
-## Version: @project-version@
+## Version: 1.2
 ## LoadOnDemand: 1
 ## OptionalDeps: AdiDebug
 
