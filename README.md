@@ -41,11 +41,15 @@ See [AutoSimC on GitHub](https://github.com/SimCMinMax/AutoSimC)
 
 ## Known issues and developement plan
 
-- Add relic comparison
+- Add relic comparison (Complete relic coice, default trait selection with currently equiped, ability to select relic ilevel or weapon ilevel)
+
+- Epic Gem management
 
 - Add the ability to add gear from dungeon journal to compare
 
 - Artifact Path Permutation
+
+- Fix timewalking gear
 
 [- Better way of detecting sets]
  
