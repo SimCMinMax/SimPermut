@@ -276,6 +276,15 @@ function PersoLib:GetIDFromLink(itemLink)
 	return itemSplit[1]
 end
 
+-- get item id from link
+function PersoLib:GetILVLFromLink(itemLink)
+	local ilvl
+	print(itemLink)
+	_,_,_,ilvl = GetItemInfo(itemLink)
+	print(ilvl)
+	return ilvl
+end
+
 function PersoLib:debugPrint(str,affichedebug)
 	if affichedebug then
 		print(str)
@@ -292,3 +301,18 @@ function PersoLib:MergeTables(tableDefault,tableVars,tablereception)
 	end
 	return tablereception
 end
+
+function PersoLib:OrdreTraitTable(ArtifactTableTraitsOrder,ArtifactTableTraits)
+	local n
+	for k,v in pairs(ArtifactTableTraits) do
+		ArtifactTableTraitsOrder[k]={}
+		n=1
+		print(k)
+		for k2,v2 in ipairs(ArtifactTableTraits[k]) do
+			ArtifactTableTraitsOrder[k][n]=k2
+			print("-"..k2)
+			n=n+1
+		end
+	end
+end
+
