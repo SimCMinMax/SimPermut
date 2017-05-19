@@ -279,9 +279,7 @@ end
 -- get item id from link
 function PersoLib:GetILVLFromLink(itemLink)
 	local ilvl
-	print(itemLink)
 	_,_,_,ilvl = GetItemInfo(itemLink)
-	print(ilvl)
 	return ilvl
 end
 
