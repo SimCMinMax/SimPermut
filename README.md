@@ -41,7 +41,7 @@ See [AutoSimC on GitHub](https://github.com/SimCMinMax/AutoSimC)
 
 ## Known issues and developement plan
 
-- Add relic comparison (Complete relic coice, default trait selection with currently equiped, ability to select relic ilevel or weapon ilevel)
+- Add relic comparison (Complete relic coice, default trait selection with currently equiped)
 
 - Epic Gem management
 
@@ -51,9 +51,13 @@ See [AutoSimC on GitHub](https://github.com/SimCMinMax/AutoSimC)
 
 - Fix timewalking gear
 
+- Add a way to add simc parameters
+
 [- Better way of detecting sets]
  
 [-Faster algorithm for string generation]
+
+[-Better way of ordering relics]
 
 
 ## Credits
