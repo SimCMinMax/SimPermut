@@ -1,4 +1,8 @@
-v1.11 05/13/2017
+v1.12-beta 05/19/2019
+[UI]Added an artifact generator/comparison
+[CODE]Update artifact lib
+
+v1.11.1 05/13/2017
 [FIX]Fix generation
 
 v1.11 05/12/2017
