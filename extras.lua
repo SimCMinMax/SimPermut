@@ -55,102 +55,102 @@ SimPermut.ArtifactTable = {
 SimPermut.ArtifactTableTraits = {
 	-- Death Knight
 	[128402] = {},
-	[128292] = {},--
-	[128403] = {},--
+	[128292] = {[0]="Current trait",[135576]="Howling Blast dmg",[137399]="Obliterate crit dmg",[132806]="Armor",[147108]="Remorseless Winter dmg",[145370]="Frost dmg",[142512]="Obliterate generation",[133088]="Death Strike heal",[142310]="Razorice runeforge dmg",[133122]="Frost Strike+Obliterate dmg"},--Frost
+	[128403] = {[0]="Current trait",[132319]="Dark Transformation duration",[133010]="Festering Strike dmg",[132987]="Max runic power & generation", [133107]="Fallen Crusader up",[133055]="Virulent Plague dmg",[141522]="Scourge Strike generation",[135571]="AMS & IF up",[143701]="AOE dmg down",[147756]="Death Coil dmg"},--Unholy
 	-- Demon Hunter
-	[127829] = {},--
+	[127829] = {[0]="Current trait",[137476]="Throw Glaive dmg",[147755]="Metamorphosis CD",[147086]="Chaos Strike crit", [141255]="Fury generation when dodging",[139267]="Chaos Nova stun",[136687]="Eye Beam dmg",[144512]="Magic dmg reduction",[132337]="Max Fury",[133095]="Demon's Bite dmg"},--Havoc
 	[128832] = {},
 	-- Druid
-	[128858] = {},--
-	[128860] = {},--
+	[128858] = {[0]="Current trait",[133030]="Stellar Empowerment dmg",[132799]="Heal on dmg",[140813]="Lunar Strike crit",[142176]="Empowerments bonus dmg",[147076]="Sunfire dmg",[132305]="Moonfire dmg",[142175]="Solar Wrath dmg",[132984]="Starsurge crit",[141272]="Moonkin Form armor"},--Balance/
+	[128860] = {[0]="Current trait",[139263]="Rake dmg",[141290]="Swipe dmg",[143803]="Shred crit",[133047]="Survival Instinct duration",[142309]="Tiger's Fury generation",[144458]="Berserk dmg bonus",[138228]="Rip dmg",[140838]="Ferocious Bite crit dmg",[134079]="Regrowth heal"},--Feral
 	[128821] = {},
 	[128306] = {},
 	-- Hunter
-	[128861] = {},--
-	[128826] = {},--
-	[128808] = {},--
+	[128861] = {[0]="Current trait",[]="",[]="",[]="",[]="",[]="",[]="",[]="",[]="",[]=""},--Beast Mastery
+	[128826] = {[0]="Current trait",[]="",[]="",[]="",[]="",[]="",[]="",[]="",[]="",[]=""},--Marksmanship
+	[128808] = {[0]="Current trait",[]="",[]="",[]="",[]="",[]="",[]="",[]="",[]="",[]=""},--Survival
 	-- Mage
-	[127857] = {},--
-	[128820] = {},--
-	[128862] = {},--
+	[127857] = {[0]="Current trait",[]="",[]="",[]="",[]="",[]="",[]="",[]="",[]="",[]=""},--Arcane
+	[128820] = {[0]="Current trait",[]="",[]="",[]="",[]="",[]="",[]="",[]="",[]="",[]=""},--Fire
+	[128862] = {[0]="Current trait",[]="",[]="",[]="",[]="",[]="",[]="",[]="",[]="",[]=""},--Frost
 	-- Monk
 	[128938] = {},
-	[128937] = {},--
+	[128937] = {[0]="Current trait",[133016]="Rising Sun Kick dmg",[132993]="Touch of Death CD",[137468]="Dodge up",[146932]="Fist of Fury dmg",[144531]="Max Energy up",[137365]="Tiger Palm dmg",[132808]="Transcendence heal",[141514]="Spinning Crane Kick dmg",[137421]="Blackout Kick no chi"},--Windwalker/
 	[128940] = {},
 	-- Paladin
 	[128823] = {},
 	[128866] = {},
-	[120978] = {},--
+	[120978] = {[0]="Current trait",[140411]="Divine Storm dmg",[135572]="Templar's Verdict dmg",[147097]="Blade of Justice dmg",[143695]="Crusader Strike crit",[147758]="Judgment dmg",[136717]="Avenging Wrath duration",[137402]="Shield of Vengeance CD",[140042]="Blessing of Protection CD",[137548]="Flash of Light heal"},--Retribution
 	-- Priest
 	[128868] = {},
 	[128825] = {},
-	[128827] = {[135576]="SWP dmg",[133100]="VT dmg",[152512]="Shadow dmg",[141518]="MB dmg",[133026]="VT Apparition",[132783]="SWD dmg",[142310]="MS dmg",[133088]="Disp CD",[132806]="SM heal"},
+	[128827] = {[0]="Current trait",[135576]="Shadow Word Pain dmg",[133100]="Vampiric Touch dmg",[152512]="Shadow dmg",[141518]="Mind Blast dmg",[133026]="Vampiric Touch Apparition",[132783]="Shadow Word Death dmg",[142310]="Mind Sear dmg",[133088]="Dispersion CD",[132806]="ShadowMeld heal"},--Shadow
 	-- Rogue
-	[128870] = {},--
-	[128872] = {},--
-	[128476] = {},--
+	[128870] = {[0]="Current trait",[]="",[]="",[]="",[]="",[]="",[]="",[]="",[]="",[]=""},--Assassination
+	[128872] = {[0]="Current trait",[]="",[]="",[]="",[]="",[]="",[]="",[]="",[]="",[]=""},--Outlaw
+	[128476] = {[0]="Current trait",[]="",[]="",[]="",[]="",[]="",[]="",[]="",[]="",[]=""},--Subtlety
 	-- Shaman
-	[128935] = {},--
-	[128819] = {},--
+	[128935] = {[0]="Current trait",[133682]="Flame Shock dmg",[146932]="Chain Lightning dmg",[133016]="EarthQuake dmg",[141514]="Lava Burst crit dmg",[137365]="Lava Burst dmg",[144531]="Nature dmg",[137421]="Earth Shock dmg",[132808]="Heal when low",[137468]="Healing Surge Heal"},--Elemental
+	[128819] = {[0]="Current trait",[141522]="Stormstrike dmg",[132987]="Attack speed bonus",[133107]="Rockbiter generation",[133055]="Windfury dmg",[147756]="Flametongue/Rockbiter/Frostband dmg",[133010]="Lava Lash dmg",[132319]="Ghost wolf generation",[143701]="Astral Shift heal",[135571]="Healing Surge heal"},--Enhancement
 	[128911] = {},
 	-- Warlock
-	[128942] = {},--
-	[128943] = {},--
-	[128941] = {},--
+	[128942] = {[0]="Current trait",[]="",[]="",[]="",[]="",[]="",[]="",[]="",[]="",[]=""},--Affliction
+	[128943] = {[0]="Current trait",[]="",[]="",[]="",[]="",[]="",[]="",[]="",[]="",[]=""},--Demonology
+	[128941] = {[0]="Current trait",[]="",[]="",[]="",[]="",[]="",[]="",[]="",[]="",[]=""},--Destruction
 	-- Warrior
-	[128910] = {},--
-	[128908] = {},--
+	[128910] = {[0]="Current trait",[133122]="Cleave +Whirlwind dmg",[147108]="Whirlwind dmg",[135576]="Slam dmg",[142512]="Tactician's chance bonus",[133100]="Execute crit dmg",[142310]="Mortal Strike&Execute cost",[145370]="Rage max up",[143823]="Heroic Leap +armor",[132806]="Mortal Strike heal"},--Arms
+	[128908] = {[0]="Current trait",[132781]="Rampage dmg",[147101]="Furious Slash dmg",[133075]="Execute crit chance",[144522]="Raging blow dmg",[134081]="Enrage dmg bonus",[140815]="Battle cry crit",[133763]="Charge rage bonus",[147759]="Enrage health bonus",[133120]="Bloodthirst heal"},--Fury
 	[128289] = {}
 }
 
 SimPermut.ArtifactTableTraitsOrder = {
 	-- Death Knight
 	[128402] = {},
-	[128292] = {},--
-	[128403] = {},--
+	[128292] = {0,135576,145370,133122,137399,142512,142310,147108,132806,133088},--Frost
+	[128403] = {0,133055,133107,133010,132319,141522,132987,147756,135571,143701},--Unholy
 	-- Demon Hunter
-	[127829] = {},--
+	[127829] = {0,147086,137476,147755,132337,136687,133095,141255,139267,144512},--Havoc
 	[128832] = {},
 	-- Druid
-	[128858] = {},--
-	[128860] = {},--
+	[128858] = {0,132984,142175,140813,142176,147076,132305,133030,141272,132799},--Balance
+	[128860] = {0,139263,138228,142309,143803,144458,141290,140838,133047,134079},--Feral
 	[128821] = {},
 	[128306] = {},
 	-- Hunter
-	[128861] = {},--
-	[128826] = {},--
-	[128808] = {},--
+	[128861] = {0,},--Beast Mastery
+	[128826] = {0,},--Marksmanship
+	[128808] = {0,},--Survival
 	-- Mage
-	[127857] = {},--
-	[128820] = {},--
-	[128862] = {},--
+	[127857] = {0,},--Arcane
+	[128820] = {0,},--Fire
+	[128862] = {0,},--Frost
 	-- Monk
 	[128938] = {},
-	[128937] = {},--
+	[128937] = {0,133016,146932,144531,137365,137421,141514,132993,137468,132808},--Windwalker
 	[128940] = {},
 	-- Paladin
 	[128823] = {},
 	[128866] = {},
-	[120978] = {},--
+	[120978] = {0,136717,140411,147097,135572,147758,143695,137402,140042,137548},--Retribution
 	-- Priest
 	[128868] = {},
 	[128825] = {},
-	[128827] = {135576,133100,152512,141518,133026,132783,142310,133088,132806},
+	[128827] = {0,135576,133100,152512,141518,133026,132783,142310,133088,132806},--Shadow
 	-- Rogue
-	[128870] = {},--
-	[128872] = {},--
-	[128476] = {},--
+	[128870] = {0,},--Assassination
+	[128872] = {0,},--Outlaw
+	[128476] = {0,},--Subtlety
 	-- Shaman
-	[128935] = {},--
-	[128819] = {},--
-	[128911] = {},
+	[128935] = {0,137365,141514,144531,133682,137421,146932,133016,132808,137468},--Elemental
+	[128819] = {0,132987,133010,133107,141522,133055,147756,132319,143701,135571},--Enhancement
+	[128911] = {0,},
 	-- Warlock
-	[128942] = {},--
-	[128943] = {},--
-	[128941] = {},--
+	[128942] = {0,},--Affliction
+	[128943] = {0,},--Demonology
+	[128941] = {0,},--Destruction
 	-- Warrior
-	[128910] = {},--
-	[128908] = {},--
+	[128910] = {0,142512,142310,145370,147108,133122,135576,133100,143823,132806},--Arms
+	[128908] = {0,140815,134081,144522,132781,147101,133075,133763,147759,133120},--Fury
 	[128289] = {}
 }
 
@@ -339,67 +339,7 @@ SimPermut.HasTierSets = {
     }
   }
 
-SimPermut.RelicSlots = {
-	[127829] = {"Fel","Shadow","Fel"}, -- Havoc DH
-	[128832] = {"Iron","Arcane","Fel"}, -- Vengeance DH
 
-	[128402] = {"Blood","Shadow","Iron"}, -- Blood DK
-	[128292] = {"Frost","Shadow","Frost"}, -- Frost DK
-	[128403] = {"Fire","Shadow","Blood"}, -- Unholy DK
 
-	[128858] = {"Arcane","Life","Arcane"}, -- Balance Druid
-	[128860] = {"Frost","Blood","Life"}, -- Feral Druid
-	[128821] = {"Fire","Blood","Life"}, -- Guardian Druid
-	[128306] = {"Life","Frost","Life"}, -- Restoration Druid
-
-	[128861] = {"Wind","Arcane","Iron"}, -- Beast Mastery Hunter
-	[128826] = {"Wind","Blood","Life"}, -- Marksmanship Hunter
-	[128808] = {"Wind","Iron","Blood"}, -- Survival Hunter
-
-	[127857] = {"Arcane","Frost","Arcane"}, -- Arcane Mage
-	[128820] = {"Fire","Arcane","Fire"}, -- Fire Mage
-	[128862] = {"Frost","Arcane","Frost"}, -- Frost Mage
-
-	[128938] = {"Life","Wind","Iron"}, -- Brewmaster Monk
-	[128937] = {"Frost","Life","Wind"}, -- Mistweaver Monk
-	[128940] = {"Wind","Iron","Wind"}, -- Windwalker Monk
-
-	[128823] = {"Holy","Life","Holy"}, -- Holy Paladin
-	[128866] = {"Holy","Iron","Arcane"}, -- Protection Paladin
-	[120978] = {"Holy","Fire","Holy"}, -- Retribution Paladin
-
-	[128868] = {"Holy","Shadow","Holy"}, -- Discipline Priest
-	[128825] = {"Holy","Life","Holy"}, -- Holy Priest
-	[128827] = {"Shadow","Blood","Shadow"}, -- Shadow Priest
-
-	[128870] = {"Shadow","Iron","Blood"}, -- Assassination Rogue
-	[128872] = {"Blood","Iron","Wind"}, -- Outlaw Rogue
-	[128476] = {"Fel","Shadow","Fel"}, -- Subtlety Rogue
-
-	[128935] = {"Wind","Frost","Wind"}, -- Elemental Shaman
-	[128819] = {"Fire","Iron","Wind"}, -- Enhancement Shaman
-	[128911] = {"Life","Frost","Life"}, -- Restoration Shaman
-
-	[128942] = {"Shadow","Blood","Shadow"}, -- Affliction Warlock
-	[128943] = {"Shadow","Fire","Fel"}, -- Demonology Warlock
-	[128941] = {"Fel","Fire","Fel"}, -- Destruction Warlock
-
-	[128910] = {"Iron","Blood","Shadow"}, -- Arms Warrior
-	[128908] = {"Fire","Wind","Iron"}, -- Fury Warrior
-	[128289] = {"Iron","Blood","Fire"}, -- Protection Warrior
-}
-
-SimPermut.RelicTypes = {
-	["Blood"] = RELIC_SLOT_TYPE_BLOOD,
-	["Shadow"] = RELIC_SLOT_TYPE_SHADOW,
-	["Iron"] = RELIC_SLOT_TYPE_IRON,
-	["Frost"] = RELIC_SLOT_TYPE_FROST,
-	["Fire"] = RELIC_SLOT_TYPE_FIRE,
-	["Fel"] = RELIC_SLOT_TYPE_FEL,
-	["Arcane"] = RELIC_SLOT_TYPE_ARCANE,
-	["Life"] = RELIC_SLOT_TYPE_LIFE,
-	["Wind"] = RELIC_SLOT_TYPE_WIND,
-	["Holy"] = RELIC_SLOT_TYPE_HOLY,
-}
 
 
