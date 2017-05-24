@@ -1819,7 +1819,10 @@ function SimPermut:GetAutoSimcString()
 	autoSimcString=autoSimcString .. "role="..PersoLib:translateRole(role).."\n"
 	autoSimcString=autoSimcString .. "position=back".."\n"
 	autoSimcString=autoSimcString .. "talents="..PersoLib:CreateSimcTalentString().."\n"
-	autoSimcString=autoSimcString .. "artifact="..SimPermut:GetArtifactString().."\n"
+	local artStr=SimPermut:GetArtifactString()
+	if artStr~="" then
+		autoSimcString=autoSimcString .. "artifact="..SimPermut:GetArtifactString().."\n"
+	end
 	autoSimcString=autoSimcString .. "other=".."\n"
 	autoSimcString=autoSimcString .. "[Gear]".."\n"
 	
@@ -2191,7 +2194,7 @@ function SimPermut:GetBaseString()
 	SimPermutProfile = SimPermutProfile .. playerRole .. '\n'
 	SimPermutProfile = SimPermutProfile .. playerTalents .. '\n'
 	SimPermutProfile = SimPermutProfile .. playerSpec .. '\n'
-	if playerArtifact ~= nil then
+	if playerArtifact ~= "" then
 		SimPermutProfile = SimPermutProfile .. "artifact=".. playerArtifact .. '\n'
 	end
 	SimPermutProfile = SimPermutProfile .. '\n'
@@ -2308,19 +2311,23 @@ end
 function SimPermut:GetArtifactString()
 	
 	SocketInventoryItem(INVSLOT_MAINHAND)
-	local str = artifactTable[artifactID] .. ':0:0:0:0'
+	if artifactID and artifactTable[artifactID] then
+		local str = artifactTable[artifactID] .. ':0:0:0:0'
 
-	local powers = ArtifactUI.GetPowers()
-	for i = 1, #powers do
-		local power_id = powers[i]
-		local info = ArtifactUI.GetPowerInfo(power_id)
-		
-		if info.currentRank > 0 and info.currentRank - info.bonusRanks > 0 then
-			str = str .. ':' .. power_id .. ':' .. (info.currentRank - info.bonusRanks)
+		local powers = ArtifactUI.GetPowers()
+		for i = 1, #powers do
+			local power_id = powers[i]
+			local info = ArtifactUI.GetPowerInfo(power_id)
+			
+			if info.currentRank > 0 and info.currentRank - info.bonusRanks > 0 then
+				str = str .. ':' .. power_id .. ':' .. (info.currentRank - info.bonusRanks)
+			end
 		end
+		Clear()
+		
+		return str
 	end
-	Clear()
-	return str
+	return ""
 end
 
 -- check for Tier Sets
