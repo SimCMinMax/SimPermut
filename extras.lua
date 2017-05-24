@@ -86,9 +86,9 @@ SimPermut.ArtifactTableTraits = {
 	[128825] = {},
 	[128827] = {[0]="Current trait",[135576]="Shadow Word Pain dmg",[133100]="Vampiric Touch dmg",[152512]="Shadow dmg",[141518]="Mind Blast dmg",[133026]="Vampiric Touch Apparition",[132783]="Shadow Word Death dmg",[142310]="Mind Sear dmg",[133088]="Dispersion CD",[132806]="ShadowMeld heal"},--Shadow
 	-- Rogue
-	-- [128870] = {[0]="Current trait",[]="",[]="",[]="",[]="",[]="",[]="",[]="",[]="",[]=""},--Assassination
-	-- [128872] = {[0]="Current trait",[]="",[]="",[]="",[]="",[]="",[]="",[]="",[]="",[]=""},--Outlaw
-	-- [128476] = {[0]="Current trait",[]="",[]="",[]="",[]="",[]="",[]="",[]="",[]="",[]=""},--Subtlety
+	[128870] = {[0]="Current trait",[141523]="Vendetta CD",[133020]="Envenom dmg",[133008]="Rupture crit chance",[143524]="Rupture dmg",[143691]="Poisons dmg",[132985]="Mutilate crit chance",[133127]="Fan of Knives proc",[137471]="Sprint CD",[141264]="Cloak of Shadows CDs"},--Assassination/
+	[128872] = {[0]="Current trait",[141278]="Run through dmg",[133016]="Blade Furry regeneration",[133039]="Finishing moves cost",[146932]="Combat Potency generation",[132993]="Pistol Shot crit chance",[144531]="Between the Eyes dmg",[137421]="Adrenaline Rush CD",[137468]="Main Gauche dmg",[132808]="Cloak of Shadows heal"},--Outlaw/
+	[128476] = {[0]="Current trait",[136687]="Eviscerate dmg",[133117]="Shadow Technique generation",[137476]="Shadowstrike dmg",[139267]="Cheap Shot refund",[147086]="Nightblade dmg",[147755]="Shadow Blades duration",[132337]="Backstab dmg",[144512]="Dodge+immune fall",[141255]="Dodge"},--Subtlety/
 	-- Shaman
 	[128935] = {[0]="Current trait",[133682]="Flame Shock dmg",[146932]="Chain Lightning dmg",[133016]="EarthQuake dmg",[141514]="Lava Burst crit dmg",[137365]="Lava Burst dmg",[144531]="Nature dmg",[137421]="Earth Shock dmg",[132808]="Heal when low",[137468]="Healing Surge Heal"},--Elemental
 	[128819] = {[0]="Current trait",[141522]="Stormstrike dmg",[132987]="Attack speed bonus",[133107]="Rockbiter generation",[133055]="Windfury dmg",[147756]="Flametongue/Rockbiter/Frostband dmg",[133010]="Lava Lash dmg",[132319]="Ghost wolf generation",[143701]="Astral Shift heal",[135571]="Healing Surge heal"},--Enhancement
@@ -137,9 +137,9 @@ SimPermut.ArtifactTableTraitsOrder = {
 	[128825] = {},
 	[128827] = {0,133100,135576,152512,141518,133026,132783,142310,133088,132806},--Shadow
 	-- Rogue
-	-- [128870] = {0,},--Assassination
-	-- [128872] = {0,},--Outlaw
-	-- [128476] = {0,},--Subtlety
+	[128870] = {0,141523,143524,133020,132985,133008,133127,143691,137471,141264},--Assassination
+	[128872] = {0,141278,133039,146932,133016,137421,132993,144531,137468,132808},--Outlaw
+	[128476] = {0,139267,136687,147086,137476,147755,133117,132337,144512,141255},--Subtlety
 	-- Shaman
 	[128935] = {0,137365,141514,144531,133682,137421,146932,133016,132808,137468},--Elemental
 	[128819] = {0,132987,133010,133107,141522,133055,147756,132319,143701,135571},--Enhancement
