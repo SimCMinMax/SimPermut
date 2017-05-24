@@ -586,224 +586,292 @@ function SimPermut:BuildRelicFrame()
 	container1:AddChild(labelspacer1)
 	
 	local itemLink = GetInventoryItemLink('player', INVSLOT_MAINHAND)
-    if itemLink then
-		local itemName, itemLevel, itemTexture, artifactIcon
-		itemName, _, _, itemLevel, _, _, _, _, _, itemTexture, _ = GetItemInfo(itemLink)
-		artifactIcon=AceGUI:Create("Icon")
-		if itemTexture then
-			artifactIcon:SetImage(itemTexture)
-		end
-		artifactIcon:SetImageSize(40,40)
-		artifactIcon:SetWidth(60)
-		artifactIcon:SetCallback("OnEnter", function(widget)
-			GameTooltip:SetOwner(widget.frame, "ANCHOR_TOPRIGHT")
-			GameTooltip:SetHyperlink(itemLink)
-			GameTooltip:Show()
-		end)			
-		artifactIcon:SetCallback("OnLeave", function(widget)
-			GameTooltip:Hide()
-		end)
-		container1:AddChild(artifactIcon)
-		
-		if relicComparisonTypeValue==1 then
-			local labelweaponLvl= AceGUI:Create("Label")
-			labelweaponLvl:SetText(itemLevel)
-			labelweaponLvl:SetFont("Fonts\\FRIZQT__.ttf", 14, "OUTLINE, MONOCHROME")
-			labelweaponLvl:SetWidth(50)
-			container1:AddChild(labelweaponLvl)
-		else
-			ilvlWeapon= AceGUI:Create("EditBox")
-			ilvlWeapon:SetWidth(50)
-			ilvlWeapon:SetMaxLetters(3)
-			ilvlWeapon:SetText(itemLevel)
-			ilvlWeapon:SetCallback("OnEnterPressed", function (this, event, item)
-				ilvlWeapon:SetText(string.match(item, '(%d+)'))
-				if ilvlWeapon:GetText()~=nil and ilvlWeapon:GetText()~=""  then
-					if tonumber(ilvlWeapon:GetText())<actualSettings.ilvl_RelicMin then
-						ilvlWeapon:SetText(actualSettings.ilvl_RelicMin)
-					elseif tonumber(ilvlWeapon:GetText())>actualSettings.ilvl_RelicMax then
-						ilvlWeapon:SetText(actualSettings.ilvl_RelicMax)
-					end
-				else
-					ilvlWeapon:SetText(actualSettings.ilvl_RelicMin)
-				end
-			end)
-			container1:AddChild(ilvlWeapon)
-		end
-		
-		local labelweaponName= AceGUI:Create("Label")
-		labelweaponName:SetText("  "..itemName)
-		labelweaponName:SetFont("Fonts\\FRIZQT__.ttf", 18, "OUTLINE, MONOCHROME")
-		labelweaponName:SetWidth(400)
-		container1:AddChild(labelweaponName)
-		
-		local labelspacer2= AceGUI:Create("Label")
-		labelspacer2:SetFullWidth(true)
-		container1:AddChild(labelspacer2)
-		
-		local reliccontainer1 = AceGUI:Create("SimpleGroup")
-		reliccontainer1:SetRelativeWidth(0.33)
-		reliccontainer1:SetLayout("Flow")
-		container1:AddChild(reliccontainer1)
-		
-		local reliccontainer2 = AceGUI:Create("SimpleGroup")
-		reliccontainer2:SetRelativeWidth(0.33)
-		reliccontainer2:SetLayout("Flow")
-		container1:AddChild(reliccontainer2)
-		
-		local reliccontainer3 = AceGUI:Create("SimpleGroup")
-		reliccontainer3:SetRelativeWidth(0.33)
-		reliccontainer3:SetLayout("Flow")
-		container1:AddChild(reliccontainer3)
-		
-		
-		local labelspacer3= AceGUI:Create("Label")
-		labelspacer3:SetRelativeWidth(0.4)
-		reliccontainer1:AddChild(labelspacer3)
-		local relicinfo1= AceGUI:Create("Label")
-		relicinfo1:SetRelativeWidth(0.6)
-		relicinfo1:SetColor(1,.82,0)
-		relicinfo1:SetText(_G["RELIC_SLOT_TYPE_"..artifactData.relics[1].type:upper()])
-		reliccontainer1:AddChild(relicinfo1)
-		
-		local labelspacer4= AceGUI:Create("Label")
-		labelspacer4:SetRelativeWidth(0.4)
-		reliccontainer2:AddChild(labelspacer4)
-		local relicinfo2= AceGUI:Create("Label")
-		relicinfo2:SetRelativeWidth(0.6)
-		relicinfo2:SetColor(1,.82,0)
-		relicinfo2:SetText(_G["RELIC_SLOT_TYPE_"..artifactData.relics[2].type:upper()])
-		reliccontainer2:AddChild(relicinfo2)
-		
-		local labelspacer5= AceGUI:Create("Label")
-		labelspacer5:SetRelativeWidth(0.4)
-		reliccontainer3:AddChild(labelspacer5)
-		local relicinfo3= AceGUI:Create("Label")
-		relicinfo3:SetRelativeWidth(0.6)
-		relicinfo3:SetColor(1,.82,0)
-		relicinfo3:SetText(_G["RELIC_SLOT_TYPE_"..artifactData.relics[3].type:upper()])
-		reliccontainer3:AddChild(relicinfo3)
-		
-		local labelspacer6= AceGUI:Create("Label")
-		labelspacer6:SetFullWidth(true)
-		reliccontainer1:AddChild(labelspacer6)
-		local labelspacer7= AceGUI:Create("Label")
-		labelspacer7:SetRelativeWidth(0.1)
-		reliccontainer1:AddChild(labelspacer7)
-		DropdownTrait1 = AceGUI:Create("Dropdown")
-		DropdownTrait1:SetRelativeWidth(0.8)
-		DropdownTrait1:SetList(ArtifactTableTraits[artifactID],ArtifactTableTraitsOrder[artifactID])
-		DropdownTrait1:SetLabel("")
-		DropdownTrait1:SetValue(0)
-		reliccontainer1:AddChild(DropdownTrait1)
-		
-		local labelspacer8= AceGUI:Create("Label")
-		labelspacer8:SetFullWidth(true)
-		reliccontainer2:AddChild(labelspacer8)
-		local labelspacer9= AceGUI:Create("Label")
-		labelspacer9:SetRelativeWidth(0.1)
-		reliccontainer2:AddChild(labelspacer9)
-		DropdownTrait2 = AceGUI:Create("Dropdown")
-		DropdownTrait2:SetRelativeWidth(0.8)
-		DropdownTrait2:SetList(ArtifactTableTraits[artifactID],ArtifactTableTraitsOrder[artifactID])
-		DropdownTrait2:SetLabel("")
-		DropdownTrait2:SetValue(0)
-		reliccontainer2:AddChild(DropdownTrait2)
-		
-		local labelspacer10= AceGUI:Create("Label")
-		labelspacer10:SetFullWidth(true)
-		reliccontainer3:AddChild(labelspacer10)
-		local labelspacer11= AceGUI:Create("Label")
-		labelspacer11:SetRelativeWidth(0.1)
-		reliccontainer3:AddChild(labelspacer11)
-		DropdownTrait3 = AceGUI:Create("Dropdown")
-		DropdownTrait3:SetRelativeWidth(0.8)
-		DropdownTrait3:SetList(ArtifactTableTraits[artifactID],ArtifactTableTraitsOrder[artifactID])
-		DropdownTrait3:SetLabel("")
-		DropdownTrait3:SetValue(0)
-		reliccontainer3:AddChild(DropdownTrait3)
-		
-		if relicComparisonTypeValue==1 then
-			local labelspacer12= AceGUI:Create("Label")
-			labelspacer12:SetRelativeWidth(0.3)
-			reliccontainer1:AddChild(labelspacer12)
-			ilvlTrait1= AceGUI:Create("EditBox")
-			ilvlTrait1:SetRelativeWidth(0.4)
-			ilvlTrait1:SetMaxLetters(3)
-			ilvlTrait1:SetText(actualSettings.ilvl_RelicMin)
-			-- ilvlTrait1:SetText(PersoLib:GetILVLFromLink(artifactData.relics[1].link))
-			ilvlTrait1:SetCallback("OnEnterPressed", function (this, event, item)
-				ilvlTrait1:SetText(string.match(item, '(%d+)'))
-				if ilvlTrait1:GetText()~=nil and ilvlTrait1:GetText()~=""  then
-					if tonumber(ilvlTrait1:GetText())<actualSettings.ilvl_RelicMin then
-						ilvlTrait1:SetText(actualSettings.ilvl_RelicMin)
-					elseif tonumber(ilvlTrait1:GetText())>actualSettings.ilvl_RelicMax then
-						ilvlTrait1:SetText(actualSettings.ilvl_RelicMax)
-					end
-				else
-					ilvlTrait1:SetText(actualSettings.ilvl_RelicMin)
-				end
-			end)
-			reliccontainer1:AddChild(ilvlTrait1)
-			
-			local labelspacer13= AceGUI:Create("Label")
-			labelspacer13:SetRelativeWidth(0.3)
-			reliccontainer2:AddChild(labelspacer13)
-			ilvlTrait2= AceGUI:Create("EditBox")
-			ilvlTrait2:SetRelativeWidth(0.4)
-			ilvlTrait2:SetMaxLetters(3)
-			ilvlTrait2:SetText(actualSettings.ilvl_RelicMin)
-			-- ilvlTrait2:SetText(PersoLib:GetILVLFromLink(artifactData.relics[2].link))
-			ilvlTrait2:SetCallback("OnEnterPressed", function (this, event, item)
-				ilvlTrait2:SetText(string.match(item, '(%d+)'))
-				if ilvlTrait2:GetText()~=nil and ilvlTrait2:GetText()~="" then
-					if tonumber(ilvlTrait2:GetText())<actualSettings.ilvl_RelicMin then
-						ilvlTrait2:SetText(actualSettings.ilvl_RelicMin)
-					elseif tonumber(ilvlTrait2:GetText())>actualSettings.ilvl_RelicMax then
-						ilvlTrait2:SetText(actualSettings.ilvl_RelicMax)
-					end
-				else
-					ilvlTrait2:SetText(actualSettings.ilvl_RelicMin)
-				end
-			end)
-			reliccontainer2:AddChild(ilvlTrait2)
-			
-			local labelspacer14= AceGUI:Create("Label")
-			labelspacer14:SetRelativeWidth(0.3)
-			reliccontainer3:AddChild(labelspacer14)
-			ilvlTrait3= AceGUI:Create("EditBox")
-			ilvlTrait3:SetRelativeWidth(0.4)
-			ilvlTrait3:SetMaxLetters(3)
-			ilvlTrait3:SetText(actualSettings.ilvl_RelicMin)
-			-- ilvlTrait3:SetText(PersoLib:GetILVLFromLink(artifactData.relics[3].link))
-			ilvlTrait3:SetCallback("OnEnterPressed", function (this, event, item)
-				ilvlTrait3:SetText(string.match(item, '(%d+)'))
-				if ilvlTrait3:GetText()~=nil and ilvlTrait3:GetText()~="" then
-					if tonumber(ilvlTrait3:GetText())<actualSettings.ilvl_RelicMin then
-						ilvlTrait3:SetText(actualSettings.ilvl_RelicMin)
-					elseif tonumber(ilvlTrait3:GetText())>actualSettings.ilvl_RelicMax then
-						ilvlTrait3:SetText(actualSettings.ilvl_RelicMax)
-					end
-				else
-					ilvlTrait3:SetText(actualSettings.ilvl_RelicMin)
-				end
-			end)
-			reliccontainer3:AddChild(ilvlTrait3)
-
-		end
-		
-		local labelspacer15= AceGUI:Create("Label")
-		labelspacer15:SetRelativeWidth(0.4)
-		container1:AddChild(labelspacer15)
-		local buttonGenerate = AceGUI:Create("Button")
-		buttonGenerate:SetText("Generate")
-		buttonGenerate:SetRelativeWidth(0.2)
-		buttonGenerate:SetCallback("OnClick", function()
-			SimPermut:GenerateRelic()
-		end)
-		container1:AddChild(buttonGenerate)
-		
+    if not itemLink then
+		local labeltitre2= AceGUI:Create("Label")
+		labeltitre2:SetText("Artifact not found")
+		labeltitre2:SetFullWidth(true)
+		container1:AddChild(labeltitre2)
+		do return end
 	end
+	
+	local itemName, itemLevel, itemTexture, artifactIcon
+	itemName, _, _, itemLevel, _, _, _, _, _, itemTexture, _ = GetItemInfo(itemLink)
+	artifactIcon=AceGUI:Create("Icon")
+	if itemTexture then
+		artifactIcon:SetImage(itemTexture)
+	end
+	artifactIcon:SetImageSize(40,40)
+	artifactIcon:SetWidth(60)
+	artifactIcon:SetCallback("OnEnter", function(widget)
+		GameTooltip:SetOwner(widget.frame, "ANCHOR_TOPRIGHT")
+		GameTooltip:SetHyperlink(itemLink)
+		GameTooltip:Show()
+	end)			
+	artifactIcon:SetCallback("OnLeave", function(widget)
+		GameTooltip:Hide()
+	end)
+	container1:AddChild(artifactIcon)
+	
+	if relicComparisonTypeValue==1 then
+		local labelweaponLvl= AceGUI:Create("Label")
+		labelweaponLvl:SetText(itemLevel)
+		labelweaponLvl:SetFont("Fonts\\FRIZQT__.ttf", 14, "OUTLINE, MONOCHROME")
+		labelweaponLvl:SetWidth(50)
+		container1:AddChild(labelweaponLvl)
+	else
+		ilvlWeapon= AceGUI:Create("EditBox")
+		ilvlWeapon:SetWidth(50)
+		ilvlWeapon:SetMaxLetters(3)
+		ilvlWeapon:SetText(itemLevel)
+		ilvlWeapon:SetCallback("OnEnterPressed", function (this, event, item)
+			ilvlWeapon:SetText(string.match(item, '(%d+)'))
+			if ilvlWeapon:GetText()~=nil and ilvlWeapon:GetText()~=""  then
+				if tonumber(ilvlWeapon:GetText())<actualSettings.ilvl_RelicMin then
+					ilvlWeapon:SetText(actualSettings.ilvl_RelicMin)
+				elseif tonumber(ilvlWeapon:GetText())>actualSettings.ilvl_RelicMax then
+					ilvlWeapon:SetText(actualSettings.ilvl_RelicMax)
+				end
+			else
+				ilvlWeapon:SetText(actualSettings.ilvl_RelicMin)
+			end
+		end)
+		container1:AddChild(ilvlWeapon)
+	end
+	
+	local labelweaponName= AceGUI:Create("Label")
+	labelweaponName:SetText("  "..itemName)
+	labelweaponName:SetFont("Fonts\\FRIZQT__.ttf", 18, "OUTLINE, MONOCHROME")
+	labelweaponName:SetWidth(400)
+	container1:AddChild(labelweaponName)
+	
+	local labelspacer2= AceGUI:Create("Label")
+	labelspacer2:SetFullWidth(true)
+	container1:AddChild(labelspacer2)
+	
+	local reliccontainer1 = AceGUI:Create("SimpleGroup")
+	reliccontainer1:SetRelativeWidth(0.33)
+	reliccontainer1:SetLayout("Flow")
+	container1:AddChild(reliccontainer1)
+	
+	local reliccontainer2 = AceGUI:Create("SimpleGroup")
+	reliccontainer2:SetRelativeWidth(0.33)
+	reliccontainer2:SetLayout("Flow")
+	container1:AddChild(reliccontainer2)
+	
+	local reliccontainer3 = AceGUI:Create("SimpleGroup")
+	reliccontainer3:SetRelativeWidth(0.33)
+	reliccontainer3:SetLayout("Flow")
+	container1:AddChild(reliccontainer3)
+
+	
+	local labelspacer3= AceGUI:Create("Label")
+	labelspacer3:SetRelativeWidth(0.4)
+	reliccontainer1:AddChild(labelspacer3)
+	local relicinfo1= AceGUI:Create("Label")
+	relicinfo1:SetRelativeWidth(0.6)
+	relicinfo1:SetColor(1,.82,0)
+	relicinfo1:SetText(_G["RELIC_SLOT_TYPE_"..artifactData.relics[1].type:upper()])
+	reliccontainer1:AddChild(relicinfo1)
+	
+	local labelspacer4= AceGUI:Create("Label")
+	labelspacer4:SetRelativeWidth(0.4)
+	reliccontainer2:AddChild(labelspacer4)
+	local relicinfo2= AceGUI:Create("Label")
+	relicinfo2:SetRelativeWidth(0.6)
+	relicinfo2:SetColor(1,.82,0)
+	relicinfo2:SetText(_G["RELIC_SLOT_TYPE_"..artifactData.relics[2].type:upper()])
+	reliccontainer2:AddChild(relicinfo2)
+	
+	local labelspacer5= AceGUI:Create("Label")
+	labelspacer5:SetRelativeWidth(0.4)
+	reliccontainer3:AddChild(labelspacer5)
+	local relicinfo3= AceGUI:Create("Label")
+	relicinfo3:SetRelativeWidth(0.6)
+	relicinfo3:SetColor(1,.82,0)
+	relicinfo3:SetText(_G["RELIC_SLOT_TYPE_"..artifactData.relics[3].type:upper()])
+	reliccontainer3:AddChild(relicinfo3)
+	
+			local labelspacer31= AceGUI:Create("Label")
+	labelspacer31:SetRelativeWidth(0.4)
+	reliccontainer1:AddChild(labelspacer31)
+	_, _, _, itemLevel1, _, _, _, _, _, itemTexture1, _ = GetItemInfo(artifactData.relics[1].link)
+	local artifactRelicIcon1=AceGUI:Create("Icon")
+	if itemTexture then
+		artifactRelicIcon1:SetImage(itemTexture1)
+	end
+	artifactRelicIcon1:SetImageSize(35,35)
+	artifactRelicIcon1:SetRelativeWidth(0.2)
+	-- artifactRelicIcon1:SetWidth(60)
+	artifactRelicIcon1:SetCallback("OnEnter", function(widget)
+		GameTooltip:SetOwner(widget.frame, "ANCHOR_TOPRIGHT")
+		GameTooltip:SetHyperlink(artifactData.relics[1].link)
+		GameTooltip:Show()
+	end)			
+	artifactRelicIcon1:SetCallback("OnLeave", function(widget)
+		GameTooltip:Hide()
+	end)
+	reliccontainer1:AddChild(artifactRelicIcon1)
+	
+	local labelspacer32= AceGUI:Create("Label")
+	labelspacer32:SetRelativeWidth(0.4)
+	reliccontainer2:AddChild(labelspacer32)
+	_, _, _, itemLevel2, _, _, _, _, _, itemTexture2, _ = GetItemInfo(artifactData.relics[2].link)
+	local artifactRelicIcon2=AceGUI:Create("Icon")
+	if itemTexture then
+		artifactRelicIcon2:SetImage(itemTexture2)
+	end
+	artifactRelicIcon2:SetImageSize(35,35)
+	artifactRelicIcon2:SetRelativeWidth(0.2)
+	-- artifactRelicIcon2:SetWidth(60)
+	artifactRelicIcon2:SetCallback("OnEnter", function(widget)
+		GameTooltip:SetOwner(widget.frame, "ANCHOR_TOPRIGHT")
+		GameTooltip:SetHyperlink(artifactData.relics[2].link)
+		GameTooltip:Show()
+	end)			
+	artifactRelicIcon2:SetCallback("OnLeave", function(widget)
+		GameTooltip:Hide()
+	end)
+	reliccontainer2:AddChild(artifactRelicIcon2)
+	
+	local labelspacer33= AceGUI:Create("Label")
+	labelspacer33:SetRelativeWidth(0.4)
+	reliccontainer3:AddChild(labelspacer33)
+	_, _, _, itemLevel3, _, _, _, _, _, itemTexture3, _ = GetItemInfo(artifactData.relics[3].link)
+	local artifactRelicIcon3=AceGUI:Create("Icon")
+	if itemTexture then
+		artifactRelicIcon3:SetImage(itemTexture3)
+	end
+	artifactRelicIcon3:SetImageSize(35,35)
+	artifactRelicIcon3:SetRelativeWidth(0.2)
+	-- artifactRelicIcon3:SetWidth(60)
+	artifactRelicIcon3:SetCallback("OnEnter", function(widget)
+		GameTooltip:SetOwner(widget.frame, "ANCHOR_TOPRIGHT")
+		GameTooltip:SetHyperlink(artifactData.relics[3].link)
+		GameTooltip:Show()
+	end)			
+	artifactRelicIcon3:SetCallback("OnLeave", function(widget)
+		GameTooltip:Hide()
+	end)
+	reliccontainer3:AddChild(artifactRelicIcon3)
+	
+	local labelspacer6= AceGUI:Create("Label")
+	labelspacer6:SetFullWidth(true)
+	reliccontainer1:AddChild(labelspacer6)
+	local labelspacer7= AceGUI:Create("Label")
+	labelspacer7:SetRelativeWidth(0.1)
+	reliccontainer1:AddChild(labelspacer7)
+	DropdownTrait1 = AceGUI:Create("Dropdown")
+	DropdownTrait1:SetRelativeWidth(0.8)
+	DropdownTrait1:SetList(ArtifactTableTraits[artifactID],ArtifactTableTraitsOrder[artifactID])
+	DropdownTrait1:SetLabel("")
+	DropdownTrait1:SetValue(0)
+	reliccontainer1:AddChild(DropdownTrait1)
+	
+	local labelspacer8= AceGUI:Create("Label")
+	labelspacer8:SetFullWidth(true)
+	reliccontainer2:AddChild(labelspacer8)
+	local labelspacer9= AceGUI:Create("Label")
+	labelspacer9:SetRelativeWidth(0.1)
+	reliccontainer2:AddChild(labelspacer9)
+	DropdownTrait2 = AceGUI:Create("Dropdown")
+	DropdownTrait2:SetRelativeWidth(0.8)
+	DropdownTrait2:SetList(ArtifactTableTraits[artifactID],ArtifactTableTraitsOrder[artifactID])
+	DropdownTrait2:SetLabel("")
+	DropdownTrait2:SetValue(0)
+	reliccontainer2:AddChild(DropdownTrait2)
+	
+	local labelspacer10= AceGUI:Create("Label")
+	labelspacer10:SetFullWidth(true)
+	reliccontainer3:AddChild(labelspacer10)
+	local labelspacer11= AceGUI:Create("Label")
+	labelspacer11:SetRelativeWidth(0.1)
+	reliccontainer3:AddChild(labelspacer11)
+	DropdownTrait3 = AceGUI:Create("Dropdown")
+	DropdownTrait3:SetRelativeWidth(0.8)
+	DropdownTrait3:SetList(ArtifactTableTraits[artifactID],ArtifactTableTraitsOrder[artifactID])
+	DropdownTrait3:SetLabel("")
+	DropdownTrait3:SetValue(0)
+	reliccontainer3:AddChild(DropdownTrait3)
+	
+	if relicComparisonTypeValue==1 then
+		local labelspacer12= AceGUI:Create("Label")
+		labelspacer12:SetRelativeWidth(0.3)
+		reliccontainer1:AddChild(labelspacer12)
+		ilvlTrait1= AceGUI:Create("EditBox")
+		ilvlTrait1:SetRelativeWidth(0.4)
+		ilvlTrait1:SetMaxLetters(3)
+		-- ilvlTrait1:SetText(actualSettings.ilvl_RelicMin)
+		ilvlTrait1:SetText(itemLevel1)
+		ilvlTrait1:SetCallback("OnEnterPressed", function (this, event, item)
+			ilvlTrait1:SetText(string.match(item, '(%d+)'))
+			if ilvlTrait1:GetText()~=nil and ilvlTrait1:GetText()~=""  then
+				if tonumber(ilvlTrait1:GetText())<actualSettings.ilvl_RelicMin then
+					ilvlTrait1:SetText(actualSettings.ilvl_RelicMin)
+				elseif tonumber(ilvlTrait1:GetText())>actualSettings.ilvl_RelicMax then
+					ilvlTrait1:SetText(actualSettings.ilvl_RelicMax)
+				end
+			else
+				ilvlTrait1:SetText(actualSettings.ilvl_RelicMin)
+			end
+		end)
+		reliccontainer1:AddChild(ilvlTrait1)
+		
+		local labelspacer13= AceGUI:Create("Label")
+		labelspacer13:SetRelativeWidth(0.3)
+		reliccontainer2:AddChild(labelspacer13)
+		ilvlTrait2= AceGUI:Create("EditBox")
+		ilvlTrait2:SetRelativeWidth(0.4)
+		ilvlTrait2:SetMaxLetters(3)
+		-- ilvlTrait2:SetText(actualSettings.ilvl_RelicMin)
+		ilvlTrait2:SetText(itemLevel2)
+		ilvlTrait2:SetCallback("OnEnterPressed", function (this, event, item)
+			ilvlTrait2:SetText(string.match(item, '(%d+)'))
+			if ilvlTrait2:GetText()~=nil and ilvlTrait2:GetText()~="" then
+				if tonumber(ilvlTrait2:GetText())<actualSettings.ilvl_RelicMin then
+					ilvlTrait2:SetText(actualSettings.ilvl_RelicMin)
+				elseif tonumber(ilvlTrait2:GetText())>actualSettings.ilvl_RelicMax then
+					ilvlTrait2:SetText(actualSettings.ilvl_RelicMax)
+				end
+			else
+				ilvlTrait2:SetText(actualSettings.ilvl_RelicMin)
+			end
+		end)
+		reliccontainer2:AddChild(ilvlTrait2)
+		
+		local labelspacer14= AceGUI:Create("Label")
+		labelspacer14:SetRelativeWidth(0.3)
+		reliccontainer3:AddChild(labelspacer14)
+		ilvlTrait3= AceGUI:Create("EditBox")
+		ilvlTrait3:SetRelativeWidth(0.4)
+		ilvlTrait3:SetMaxLetters(3)
+		-- ilvlTrait3:SetText(actualSettings.ilvl_RelicMin)
+		ilvlTrait3:SetText(itemLevel3)
+		ilvlTrait3:SetCallback("OnEnterPressed", function (this, event, item)
+			ilvlTrait3:SetText(string.match(item, '(%d+)'))
+			if ilvlTrait3:GetText()~=nil and ilvlTrait3:GetText()~="" then
+				if tonumber(ilvlTrait3:GetText())<actualSettings.ilvl_RelicMin then
+					ilvlTrait3:SetText(actualSettings.ilvl_RelicMin)
+				elseif tonumber(ilvlTrait3:GetText())>actualSettings.ilvl_RelicMax then
+					ilvlTrait3:SetText(actualSettings.ilvl_RelicMax)
+				end
+			else
+				ilvlTrait3:SetText(actualSettings.ilvl_RelicMin)
+			end
+		end)
+		reliccontainer3:AddChild(ilvlTrait3)
+	end
+	
+	local labelspacer15= AceGUI:Create("Label")
+	labelspacer15:SetRelativeWidth(0.4)
+	container1:AddChild(labelspacer15)
+	local buttonGenerate = AceGUI:Create("Button")
+	buttonGenerate:SetText("Generate")
+	buttonGenerate:SetRelativeWidth(0.2)
+	buttonGenerate:SetCallback("OnClick", function()
+		SimPermut:GenerateRelic()
+	end)
+	container1:AddChild(buttonGenerate)
+	
 	
 end
 
@@ -2060,11 +2128,38 @@ function SimPermut:GenerateRelicString()
 	local copynb = SimPermut:GetCopyName(relicCopyCount,nil,nil,nil,1)
 	local weaponString,itemLink
 	local returnString=""
+	local artifactID,artifactData = LAD:GetArtifactInfo() 	
+	
 	itemLink = GetInventoryItemLink('player', INVSLOT_MAINHAND)
 	if itemLink and DropdownTrait1:GetValue() and DropdownTrait2:GetValue() and DropdownTrait3:GetValue() 
 		and ((relicComparisonTypeValue==1 and ilvlTrait1:GetText() and ilvlTrait2:GetText() and ilvlTrait3:GetText()) 
 		or (relicComparisonTypeValue==2 and ilvlWeapon:GetText())) then
-			weaponString = SimPermut:OverrideWeapon(itemLink,DropdownTrait1:GetValue(),DropdownTrait2:GetValue(),DropdownTrait3:GetValue(),ilvlTrait1:GetText(),ilvlTrait2:GetText(),ilvlTrait3:GetText(),ilvlWeapon:GetText())
+			local relicid1,relicid2,relicid3,relicilvl1,relicilvl2,relicilvl3,weaponilvl
+			if DropdownTrait1:GetValue()==0 then
+				relicid1=artifactData.relics[1].itemID
+			else
+				relicid1=DropdownTrait1:GetValue()
+			end
+			if DropdownTrait2:GetValue()==0 then
+				relicid2=artifactData.relics[2].itemID
+			else
+				relicid2=DropdownTrait2:GetValue()
+			end
+			if DropdownTrait3:GetValue()==0 then
+				relicid3=artifactData.relics[3].itemID
+			else
+				relicid3=DropdownTrait3:GetValue()
+			end
+			if relicComparisonTypeValue==1 then
+				relicilvl1=ilvlTrait1:GetText()
+				relicilvl2=ilvlTrait2:GetText()
+				relicilvl3=ilvlTrait3:GetText()
+			else
+				weaponilvl=ilvlWeapon:GetText()
+			end
+			
+			
+			weaponString = SimPermut:OverrideWeapon(itemLink,relicid1,relicid2,relicid3,relicilvl1,relicilvl2,relicilvl3,weaponilvl)
 			returnString =  returnString.."\n" ..copynb .. "\n".. "main_hand=" .. weaponString.. '\n'
 			
 			relicCopyCount=relicCopyCount+1
