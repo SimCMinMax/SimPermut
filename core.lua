@@ -540,12 +540,23 @@ function SimPermut:BuildRelicFrame()
     mainGroup:SetLayout("Fill")
 	mainGroup:SetHeight(600)
     mainGroup:SetRelativeWidth(0.65)
+	mainframe:AddChild(mainGroup)
 	
 	local container1 = AceGUI:Create("SimpleGroup")
 	container1:SetFullWidth(true)
 	container1:SetHeight(600)
 	container1:SetLayout("Flow")
 	mainGroup:AddChild(container1)
+	
+	local artifactID,artifactData = LAD:GetArtifactInfo() 	
+	
+	if not ArtifactTableTraits[artifactID] or #ArtifactTableTraits[artifactID] == 0 then
+		local labeltitre2= AceGUI:Create("Label")
+		labeltitre2:SetText("Class/Spec Not yet implemented")
+		labeltitre2:SetFullWidth(true)
+		container1:AddChild(labeltitre2)
+		do return end
+	end
 	
 	local labeltitre1= AceGUI:Create("Heading")
 	labeltitre1:SetText("Artifact Generator")
@@ -646,7 +657,6 @@ function SimPermut:BuildRelicFrame()
 		reliccontainer3:SetLayout("Flow")
 		container1:AddChild(reliccontainer3)
 		
-		local artifactID,artifactData = LAD:GetArtifactInfo() 
 		
 		local labelspacer3= AceGUI:Create("Label")
 		labelspacer3:SetRelativeWidth(0.4)
@@ -685,7 +695,7 @@ function SimPermut:BuildRelicFrame()
 		DropdownTrait1:SetRelativeWidth(0.6)
 		DropdownTrait1:SetList(ArtifactTableTraits[artifactID],ArtifactTableTraitsOrder[artifactID])
 		DropdownTrait1:SetLabel("")
-		DropdownTrait1:SetValue(ArtifactTableTraits[artifactID][1])
+		DropdownTrait1:SetValue(0)
 		reliccontainer1:AddChild(DropdownTrait1)
 		
 		local labelspacer8= AceGUI:Create("Label")
@@ -698,7 +708,7 @@ function SimPermut:BuildRelicFrame()
 		DropdownTrait2:SetRelativeWidth(0.6)
 		DropdownTrait2:SetList(ArtifactTableTraits[artifactID],ArtifactTableTraitsOrder[artifactID])
 		DropdownTrait2:SetLabel("")
-		DropdownTrait2:SetValue(ArtifactTableTraits[artifactID][1])
+		DropdownTrait2:SetValue(0)
 		reliccontainer2:AddChild(DropdownTrait2)
 		
 		local labelspacer10= AceGUI:Create("Label")
@@ -711,7 +721,7 @@ function SimPermut:BuildRelicFrame()
 		DropdownTrait3:SetRelativeWidth(0.6)
 		DropdownTrait3:SetList(ArtifactTableTraits[artifactID],ArtifactTableTraitsOrder[artifactID])
 		DropdownTrait3:SetLabel("")
-		DropdownTrait3:SetValue(ArtifactTableTraits[artifactID][1])
+		DropdownTrait3:SetValue(0)
 		reliccontainer3:AddChild(DropdownTrait3)
 		
 		if relicComparisonTypeValue==1 then
@@ -795,7 +805,7 @@ function SimPermut:BuildRelicFrame()
 		container1:AddChild(buttonGenerate)
 		
 	end
-	mainframe:AddChild(mainGroup)
+	
 end
 
 -- Field construction for option Frame
