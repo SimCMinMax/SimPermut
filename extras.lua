@@ -70,9 +70,9 @@ SimPermut.ArtifactTableTraits = {
 	[128826] = {[0]="Current trait",[140838]="Trueshot CD",[140078]="Marked Shot crit",[141290]="Aimed Shot crit Vulnerable",[142309]="Multi Shot dmg",[138228]="Aimed Shot crit dmg",[143803]="Marked Shot dmg",[144458]="Bursting Shot CD",[134079]="Disengage dmg reduc",[136973]="Aspect of the Turtle heal"},--Marksmanship/
 	[128808] = {[0]="Current trait",[133020]="Mongoose Bite dmg",[133127]="Carve dmg",[132985]="Raptor Strike dmg",[133008]="Flanking Strike crit",[141523]="Explosive Trap dmg",[143524]="Pet's haste",[139260]="Lacerate dmg",[132800]="Exhilaration CD",[141264]="Raptor Strike heal"},--Survival/
 	-- Mage
-	-- [127857] = {[0]="Current trait",[]="",[]="",[]="",[]="",[]="",[]="",[]="",[]="",[]=""},--Arcane
-	-- [128820] = {[0]="Current trait",[]="",[]="",[]="",[]="",[]="",[]="",[]="",[]="",[]=""},--Fire
-	-- [128862] = {[0]="Current trait",[]="",[]="",[]="",[]="",[]="",[]="",[]="",[]="",[]=""},--Frost
+	[127857] = {[0]="Current trait",[132305]="Arcane Blast dmg",[132984]="Arcane Power duration",[132995]="Arcane Missile dmg",[140813]="Arcane Barrage dmg",[133030]="Arcane Explosion dmg",[142175]="Crit chance",[147076]="Arcane Missile proc",[141272]="Displacement CD",[137490]="Prismatic Barrier absorb"},--Arcane/
+	[128820] = {[0]="Current trait",[132987]="Flamestrike dmg",[141522]="Fireball dmg",[133107]="Ignite dmg",[132319]="Pyroblast dmg",[133010]="Fire Blast dmg",[132338]="Fire Ball cast time",[133055]="Fire crit dmg",[143701]="Blazing Barrier reduc",[135571]="Blink heal"},--Fire/
+	[128862] = {[0]="Current trait",[136692]="Ice Lance crit dmg",[141267]="Blizzard crit chance",[132791]="Icy veins CD",[142515]="Frostbolt dmg",[132849]="Brain Freeze proc",[137308]="Flurry dmg",[142308]="Frozen Orb crit dmg",[133141]="Ice Barrier absorb",[137545]="Ice Lance dmg reduc"},--Frost/
 	-- Monk
 	[128938] = {},
 	[128937] = {[0]="Current trait",[133016]="Rising Sun Kick dmg",[132993]="Touch of Death CD",[137468]="Dodge up",[146932]="Fist of Fury dmg",[144531]="Max Energy up",[137365]="Tiger Palm dmg",[132808]="Transcendence heal",[141514]="Spinning Crane Kick dmg",[137421]="Blackout Kick no chi"},--Windwalker/
@@ -121,9 +121,9 @@ SimPermut.ArtifactTableTraitsOrder = {
 	[128826] = {0,141290,138228,143803,140078,142309,140838,144458,134079,136973},--Marksmanship/
 	[128808] = {0,133020,133127,132985,133008,141523,139260,143524,132800,141264},--Survival/
 	-- Mage
-	-- [127857] = {0,},--Arcane
-	-- [128820] = {0,},--Fire
-	-- [128862] = {0,},--Frost
+	[127857] = {0,147076,142175,132305,132995,133030,132984,140813,141272,137490},--Arcane
+	[128820] = {0,133107,133055,132319,141522,132987,133010,132338,143701,135571},--Fire
+	[128862] = {0,136692,132791,137308,132849,142515,141267,142308,133141,137545},--Frost
 	-- Monk
 	[128938] = {},
 	[128937] = {0,133016,146932,144531,137365,137421,141514,132993,137468,132808},--Windwalker
