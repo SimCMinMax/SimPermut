@@ -66,9 +66,9 @@ SimPermut.ArtifactTableTraits = {
 	[128821] = {},
 	[128306] = {},
 	-- Hunter
-	-- [128861] = {[0]="Current trait",[]="",[]="",[]="",[]="",[]="",[]="",[]="",[]="",[]=""},--Beast Mastery
-	-- [128826] = {[0]="Current trait",[]="",[]="",[]="",[]="",[]="",[]="",[]="",[]="",[]=""},--Marksmanship
-	-- [128808] = {[0]="Current trait",[]="",[]="",[]="",[]="",[]="",[]="",[]="",[]="",[]=""},--Survival
+	[128861] = {[0]="Current trait",[133763]="Cobra Shot dmg",[132781]="Multi-Shot dmg",[140815]="Kill command bonus dmg",[133075]="Aspect of the wild duration",[147101]="Beast Cleave dmg",[144522]="Kill command dmg",[134081]="Bestial Wrath bonus dmg",[133120]="Dodge",[147759]="Aspect of the Turtle heal"},--Beast Mastery/
+	[128826] = {[0]="Current trait",[140838]="Trueshot CD",[140078]="Marked Shot crit",[141290]="Aimed Shot crit Vulnerable",[142309]="Multi Shot dmg",[138228]="Aimed Shot crit dmg",[143803]="Marked Shot dmg",[144458]="Bursting Shot CD",[134079]="Disengage dmg reduc",[136973]="Aspect of the Turtle heal"},--Marksmanship/
+	[128808] = {[0]="Current trait",[133020]="Mongoose Bite dmg",[133127]="Carve dmg",[132985]="Raptor Strike dmg",[133008]="Flanking Strike crit",[141523]="Explosive Trap dmg",[143524]="Pet's haste",[139260]="Lacerate dmg",[132800]="Exhilaration CD",[141264]="Raptor Strike heal"},--Survival/
 	-- Mage
 	-- [127857] = {[0]="Current trait",[]="",[]="",[]="",[]="",[]="",[]="",[]="",[]="",[]=""},--Arcane
 	-- [128820] = {[0]="Current trait",[]="",[]="",[]="",[]="",[]="",[]="",[]="",[]="",[]=""},--Fire
@@ -117,9 +117,9 @@ SimPermut.ArtifactTableTraitsOrder = {
 	[128821] = {},
 	[128306] = {},
 	-- Hunter
-	-- [128861] = {0,},--Beast Mastery
-	-- [128826] = {0,},--Marksmanship
-	-- [128808] = {0,},--Survival
+	[128861] = {0,144522,140815,133763,132781,133075,147101,134081,133120,147759},--Beast Mastery/
+	[128826] = {0,141290,138228,143803,140078,142309,140838,144458,134079,136973},--Marksmanship/
+	[128808] = {0,133020,133127,132985,133008,141523,139260,143524,132800,141264},--Survival/
 	-- Mage
 	-- [127857] = {0,},--Arcane
 	-- [128820] = {0,},--Fire
