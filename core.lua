@@ -138,6 +138,10 @@ SLASH_SIMPERMUTSLASHDEBUG1 = "/SimPermutDebug"
 -------------Test-----------------
 SLASH_SIMPERMUTSLASHTEST1 = "/Simtest"
 SlashCmdList["SIMPERMUTSLASHTEST"] = function (arg)
+	local itemLink = GetInventoryItemLink('player', INVSLOT_NECK)
+	print(itemLink)
+	print(GetItemInfo(itemLink))
+	print(PersoLib:GetRealIlvl(itemLink))
 	-- local artifactID,artifactData = LAD:GetArtifactInfo() 
 	
 	-- for i=1,TALENTS_MAX_ROW do
@@ -147,15 +151,15 @@ SlashCmdList["SIMPERMUTSLASHTEST"] = function (arg)
 		-- end
 	-- end
 	
-	print(actualSettings.report_type)
-	print(actualSettings.ilvl_thresholdMin)
-	print(actualSettings.ilvl_thresholdMax)
-	print(actualSettings.enchant_neck)
-	print(actualSettings.enchant_back)
-	print(actualSettings.enchant_ring)
-	print(actualSettings.gems)
-	print(actualSettings.sets)
-	print(actualSettings.generateStart)
+	-- print(actualSettings.report_type)
+	-- print(actualSettings.ilvl_thresholdMin)
+	-- print(actualSettings.ilvl_thresholdMax)
+	-- print(actualSettings.enchant_neck)
+	-- print(actualSettings.enchant_back)
+	-- print(actualSettings.enchant_ring)
+	-- print(actualSettings.gems)
+	-- print(actualSettings.sets)
+	-- print(actualSettings.generateStart)
 end
 -------------Test-----------------
 
@@ -1732,6 +1736,8 @@ function SimPermut:GetListItem(strItem,itemLine)
 			_, _, _, _, _, _, itemLink, _, _, itemId = GetContainerItemInfo(bag, slot)
 			if itemLink~=nil then
 				_,_,itemRarity,ilvl = GetItemInfo(itemLink)
+				
+				ilvl = PersoLib:GetRealIlvl(itemLink)
 				if (ilvl >= actualSettings.ilvl_thresholdMin and ilvl <= actualSettings.ilvl_thresholdMax) or itemRarity==7 then
 					linkTable[#linkTable+1]=itemLink
 				end
@@ -1740,6 +1746,7 @@ function SimPermut:GetListItem(strItem,itemLine)
 			itemLink = GetInventoryItemLink('player', slot)
 			if itemLink~=nil then
 				_,_,itemRarity,ilvl = GetItemInfo(itemLink)
+				ilvl = PersoLib:GetRealIlvl(itemLink)
 				if (ilvl >= actualSettings.ilvl_thresholdMin and ilvl <= actualSettings.ilvl_thresholdMax) or itemRarity==7 then
 					linkTable[#linkTable+1]=itemLink
 				end

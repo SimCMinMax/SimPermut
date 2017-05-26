@@ -360,3 +360,28 @@ function PersoLib:OrdreTraitTable(ArtifactTableTraitsOrder,ArtifactTableTraits)
 	end
 end
 
+function PersoLib:GetRealIlvl(itemLink)
+	local itemString = string.match(itemLink, "item:([%-?%d:]+)")
+	local itemSplit = {}
+	
+	-- Split data into a table
+	for v in string.gmatch(itemString, "(%d*:?)") do
+		if v == ":" then
+		  itemSplit[#itemSplit + 1] = 0
+		else
+		  itemSplit[#itemSplit + 1] = string.gsub(v, ':', '')
+		end
+	end
+	_,_,itemRarity,ilvl = GetItemInfo(itemLink)
+	
+	if tonumber(itemSplit[11])==512 then --timelaking
+		if itemRarity==3 then
+			return 850
+		else
+			return 780
+		end
+	else
+		return ilvl
+	end
+	
+end
