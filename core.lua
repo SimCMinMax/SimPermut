@@ -1996,6 +1996,7 @@ function SimPermut:GetPermutationString(permuttable)
 	local draw = true
 	local str
 	local T192p,T194p
+	local notDrawn=0
 	
 	actualLegMin=tonumber(editLegMin:GetText())
 	actualLegMax=tonumber(editLegMax:GetText())
@@ -2049,6 +2050,7 @@ function SimPermut:GetPermutationString(permuttable)
 				if draw or ad then
 					local adString=""
 					if ad and not draw then
+						notDrawn=notDrawn+1
 						adString=" # Debug not drawn : "
 					end
 					currentString = currentString.. adString ..PermutSimcNames[j] .. "=" .. table.concat(itemString, ',').."\n"
@@ -2065,6 +2067,7 @@ function SimPermut:GetPermutationString(permuttable)
 					end
 				else
 					PersoLib:debugPrint("Not printed: not drawn",ad)
+					notDrawn=notDrawn+1
 				end
 				
 			end
@@ -2101,8 +2104,8 @@ function SimPermut:GetPermutationString(permuttable)
 		PersoLib:debugPrint(str,ad)
 	end
 	
-	if copynumber==0 and selecteditems>14 then
-		str="No copy generated because no other possible combination were found (3 legendaries, same ring/trinket...)"
+	if notDrawn>0 and selecteditems>14 then
+		str="No copy generated because no other possible combination were found (outside boundaries legendaries, same ring/trinket, no 4P...)"
 		mainframe:SetStatusText(str)
 		PersoLib:debugPrint(str,ad)
 	end
