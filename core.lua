@@ -1884,7 +1884,7 @@ function SimPermut:GetAutoSimcString()
 	autoSimcString=autoSimcString .. "race="..PersoLib:tokenize(PersoLib:getRace()).."\n"
 	autoSimcString=autoSimcString .. "level="..UnitLevel('player').."\n"
 	autoSimcString=autoSimcString .. "spec="..PersoLib:tokenize(specNames[ PersoLib:getSpecID() ]).."\n"
-	autoSimcString=autoSimcString .. "role="..PersoLib:translateRole(role).."\n"
+	autoSimcString=autoSimcString .. "role="..PersoLib:translateRole(PersoLib:getSpecID()).."\n"
 	autoSimcString=autoSimcString .. "position=back".."\n"
 	autoSimcString=autoSimcString .. "talents="..PersoLib:CreateSimcTalentString().."\n"
 	local artStr=SimPermut:GetArtifactString()
@@ -2274,7 +2274,7 @@ function SimPermut:GetBaseString()
 	player = playerClass .. '="' .. playerName .. '"'
 	playerLevel = 'level=' .. playerLevel
 	playerRace = 'race=' .. PersoLib:tokenize(playerRace)
-	playerRole = 'role=' .. PersoLib:translateRole(role)
+	playerRole = 'role=' .. PersoLib:translateRole(PersoLib:getSpecID())
 	playerSpec = 'spec=' .. PersoLib:tokenize(playerSpec)
 	playerRealm = 'server=' .. PersoLib:tokenize(playerRealm)
 	playerRegion = 'region=' .. PersoLib:tokenize(playerRegion)

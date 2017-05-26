@@ -58,6 +58,57 @@ local artifactTable 	  	= {
 	[128289] = 11
 }
 
+local RoleTable={
+  -- Death Knight
+  [250] = 'tank',
+  [251] = 'attack',
+  [252] = 'attack',
+  -- Demon Hunter
+  [577] = 'attack',
+  [581] = 'tank',
+  -- Druid
+  [102] = 'spell',
+  [103] = 'attack',
+  [104] = 'tank',
+  [105] = 'heal',
+  -- Hunter
+  [253] = 'attack',
+  [254] = 'attack',
+  [255] = 'attack',
+  -- Mage
+  [62] = 'spell',
+  [63] = 'spell',
+  [64] = 'spell',
+  -- Monk
+  [268] = 'tank',
+  [269] = 'attack',
+  [270] = 'hybrid',
+  -- Paladin
+  [65] = 'heal',
+  [66] = 'tank',
+  [70] = 'attack',
+  -- Priest
+  [256] = 'spell',
+  [257] = 'heal',
+  [258] = 'spell',
+  -- Rogue
+  [259] = 'attack',
+  [260] = 'attack',
+  [261] = 'attack',
+  -- Shaman
+  [262] = 'spell',
+  [263] = 'attack',
+  [264] = 'heal',
+  -- Warlock
+  [265] = 'spell',
+  [266] = 'spell',
+  [267] = 'spell',
+  -- Warrior
+  [71] = 'attack',
+  [72] = 'attack',
+  [73] = 'attack'
+}
+
 -- First letter in caps
 function PersoLib:firstToUpper(str)
     return (str:gsub("^%l", string.upper))
@@ -177,15 +228,10 @@ function PersoLib:CreateSimcTalentString()
 end
 
 -- simc, function that translates between the game's role values and ours
-function PersoLib:translateRole(str)
-  if str == 'TANK' then
-    return PersoLib:tokenize(str)
-  elseif str == 'DAMAGER' then
-    return 'attack'
-  elseif str == 'HEALER' then
-    return 'healer'
-  else
-    return 'spell'
+function PersoLib:translateRole(spec_id)
+  local spec_role = RoleTable[spec_id]
+  if spec_role ~= nil then
+    return spec_role
   end
 end
 
@@ -205,10 +251,10 @@ function PersoLib:getRace()
 end
 
 function PersoLib:getSpecID()
-	local role, globalSpecID
+	local globalSpecID
 	local specId = GetSpecialization()
 	if specId then
-		globalSpecID,_,_,_,_,role = GetSpecializationInfo(specId)
+		globalSpecID = GetSpecializationInfo(specId)
 	end
 	return globalSpecID
 end
