@@ -55,10 +55,10 @@ SimPermut.ArtifactTable = {
 SimPermut.ArtifactTableTraits = {
 	-- Death Knight
 	[128402] = {},
-	[128292] = {[0]="Current trait",[135576]="Howling Blast dmg",[137399]="Obliterate crit dmg",[132806]="Armor",[147108]="Remorseless Winter dmg",[145370]="Frost dmg",[142512]="Obliterate generation",[133088]="Death Strike heal",[142310]="Razorice runeforge dmg",[133122]="Frost Strike+Obliterate dmg"},--Frost
-	[128403] = {[0]="Current trait",[132319]="Dark Transformation duration",[133010]="Festering Strike dmg",[132987]="Max runic power & generation", [133107]="Fallen Crusader up",[133055]="Virulent Plague dmg",[141522]="Scourge Strike generation",[135571]="AMS & IF up",[143701]="AOE dmg down",[147756]="Death Coil dmg"},--Unholy
+	[128292] = {[0]="Current trait",[135576]="Howling Blast dmg",[137399]="Obliterate crit dmg",[132806]="Armor",[147108]="Remorseless Winter dmg",[145370]="Frost dmg",[142512]="Obliterate generation",[133088]="Death Strike heal",[142310]="Razorice runeforge dmg",[133122]="Frost Strike+Obliterate dmg"},--Frost/
+	[128403] = {[0]="Current trait",[132319]="Dark Transformation duration",[133010]="Festering Strike dmg",[132987]="Max runic power & generation", [133107]="Fallen Crusader up",[133055]="Virulent Plague dmg",[141522]="Scourge Strike generation",[135571]="AMS & IF bonus",[143701]="AOE dmg down",[147756]="Death Coil dmg"},--Unholy/
 	-- Demon Hunter
-	[127829] = {[0]="Current trait",[137476]="Throw Glaive dmg",[147755]="Metamorphosis CD",[147086]="Chaos Strike crit", [141255]="Fury generation when dodging",[139267]="Chaos Nova stun",[136687]="Eye Beam dmg",[144512]="Magic dmg reduction",[132337]="Max Fury",[133095]="Demon's Bite dmg"},--Havoc
+	[127829] = {[0]="Current trait",[137476]="Throw Glaive dmg",[147755]="Metamorphosis CD",[147086]="Chaos Strike crit",[141255]="Fury generation when dodging",[139267]="Chaos Nova stun",[136687]="Eye Beam dmg",[144512]="Magic dmg reduction",[132337]="Max Fury",[133095]="Demon's Bite dmg"},--Havoc/
 	[128832] = {},
 	-- Druid
 	[128858] = {[0]="Current trait",[133030]="Stellar Empowerment dmg",[132799]="Heal on dmg",[140813]="Lunar Strike crit",[142176]="Empowerments bonus dmg",[147076]="Sunfire dmg",[132305]="Moonfire dmg",[142175]="Solar Wrath dmg",[132984]="Starsurge crit",[141272]="Moonkin Form armor"},--Balance/
@@ -94,9 +94,9 @@ SimPermut.ArtifactTableTraits = {
 	[128819] = {[0]="Current trait",[141522]="Stormstrike dmg",[132987]="Attack speed bonus",[133107]="Rockbiter generation",[133055]="Windfury dmg",[147756]="Flametongue/Rockbiter/Frostband dmg",[133010]="Lava Lash dmg",[132319]="Ghost wolf generation",[143701]="Astral Shift heal",[135571]="Healing Surge heal"},--Enhancement
 	[128911] = {},
 	-- Warlock
-	-- [128942] = {[0]="Current trait",[]="",[]="",[]="",[]="",[]="",[]="",[]="",[]="",[]=""},--Affliction
-	-- [128943] = {[0]="Current trait",[]="",[]="",[]="",[]="",[]="",[]="",[]="",[]="",[]=""},--Demonology
-	-- [128941] = {[0]="Current trait",[]="",[]="",[]="",[]="",[]="",[]="",[]="",[]="",[]=""},--Destruction
+	[128942] = {[0]="Current trait",[147108]="Unstable Affliction crit chance",[145370]="Agony dmg",[133122]="Corruption dmg",[142512]="Shadow dmg",[142310]="Crit dmg",[133100]="Seed of Corruption dmg",[135576]="Drain life dmg",[133088]="Soul Leech absorb",[132806]="Drain Life heal"},--Affliction/
+	[128943] = {[0]="Current trait",[132987]="Dreadstalkers crit chance",[132319]="Shadow Bolt Crit chance",[147091]="Wild Imp's Firebolt dmg",[141522]="Hand of Gul'dan",[147756]="Demonic Empowerment bonus",[133010]="Demonwrath dmg",[133055]="Doom dmg",[143701]="Unending Resolve CD",[135571]="Soul Link heal"},--Demonology/
+	[128941] = {[0]="Current trait",[137476]="Immolate dmg",[147755]="Immolate crit chance",[136687]="Incinerate cast time",[133095]="Chaos Bolt refund",[147086]="Chaos Bolt crit dmg",[132337]="Incinerate dmg",[139267]="Rain of Fire dmg",[141255]="Life Tap dmg reduc",[144512]="Drain Life proc"},--Destruction/
 	-- Warrior
 	[128910] = {[0]="Current trait",[133122]="Cleave +Whirlwind dmg",[147108]="Whirlwind dmg",[135576]="Slam dmg",[142512]="Tactician's chance bonus",[133100]="Execute crit dmg",[142310]="Mortal Strike&Execute cost",[145370]="Rage max up",[143823]="Heroic Leap +armor",[132806]="Mortal Strike heal"},--Arms
 	[128908] = {[0]="Current trait",[132781]="Rampage dmg",[147101]="Furious Slash dmg",[133075]="Execute crit chance",[144522]="Raging blow dmg",[134081]="Enrage dmg bonus",[140815]="Battle cry crit",[133763]="Charge rage bonus",[147759]="Enrage health bonus",[133120]="Bloodthirst heal"},--Fury
@@ -117,9 +117,9 @@ SimPermut.ArtifactTableTraitsOrder = {
 	[128821] = {},
 	[128306] = {},
 	-- Hunter
-	[128861] = {0,144522,140815,133763,132781,133075,147101,134081,133120,147759},--Beast Mastery/
-	[128826] = {0,141290,138228,143803,140078,142309,140838,144458,134079,136973},--Marksmanship/
-	[128808] = {0,133020,133127,132985,133008,141523,139260,143524,132800,141264},--Survival/
+	[128861] = {0,144522,140815,133763,132781,133075,147101,134081,133120,147759},--Beast Mastery
+	[128826] = {0,141290,138228,143803,140078,142309,140838,144458,134079,136973},--Marksmanship
+	[128808] = {0,133020,133127,132985,133008,141523,139260,143524,132800,141264},--Survival
 	-- Mage
 	[127857] = {0,147076,142175,132305,132995,133030,132984,140813,141272,137490},--Arcane
 	[128820] = {0,133107,133055,132319,141522,132987,133010,132338,143701,135571},--Fire
@@ -145,9 +145,9 @@ SimPermut.ArtifactTableTraitsOrder = {
 	[128819] = {0,132987,133010,133107,141522,133055,147756,132319,143701,135571},--Enhancement
 	[128911] = {},
 	-- Warlock
-	-- [128942] = {0,},--Affliction
-	-- [128943] = {0,},--Demonology
-	-- [128941] = {0,},--Destruction
+	[128942] = {0,142310,142512,147108,145370,133122,135576,133100,133088,132806},--Affliction
+	[128943] = {0,147091,133055,132319,147756,132987,141522,133010,143701,135571},--Demonology
+	[128941] = {0,147755,137476,147086,136687,132337,133095,139267,141255,144512},--Destruction
 	-- Warrior
 	[128910] = {0,142512,142310,145370,147108,133122,135576,133100,143823,132806},--Arms
 	[128908] = {0,140815,134081,144522,132781,147101,133075,133763,147759,133120},--Fury
@@ -235,75 +235,35 @@ SimPermut.SpecNames = {
 }
 
 -- slot name conversion stuff
-
 SimPermut.slotNames = {"HeadSlot", "NeckSlot", "ShoulderSlot", "BackSlot", "ChestSlot", "ShirtSlot", "TabardSlot", "WristSlot", "HandsSlot", "WaistSlot", "LegsSlot", "FeetSlot", "Finger0Slot", "Finger1Slot", "Trinket0Slot", "Trinket1Slot", "MainHandSlot", "SecondaryHandSlot", "AmmoSlot" };    
 SimPermut.simcSlotNames = {'head','neck','shoulder','back','chest','shirt','tabard','wrist','hands','waist','legs','feet','finger1','finger2','trinket1','trinket2','main_hand','off_hand','ammo'}
 SimPermut.listNames = {'head','neck','shoulder','back','chest','wrist','hands','waist','legs','feet','finger','trinket'}
 SimPermut.PermutSimcNames = {'head','neck','shoulder','back','chest','wrist','hands','waist','legs','feet','finger1','finger2','trinket1','trinket2'}
 SimPermut.PermutSlotNames = {"HeadSlot", "NeckSlot", "ShoulderSlot", "BackSlot", "ChestSlot", "WristSlot", "HandsSlot", "WaistSlot", "LegsSlot", "FeetSlot", "Finger0Slot", "Finger1Slot", "Trinket0Slot", "Trinket1Slot"}
-SimPermut.statsString= {"ITEM_MOD_INTELLECT_SHORT", "ITEM_MOD_AGILITY_SHORT", "ITEM_MOD_STRENGTH_SHORT", "ITEM_MOD_HASTE_RATING_SHORT", "ITEM_MOD_CRIT_RATING_SHORT", "ITEM_MOD_MASTERY_RATING_SHORT", "ITEM_MOD_VERSATILITY"}
 
-SimPermut.statsStringCorres= {
-["ITEM_MOD_INTELLECT_SHORT"]='Int', 
-["ITEM_MOD_AGILITY_SHORT"]='Agi', 
-["ITEM_MOD_STRENGTH_SHORT"]='Str', 
-["ITEM_MOD_HASTE_RATING_SHORT"]='Hast', 
-["ITEM_MOD_CRIT_RATING_SHORT"]='Crit', 
-["ITEM_MOD_MASTERY_RATING_SHORT"]='Mast', 
-["ITEM_MOD_VERSATILITY"]='Vers'
-}
-
+-- UI
 SimPermut.FrameMenu={
 	[1]	= "Gear permutation",
 	[2] = "Talent permutation",
 	[3] = "Relic permutation",
 	[4] = "Options"
 }
+SimPermut.RelicComparisonType = {
+  [1] = 'relic ilevel',
+  [2] = 'weapon ilevel'
+}
 
-SimPermut.enchantNeck = {
-	[0] 	= 'Untouched',
-	[5891] 	= 'Ancient Priestess',
-	[5437] 	= 'Claw',
-	[5438] 	= 'Distant Army',
-	[5889] 	= 'Heavy Hide',
-	[5439] 	= 'Hidden Satyr',
-	[5890] 	= 'Trained Soldier'
-}
-SimPermut.enchantCloak = {
-  [0] 	 = 'Untouched',
-  [5434] = '+200 Str',
-  [5435] = '+200 Agi',
-  [5436] = '+200 Int'
-}
-SimPermut.enchantRing = {
-  [0] 	 = 'Untouched',
-  [5427] = '+200 Crit',
-  [5428] = '+200 Haste',
-  [5429] = '+200 Mast',
-  [5430] = '+200 Vers'
-}
-SimPermut.gemList = {
-  [0] 	 = 'Untouched',
-  [130219] = '+150 Crit',
-  [130220] = '+150 Haste',
-  [130222] = '+150 Mast',
-  [130221] = '+150 Vers',
-  [130246] = '+200 Str',
-  [130247] = '+200 Agi',
-  [130248] = '+200 Int'
-}
-SimPermut.Sets = {
-  [0] = 'All',
-  [2] = 'T19 2P',
-  [4] = 'T19 4P'
-}
 SimPermut.ReportType = {
   [1] = 'Item names',
   [2] = 'Copy number'
 }
-SimPermut.RelicComparisonType = {
-  [1] = 'relic ilevel',
-  [2] = 'weapon ilevel'
+SimPermut.ReportTypeGear = {
+  [1] = 'Item names',
+  [2] = 'Copy number'
+}
+SimPermut.ReportTypeTalents = {
+  [1] = 'Talents taken',
+  [2] = 'Copy number'
 }
 
 SimPermut.HasTierSets = {
@@ -338,8 +298,64 @@ SimPermut.HasTierSets = {
       [12] = {[5] = 147127, [4] = 147128, [7] = 147129, [1] = 147130, [9] = 147131, [3] = 147132}   -- Demon Hunter: Chest, Back, Hands, Head, Legs, Shoulder
     }
   }
+SimPermut.Sets = {
+  [0] = 'All',
+  [2] = 'T19 2P',
+  [4] = 'T19 4P'
+}
+
+SimPermut.enchantNeck = {
+	[0] 	= 'Untouched',
+	[5891] 	= 'Ancient Priestess',
+	[5437] 	= 'Claw',
+	[5438] 	= 'Distant Army',
+	[5889] 	= 'Heavy Hide',
+	[5439] 	= 'Hidden Satyr',
+	[5890] 	= 'Trained Soldier'
+}
+SimPermut.enchantCloak = {
+  [0] 	 = 'Untouched',
+  [5434] = '+200 Str',
+  [5435] = '+200 Agi',
+  [5436] = '+200 Int'
+}
+SimPermut.enchantRing = {
+  [0] 	 = 'Untouched',
+  [5427] = '+200 Crit',
+  [5428] = '+200 Haste',
+  [5429] = '+200 Mast',
+  [5430] = '+200 Vers'
+}
+SimPermut.gemList = {
+  [0] 	 = 'Untouched',
+  [130219] = '+150 Crit',
+  [130220] = '+150 Haste',
+  [130222] = '+150 Mast',
+  [130221] = '+150 Vers',
+  [130246] = '+200 Str',
+  [130247] = '+200 Agi',
+  [130248] = '+200 Int'
+}
 
 
-
+-- Not used yet
+-- SimPermut.statsString= {
+	-- "ITEM_MOD_INTELLECT_SHORT", 
+	-- "ITEM_MOD_AGILITY_SHORT", 
+	-- "ITEM_MOD_STRENGTH_SHORT", 
+	-- "ITEM_MOD_HASTE_RATING_SHORT", 
+	-- "ITEM_MOD_CRIT_RATING_SHORT", 
+	-- "ITEM_MOD_MASTERY_RATING_SHORT", 
+	-- "ITEM_MOD_VERSATILITY"
+-- }
+-- SimPermut.statsStringCorres= {
+-- ["ITEM_MOD_INTELLECT_SHORT"]='Int', 
+-- ["ITEM_MOD_AGILITY_SHORT"]='Agi', 
+-- ["ITEM_MOD_STRENGTH_SHORT"]='Str', 
+-- ["ITEM_MOD_HASTE_RATING_SHORT"]='Hast', 
+-- ["ITEM_MOD_CRIT_RATING_SHORT"]='Crit', 
+-- ["ITEM_MOD_MASTERY_RATING_SHORT"]='Mast', 
+-- ["ITEM_MOD_VERSATILITY"]='Vers'
+-- }
 
 
