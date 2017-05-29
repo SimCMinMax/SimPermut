@@ -779,7 +779,7 @@ function SimPermut:BuildRelicFrame()
 	reliccontainer1:AddChild(labelspacer7)
 	DropdownTrait1 = AceGUI:Create("Dropdown")
 	DropdownTrait1:SetRelativeWidth(0.8)
-	DropdownTrait1:SetList(ArtifactTableTraits[artifactID],ArtifactTableTraitsOrder[artifactID])
+	DropdownTrait1:SetList(ArtifactTableTraits[artifactID][1],ArtifactTableTraitsOrder[artifactID][1])
 	DropdownTrait1:SetLabel("")
 	DropdownTrait1:SetValue(0)
 	reliccontainer1:AddChild(DropdownTrait1)
@@ -792,7 +792,7 @@ function SimPermut:BuildRelicFrame()
 	reliccontainer2:AddChild(labelspacer9)
 	DropdownTrait2 = AceGUI:Create("Dropdown")
 	DropdownTrait2:SetRelativeWidth(0.8)
-	DropdownTrait2:SetList(ArtifactTableTraits[artifactID],ArtifactTableTraitsOrder[artifactID])
+	DropdownTrait2:SetList(ArtifactTableTraits[artifactID][2],ArtifactTableTraitsOrder[artifactID][2])
 	DropdownTrait2:SetLabel("")
 	DropdownTrait2:SetValue(0)
 	reliccontainer2:AddChild(DropdownTrait2)
@@ -805,7 +805,7 @@ function SimPermut:BuildRelicFrame()
 	reliccontainer3:AddChild(labelspacer11)
 	DropdownTrait3 = AceGUI:Create("Dropdown")
 	DropdownTrait3:SetRelativeWidth(0.8)
-	DropdownTrait3:SetList(ArtifactTableTraits[artifactID],ArtifactTableTraitsOrder[artifactID])
+	DropdownTrait3:SetList(ArtifactTableTraits[artifactID][3],ArtifactTableTraitsOrder[artifactID][3])
 	DropdownTrait3:SetLabel("")
 	DropdownTrait3:SetValue(0)
 	reliccontainer3:AddChild(DropdownTrait3)
@@ -2233,7 +2233,7 @@ function SimPermut:GenerateRelicString()
 			if DropdownTrait1:GetValue()==0 then
 				CopyString=CopyString.."Current".."_"
 			else
-				CopyString=CopyString..ArtifactTableTraits[artifactID][relicid1].."_"
+				CopyString=CopyString..ArtifactTableTraits[artifactID][1][relicid1].."_"
 			end
 			
 			if relicComparisonTypeValue==1 and tonumber(relicilvl2)~=itemLevel2 then
@@ -2242,7 +2242,7 @@ function SimPermut:GenerateRelicString()
 			if DropdownTrait2:GetValue()==0 then
 				CopyString=CopyString.."Current".."_"
 			else
-				CopyString=CopyString..ArtifactTableTraits[artifactID][relicid2].."_"
+				CopyString=CopyString..ArtifactTableTraits[artifactID][2][relicid2].."_"
 			end
 			
 			if relicComparisonTypeValue==1 and tonumber(relicilvl3)~=itemLevel3 then
@@ -2251,7 +2251,7 @@ function SimPermut:GenerateRelicString()
 			if DropdownTrait3:GetValue()==0 then
 				CopyString=CopyString.."Current"
 			else
-				CopyString=CopyString..ArtifactTableTraits[artifactID][relicid3]
+				CopyString=CopyString..ArtifactTableTraits[artifactID][3][relicid3]
 			end
 			
 			
