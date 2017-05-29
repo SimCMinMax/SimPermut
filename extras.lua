@@ -253,16 +253,16 @@ SimPermut.RelicComparisonType = {
   [2] = 'weapon ilevel'
 }
 
-SimPermut.ReportType = {
-  [1] = 'Item names',
-  [2] = 'Copy number'
-}
 SimPermut.ReportTypeGear = {
   [1] = 'Item names',
   [2] = 'Copy number'
 }
 SimPermut.ReportTypeTalents = {
   [1] = 'Talents taken',
+  [2] = 'Copy number'
+}
+SimPermut.ReportTypeRelics = {
+  [1] = 'Relics taken',
   [2] = 'Copy number'
 }
 
@@ -339,23 +339,23 @@ SimPermut.gemList = {
 
 
 -- Not used yet
--- SimPermut.statsString= {
-	-- "ITEM_MOD_INTELLECT_SHORT", 
-	-- "ITEM_MOD_AGILITY_SHORT", 
-	-- "ITEM_MOD_STRENGTH_SHORT", 
-	-- "ITEM_MOD_HASTE_RATING_SHORT", 
-	-- "ITEM_MOD_CRIT_RATING_SHORT", 
-	-- "ITEM_MOD_MASTERY_RATING_SHORT", 
-	-- "ITEM_MOD_VERSATILITY"
--- }
--- SimPermut.statsStringCorres= {
--- ["ITEM_MOD_INTELLECT_SHORT"]='Int', 
--- ["ITEM_MOD_AGILITY_SHORT"]='Agi', 
--- ["ITEM_MOD_STRENGTH_SHORT"]='Str', 
--- ["ITEM_MOD_HASTE_RATING_SHORT"]='Hast', 
--- ["ITEM_MOD_CRIT_RATING_SHORT"]='Crit', 
--- ["ITEM_MOD_MASTERY_RATING_SHORT"]='Mast', 
--- ["ITEM_MOD_VERSATILITY"]='Vers'
--- }
+SimPermut.statsString= {
+	"ITEM_MOD_INTELLECT_SHORT", 
+	"ITEM_MOD_AGILITY_SHORT", 
+	"ITEM_MOD_STRENGTH_SHORT", 
+	"ITEM_MOD_HASTE_RATING_SHORT", 
+	"ITEM_MOD_CRIT_RATING_SHORT", 
+	"ITEM_MOD_MASTERY_RATING_SHORT", 
+	"ITEM_MOD_VERSATILITY"
+}
+SimPermut.statsStringCorres= {
+	["ITEM_MOD_INTELLECT_SHORT"]='Int', 
+	["ITEM_MOD_AGILITY_SHORT"]='Agi', 
+	["ITEM_MOD_STRENGTH_SHORT"]='Str', 
+	["ITEM_MOD_HASTE_RATING_SHORT"]='Hast', 
+	["ITEM_MOD_CRIT_RATING_SHORT"]='Crit', 
+	["ITEM_MOD_MASTERY_RATING_SHORT"]='Mast', 
+	["ITEM_MOD_VERSATILITY"]='Vers'
+}
 
 

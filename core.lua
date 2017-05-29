@@ -92,7 +92,9 @@ local relicComparisonTypeValue=1
 local ITEM_COUNT_THRESHOLD 		= 22
 local COPY_THRESHOLD 			= 500
 local defaultSettings={
-	report_type			= 2,
+	report_typeGear		= 2,
+	report_typeTalents	= 2,
+	report_typeRelics	= 2,
 	ilvl_thresholdMin 	= 800,
 	ilvl_thresholdMax 	= 999,
 	enchant_neck		= 0,
@@ -130,7 +132,9 @@ local statsStringCorres	= SimPermut.statsStringCorres
 local HasTierSets 		= SimPermut.HasTierSets
 local FrameMenu 		= SimPermut.FrameMenu
 local RelicComparisonType = SimPermut.RelicComparisonType
-local ReportType 		= SimPermut.ReportType
+local ReportTypeGear 	= SimPermut.ReportTypeGear
+local ReportTypeTalents = SimPermut.ReportTypeTalents
+local ReportTypeRelics  = SimPermut.ReportTypeRelics
 
 SLASH_SIMPERMUTSLASH1 = "/SimPermut"
 SLASH_SIMPERMUTSLASHDEBUG1 = "/SimPermutDebug"
@@ -138,10 +142,10 @@ SLASH_SIMPERMUTSLASHDEBUG1 = "/SimPermutDebug"
 -------------Test-----------------
 SLASH_SIMPERMUTSLASHTEST1 = "/Simtest"
 SlashCmdList["SIMPERMUTSLASHTEST"] = function (arg)
-	local itemLink = GetInventoryItemLink('player', INVSLOT_NECK)
-	print(itemLink)
-	print(GetItemInfo(itemLink))
-	print(PersoLib:GetRealIlvl(itemLink))
+	-- local itemLink = GetInventoryItemLink('player', INVSLOT_NECK)
+	-- print(itemLink)
+	-- print(GetItemInfo(itemLink))
+	-- print(PersoLib:GetRealIlvl(itemLink))
 	-- local artifactID,artifactData = LAD:GetArtifactInfo() 
 	
 	-- for i=1,TALENTS_MAX_ROW do
@@ -151,7 +155,9 @@ SlashCmdList["SIMPERMUTSLASHTEST"] = function (arg)
 		-- end
 	-- end
 	
-	-- print(actualSettings.report_type)
+	-- print(actualSettings.report_typeGear)
+	-- print(actualSettings.report_typeTalents)
+	-- print(actualSettings.report_typeRelics)
 	-- print(actualSettings.ilvl_thresholdMin)
 	-- print(actualSettings.ilvl_thresholdMax)
 	-- print(actualSettings.enchant_neck)
@@ -160,6 +166,10 @@ SlashCmdList["SIMPERMUTSLASHTEST"] = function (arg)
 	-- print(actualSettings.gems)
 	-- print(actualSettings.sets)
 	-- print(actualSettings.generateStart)
+	-- print(actualSettings.replaceEnchants)
+	-- print(actualSettings.replaceEnchantsBase)
+	-- print(actualSettings.ilvl_RelicMin)
+	-- print(actualSettings.ilvl_RelicMax)
 end
 -------------Test-----------------
 
@@ -540,6 +550,9 @@ end
 
 -- Field construction for Relic Frame
 function SimPermut:BuildRelicFrame()
+	--init Artifact
+	SimPermut:GetArtifactString()
+
 	mainGroup = AceGUI:Create("SimpleGroup")
     mainGroup:SetLayout("Fill")
 	mainGroup:SetHeight(600)
@@ -552,7 +565,7 @@ function SimPermut:BuildRelicFrame()
 	container1:SetLayout("Flow")
 	mainGroup:AddChild(container1)
 	
-	local artifactID,artifactData = LAD:GetArtifactInfo() 	
+	local artifactID,artifactData = LAD:GetArtifactInfo()
 	if not ArtifactTableTraitsOrder[artifactID] or #ArtifactTableTraitsOrder[artifactID] == 0 then
 		local labeltitre2= AceGUI:Create("Label")
 		labeltitre2:SetText("Class/Spec Not yet implemented")
@@ -624,7 +637,7 @@ function SimPermut:BuildRelicFrame()
 		container1:AddChild(labelweaponLvl)
 	else
 		ilvlWeapon= AceGUI:Create("EditBox")
-		ilvlWeapon:SetWidth(50)
+		ilvlWeapon:SetWidth(70)
 		ilvlWeapon:SetMaxLetters(3)
 		ilvlWeapon:SetText(itemLevel)
 		ilvlWeapon:SetCallback("OnEnterPressed", function (this, event, item)
@@ -984,21 +997,50 @@ function SimPermut:BuildOptionFrame()
 	labelspacer2:SetFullWidth(true)
 	container1:AddChild(labelspacer2)
 	
-	local labelreportType= AceGUI:Create("Label")
-	labelreportType:SetText("Report Type")
-	labelreportType:SetWidth(150)
-	container1:AddChild(labelreportType)
-	
-	local ReportDropdown = AceGUI:Create("Dropdown")
-    ReportDropdown:SetWidth(160)
-	ReportDropdown:SetList(ReportType)
-	ReportDropdown:SetLabel("")
-	ReportDropdown:SetValue(actualSettings.report_type)
-	ReportDropdown:SetCallback("OnValueChanged", function (this, event, item)
-		SimPermutVars.report_type=item
+	local labelreportTypeGear= AceGUI:Create("Label")
+	labelreportTypeGear:SetText("Report Type : Gear")
+	labelreportTypeGear:SetWidth(150)
+	container1:AddChild(labelreportTypeGear)
+	local ReportDropdownGear = AceGUI:Create("Dropdown")
+    ReportDropdownGear:SetWidth(160)
+	ReportDropdownGear:SetList(ReportTypeGear)
+	ReportDropdownGear:SetLabel("")
+	ReportDropdownGear:SetValue(actualSettings.report_typeGear)
+	ReportDropdownGear:SetCallback("OnValueChanged", function (this, event, item)
+		SimPermutVars.report_typeGear=item
 		PersoLib:MergeTables(defaultSettings,SimPermutVars,actualSettings)
     end)
-	container1:AddChild(ReportDropdown)
+	container1:AddChild(ReportDropdownGear)
+
+	local labelreportTypeTalents= AceGUI:Create("Label")
+	labelreportTypeTalents:SetText("     Report Type : Talents")
+	labelreportTypeTalents:SetWidth(150)
+	container1:AddChild(labelreportTypeTalents)
+	local ReportDropdownTalents = AceGUI:Create("Dropdown")
+    ReportDropdownTalents:SetWidth(160)
+	ReportDropdownTalents:SetList(ReportTypeTalents)
+	ReportDropdownTalents:SetLabel("")
+	ReportDropdownTalents:SetValue(actualSettings.report_typeTalents)
+	ReportDropdownTalents:SetCallback("OnValueChanged", function (this, event, item)
+		SimPermutVars.report_typeTalents=item
+		PersoLib:MergeTables(defaultSettings,SimPermutVars,actualSettings)
+    end)
+	container1:AddChild(ReportDropdownTalents)
+
+	local labelreportTypeRelics= AceGUI:Create("Label")
+	labelreportTypeRelics:SetText("     Report Type : Relics")
+	labelreportTypeRelics:SetWidth(150)
+	container1:AddChild(labelreportTypeRelics)
+	local ReportDropdownRelics = AceGUI:Create("Dropdown")
+    ReportDropdownRelics:SetWidth(160)
+	ReportDropdownRelics:SetList(ReportTypeRelics)
+	ReportDropdownRelics:SetLabel("")
+	ReportDropdownRelics:SetValue(actualSettings.report_typeRelics)
+	ReportDropdownRelics:SetCallback("OnValueChanged", function (this, event, item)
+		SimPermutVars.report_typeRelics=item
+		PersoLib:MergeTables(defaultSettings,SimPermutVars,actualSettings)
+    end)
+	container1:AddChild(ReportDropdownRelics)
 	
 	local labelspacer3= AceGUI:Create("Label")
 	labelspacer3:SetFullWidth(true)
@@ -1301,6 +1343,7 @@ end
 
 -- clic btn generate
 function SimPermut:Generate()
+
 	local permutString=""
 	local baseString=""
 	local finalString=""
@@ -2004,6 +2047,7 @@ function SimPermut:GetPermutationString(permuttable)
 	local str
 	local T192p,T194p
 	local notDrawn=0
+	local okDrawn=0
 	
 	actualLegMin=tonumber(editLegMin:GetText())
 	actualLegMax=tonumber(editLegMax:GetText())
@@ -2060,6 +2104,9 @@ function SimPermut:GetPermutationString(permuttable)
 						notDrawn=notDrawn+1
 						adString=" # Debug not drawn : "
 					end
+					if not ad then
+						okDrawn=okDrawn+1
+					end
 					currentString = currentString.. adString ..PermutSimcNames[j] .. "=" .. table.concat(itemString, ',').."\n"
 					itemname = GetItemInfo(permuttable[i][j])
 					nbitem=nbitem+1
@@ -2096,7 +2143,7 @@ function SimPermut:GetPermutationString(permuttable)
 						adString=" # Debug print : Not printed:No 4p T19\n"
 					end
 				end
-				returnString =  returnString .. adString..SimPermut:GetCopyName(copynumber,pool,nbitem,itemList,#permuttable) .. "\n".. currentString.."\n"
+				returnString =  returnString .. adString..SimPermut:GetCopyName(copynumber,pool,nbitem,itemList,#permuttable,1) .. "\n".. currentString.."\n"
 				copynumber=copynumber+1
 			
 			end
@@ -2111,7 +2158,7 @@ function SimPermut:GetPermutationString(permuttable)
 		PersoLib:debugPrint(str,ad)
 	end
 	
-	if notDrawn>0 and selecteditems>14 then
+	if notDrawn>0 and okDrawn==0 and selecteditems>14 then
 		str="No copy generated because no other possible combination were found (outside boundaries legendaries, same ring/trinket, no 4P...)"
 		mainframe:SetStatusText(str)
 		PersoLib:debugPrint(str,ad)
@@ -2126,7 +2173,7 @@ function SimPermut:GenerateTalentString()
 	local returnString=""
 	for i=1,#tableTalentResults do
 		if tableTalentResults[i]~=PersoLib:CreateSimcTalentString() then
-			copynb = SimPermut:GetCopyName(i,nil,nil,nil,#tableTalentResults)
+			copynb = SimPermut:GetCopyName(i,nil,nil,tableTalentResults[i],#tableTalentResults,2)
 			returnString =  returnString.."\n" ..copynb .. "\n".. "talents="..tableTalentResults[i].."\n"
 		end
 	end
@@ -2135,21 +2182,28 @@ end
 
 -- generates the string used for relics permut
 function SimPermut:GenerateRelicString()
-	local copynb = SimPermut:GetCopyName(relicCopyCount,nil,nil,nil,1)
+	
 	local weaponString,itemLink
 	local returnString=""
-	local artifactID,artifactData = LAD:GetArtifactInfo() 	
-	
+	local artifactID,artifactData = LAD:GetArtifactInfo() 
+	local CopyString=""
+	local artifactID,artifactData = LAD:GetArtifactInfo()
+	_, _, _, itemLevel1 = GetItemInfo(artifactData.relics[1].link)
+	_, _, _, itemLevel2 = GetItemInfo(artifactData.relics[2].link)
+	_, _, _, itemLevel3 = GetItemInfo(artifactData.relics[3].link)
+
 	itemLink = GetInventoryItemLink('player', INVSLOT_MAINHAND)
 	if itemLink and DropdownTrait1:GetValue() and DropdownTrait2:GetValue() and DropdownTrait3:GetValue() 
 		and ((relicComparisonTypeValue==1 and ilvlTrait1:GetText() and ilvlTrait2:GetText() and ilvlTrait3:GetText()) 
 		or (relicComparisonTypeValue==2 and ilvlWeapon:GetText())) then
 			local relicid1,relicid2,relicid3,relicilvl1,relicilvl2,relicilvl3,weaponilvl
+			
 			if DropdownTrait1:GetValue()==0 then
 				relicid1=artifactData.relics[1].itemID
 			else
 				relicid1=DropdownTrait1:GetValue()
 			end
+			
 			if DropdownTrait2:GetValue()==0 then
 				relicid2=artifactData.relics[2].itemID
 			else
@@ -2164,11 +2218,44 @@ function SimPermut:GenerateRelicString()
 				relicilvl1=ilvlTrait1:GetText()
 				relicilvl2=ilvlTrait2:GetText()
 				relicilvl3=ilvlTrait3:GetText()
+				
 			else
 				weaponilvl=ilvlWeapon:GetText()
 			end
 			
+			--CopyName
+			if relicComparisonTypeValue==2 then
+				CopyString="Weapon-"..weaponilvl.."_"
+			end
+			if relicComparisonTypeValue==1 and tonumber(relicilvl1)~=itemLevel1 then
+				CopyString=CopyString..relicilvl1.."-"
+			end
+			if DropdownTrait1:GetValue()==0 then
+				CopyString=CopyString.."Current".."_"
+			else
+				CopyString=CopyString..ArtifactTableTraits[artifactID][relicid1].."_"
+			end
 			
+			if relicComparisonTypeValue==1 and tonumber(relicilvl2)~=itemLevel2 then
+				CopyString=CopyString..relicilvl2.."-"
+			end
+			if DropdownTrait2:GetValue()==0 then
+				CopyString=CopyString.."Current".."_"
+			else
+				CopyString=CopyString..ArtifactTableTraits[artifactID][relicid2].."_"
+			end
+			
+			if relicComparisonTypeValue==1 and tonumber(relicilvl3)~=itemLevel3 then
+				CopyString=CopyString..relicilvl3.."-"
+			end
+			if DropdownTrait3:GetValue()==0 then
+				CopyString=CopyString.."Current"
+			else
+				CopyString=CopyString..ArtifactTableTraits[artifactID][relicid3]
+			end
+			
+			
+			local copynb = SimPermut:GetCopyName(relicCopyCount,nil,nil,CopyString,1,3)
 			weaponString = SimPermut:OverrideWeapon(itemLink,relicid1,relicid2,relicid3,relicilvl1,relicilvl2,relicilvl3,weaponilvl)
 			returnString =  returnString.."\n" ..copynb .. "\n".. "main_hand=" .. weaponString.. '\n'
 			
@@ -2215,11 +2302,17 @@ function SimPermut:OverrideWeapon(itemLink,relic1,relic2,relic3,ilvlRelic1,ilvlR
 end
 
 -- get copy's stat
-function SimPermut:GetCopyName(copynumber,pool,nbitem,itemList,nbitems)
+function SimPermut:GetCopyName(copynumber,pool,nbitem,List,nbitems,typeReport)
 	local returnString="copy="
 	
-	if actualSettings.report_type==1 and itemList then
-		returnString=returnString..itemList
+	if (typeReport==1 and actualSettings.report_typeGear==1 and List) or (typeReport==2 and actualSettings.report_typeTalents==1) or (typeReport==3 and actualSettings.report_typeRelics==1) then
+		if typeReport==1 then
+			returnString=returnString..List
+		elseif typeReport==2 then
+			returnString=returnString..List
+		elseif typeReport==3 then
+			returnString=returnString..List
+		end
 	else 
 		local nbcopies = ''..nbitems
 		local digits = string.len(nbcopies)
