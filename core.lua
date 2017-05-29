@@ -2311,7 +2311,7 @@ function SimPermut:GetCopyName(copynumber,pool,nbitem,List,nbitems,typeReport)
 		elseif typeReport==2 then
 			returnString=returnString..List
 		elseif typeReport==3 then
-			returnString=returnString..List
+			returnString=returnString..string.gsub(List, " ", "-");
 		end
 	else 
 		local nbcopies = ''..nbitems
