@@ -54,143 +54,212 @@ SimPermut.ArtifactTable = {
 
 SimPermut.ArtifactTableTraits = {
 	-- Death Knight
-		--blood
+		--Blood
 	[128402] = {},
-		--frost
-	[128292] = {[0]="Current trait",[135576]="Howling Blast dmg",[137399]="Obliterate crit dmg",[132806]="Armor",[147108]="Remorseless Winter dmg",[145370]="Frost dmg",[142512]="Obliterate generation",[133088]="Death Strike heal",[142310]="Razorice runeforge dmg",[133122]="Frost Strike+Obliterate dmg"},--Frost/
-		--unholy
-	[128403] = {[0]="Current trait",[132319]="Dark Transformation duration",[133010]="Festering Strike dmg",[132987]="Max runic power & generation", [133107]="Fallen Crusader up",[133055]="Virulent Plague dmg",[141522]="Scourge Strike generation",[135571]="AMS & IF bonus",[143701]="AOE dmg down",[147756]="Death Coil dmg"},--Unholy/
+		--Frost (Frost, Shadow, Frost)-
+	[128292] = {
+	{[0]="Current trait",[136692]="Howling Blast dmg",[142515]="Frost dmg",[137308]="Frost Strike+Obliterate dmg",[132791]="Obliterate crit dmg",[141267]="Obliterate generation",[132849]="Razorice runeforge dmg",[142308]="Remorseless Winter dmg",[137545]="Armor",[133141]="Death Strike heal"},
+	{[0]="Current trait",[135576]="Howling Blast dmg",[145370]="Frost dmg",[133122]="Frost Strike+Obliterate dmg",[137399]="Obliterate crit dmg",[142512]="Obliterate generation",[142310]="Razorice runeforge dmg",[147108]="Remorseless Winter dmg",[132806]="Armor",[133088]="Death Strike heal"},
+	{[0]="Current trait",[136692]="Howling Blast dmg",[142515]="Frost dmg",[137308]="Frost Strike+Obliterate dmg",[132791]="Obliterate crit dmg",[141267]="Obliterate generation",[132849]="Razorice runeforge dmg",[142308]="Remorseless Winter dmg",[137545]="Armor",[133141]="Death Strike heal"}},
+		--Unholy (Fire, Shadow, Blood)
+	[128403] = {
+	{[0]="Current trait",[133055]="Virulent Plague dmg",[133107]="Fallen Crusader up",[133010]="Festering Strike dmg",[132319]="Dark Transformation duration",[141522]="Scourge Strike generation",[132987]="Max runic power & generation",[147756]="Death Coil dmg",[135571]="AMS & IF bonus",[143701]="AOE dmg down"},
+	{[0]="Current trait",[135576]="Virulent Plague dmg",[142310]="Fallen Crusader up",[133122]="Festering Strike dmg",[142512]="Dark Transformation duration",[133100]="Scourge Strike generation",[132783]="Max runic power & generation",[145370]="Death Coil dmg",[133088]="AMS & IF bonus",[132806]="AOE dmg down"},
+	{[0]="Current trait",[139260]="Virulent Plague dmg",[141523]="Fallen Crusader up",[133008]="Festering Strike dmg",[133127]="Dark Transformation duration",[143524]="Scourge Strike generation",[132985]="Max runic power & generation",[133020]="Death Coil dmg",[141264]="AMS & IF bonus",[137471]="AOE dmg down"}},
 	-- Demon Hunter
-		--havoc
-	[127829] = {[0]="Current trait",[137476]="Throw Glaive dmg",[147755]="Metamorphosis CD",[147086]="Chaos Strike crit",[141255]="Fury generation when dodging",[139267]="Chaos Nova stun",[136687]="Eye Beam dmg",[144512]="Magic dmg reduction",[132337]="Max Fury",[133095]="Demon's Bite dmg"},--Havoc/
-		--vengeance
-	[128832] = {},
+		--Havoc (Fel, Shadow, Fel)-
+	[127829] = {
+	{[0]="Current trait",[147086]="Chaos Strike crit",[137476]="Throw Glaive dmg",[147755]="Metamorphosis CD",[132337]="Max Fury",[136687]="Eye Beam dmg",[133095]="Demon's Bite dmg",[141255]="Fury generation when dodging",[139267]="Chaos Nova stun",[144512]="Magic dmg reduction"},
+	{[0]="Current trait",[133122]="Chaos Strike crit",[147108]="Throw Glaive dmg",[142310]="Metamorphosis CD",[145370]="Max Fury",[135576]="Eye Beam dmg",[133100]="Demon's Bite dmg",[132806]="Fury generation when dodging",[142512]="Chaos Nova stun",[133088]="Magic dmg reduction"},
+	{[0]="Current trait",[147086]="Chaos Strike crit",[137476]="Throw Glaive dmg",[147755]="Metamorphosis CD",[132337]="Max Fury",[136687]="Eye Beam dmg",[133095]="Demon's Bite dmg",[141255]="Fury generation when dodging",[139267]="Chaos Nova stun",[144512]="Magic dmg reduction"}},
+		--Vengeance
+	[128832] = {{},{},{}},
 	-- Druid
-		--MK
-	[128858] = {[0]="Current trait",[133030]="Stellar Empowerment dmg",[132799]="Heal on dmg",[140813]="Lunar Strike crit",[142176]="Empowerments bonus dmg",[147076]="Sunfire dmg",[132305]="Moonfire dmg",[142175]="Solar Wrath dmg",[132984]="Starsurge crit",[141272]="Moonkin Form armor"},--Balance/
-		--feral
-	[128860] = {[0]="Current trait",[139263]="Rake dmg",[141290]="Swipe dmg",[143803]="Shred crit",[133047]="Survival Instinct duration",[142309]="Tiger's Fury generation",[144458]="Berserk dmg bonus",[138228]="Rip dmg",[140838]="Ferocious Bite crit dmg",[134079]="Regrowth heal"},--Feral
+		--MK (Arcane, Life, Arcane)-
+	[128858] = {
+	{[0]="Current trait",[132984]="Starsurge crit",[142175]="Solar Wrath dmg",[140813]="Lunar Strike crit",[142176]="Empowerments bonus dmg",[147076]="Sunfire dmg",[132305]="Moonfire dmg",[133030]="Stellar Empowerment dmg",[132799]="Heal on dmg",[141272]="Moonkin Form armor"},
+	{[0]="Current trait",[142309]="Starsurge crit",[143702]="Solar Wrath dmg",[138228]="Lunar Strike crit",[144458]="Empowerments bonus dmg",[147076]="Sunfire dmg",[143803]="Moonfire dmg",[139263]="Stellar Empowerment dmg",[134079]="Heal on dmg",[133047]="Moonkin Form armor"},
+	{[0]="Current trait",[132984]="Starsurge crit",[142175]="Solar Wrath dmg",[140813]="Lunar Strike crit",[142176]="Empowerments bonus dmg",[147076]="Sunfire dmg",[132305]="Moonfire dmg",[133030]="Stellar Empowerment dmg",[132799]="Heal on dmg",[141272]="Moonkin Form armor"}},
+		--feral (Frost, Blood, Life)-
+	[128860] = {
+	{[0]="Current trait",[132791]="Rake dmg",[142515]="Rip dmg",[142308]="Tiger's Fury generation",[137308]="Shred crit",[141267]="Berserk dmg bonus",[132849]="Swipe dmg",[136692]="Ferocious Bite crit dmg",[133141]="Survival Instinct duration",[137545]="Regrowth heal"},
+	{[0]="Current trait",[143524]="Rake dmg",[133020]="Rip dmg",[132985]="Tiger's Fury generation",[133008]="Shred crit",[133127]="Berserk dmg bonus",[141523]="Swipe dmg",[139260]="Ferocious Bite crit dmg",[141264]="Survival Instinct duration",[132800]="Regrowth heal"},
+	{[0]="Current trait",[139263]="Rake dmg",[138228]="Rip dmg",[142309]="Tiger's Fury generation",[143803]="Shred crit",[144458]="Berserk dmg bonus",[141290]="Swipe dmg",[140838]="Ferocious Bite crit dmg",[133047]="Survival Instinct duration",[134079]="Regrowth heal"}},
 		--Guardian
-	[128821] = {},
+	[128821] = {{},{},{}},
 		--Restoration
-	[128306] = {},
+	[128306] = {{},{},{}},
 	-- Hunter
 		--BM
-	[128861] = {[0]="Current trait",[133763]="Cobra Shot dmg",[132781]="Multi-Shot dmg",[140815]="Kill command bonus dmg",[133075]="Aspect of the wild duration",[147101]="Beast Cleave dmg",[144522]="Kill command dmg",[134081]="Bestial Wrath bonus dmg",[133120]="Dodge",[147759]="Aspect of the Turtle heal"},--Beast Mastery/
+	[128861] = {
+	{[0]="Current trait",[133763]="Cobra Shot dmg",[132781]="Multi-Shot dmg",[140815]="Kill command bonus dmg",[133075]="Aspect of the wild duration",[147101]="Beast Cleave dmg",[144522]="Kill command dmg",[134081]="Bestial Wrath bonus dmg",[133120]="Dodge",[147759]="Aspect of the Turtle heal"},
+	{[0]="Current trait",[133763]="Cobra Shot dmg",[132781]="Multi-Shot dmg",[140815]="Kill command bonus dmg",[133075]="Aspect of the wild duration",[147101]="Beast Cleave dmg",[144522]="Kill command dmg",[134081]="Bestial Wrath bonus dmg",[133120]="Dodge",[147759]="Aspect of the Turtle heal"},
+	{[0]="Current trait",[133763]="Cobra Shot dmg",[132781]="Multi-Shot dmg",[140815]="Kill command bonus dmg",[133075]="Aspect of the wild duration",[147101]="Beast Cleave dmg",[144522]="Kill command dmg",[134081]="Bestial Wrath bonus dmg",[133120]="Dodge",[147759]="Aspect of the Turtle heal"}},
 		--MM
-	[128826] = {[0]="Current trait",[140838]="Trueshot CD",[140078]="Marked Shot crit",[141290]="Aimed Shot crit Vulnerable",[142309]="Multi Shot dmg",[138228]="Aimed Shot crit dmg",[143803]="Marked Shot dmg",[144458]="Bursting Shot CD",[134079]="Disengage dmg reduc",[136973]="Aspect of the Turtle heal"},--Marksmanship/
+	[128826] = {
+	{[0]="Current trait",[140838]="Trueshot CD",[140078]="Marked Shot crit",[141290]="Aimed Shot crit Vulnerable",[142309]="Multi Shot dmg",[138228]="Aimed Shot crit dmg",[143803]="Marked Shot dmg",[144458]="Bursting Shot CD",[134079]="Disengage dmg reduc",[136973]="Aspect of the Turtle heal"},
+	{[0]="Current trait",[140838]="Trueshot CD",[140078]="Marked Shot crit",[141290]="Aimed Shot crit Vulnerable",[142309]="Multi Shot dmg",[138228]="Aimed Shot crit dmg",[143803]="Marked Shot dmg",[144458]="Bursting Shot CD",[134079]="Disengage dmg reduc",[136973]="Aspect of the Turtle heal"},
+	{[0]="Current trait",[140838]="Trueshot CD",[140078]="Marked Shot crit",[141290]="Aimed Shot crit Vulnerable",[142309]="Multi Shot dmg",[138228]="Aimed Shot crit dmg",[143803]="Marked Shot dmg",[144458]="Bursting Shot CD",[134079]="Disengage dmg reduc",[136973]="Aspect of the Turtle heal"}},
 		--Sv
-	[128808] = {[0]="Current trait",[133020]="Mongoose Bite dmg",[133127]="Carve dmg",[132985]="Raptor Strike dmg",[133008]="Flanking Strike crit",[141523]="Explosive Trap dmg",[143524]="Pet's haste",[139260]="Lacerate dmg",[132800]="Exhilaration CD",[141264]="Raptor Strike heal"},--Survival/
+	[128808] = {
+	{[0]="Current trait",[133020]="Mongoose Bite dmg",[133127]="Carve dmg",[132985]="Raptor Strike dmg",[133008]="Flanking Strike crit",[141523]="Explosive Trap dmg",[143524]="Pet's haste",[139260]="Lacerate dmg",[132800]="Exhilaration CD",[141264]="Raptor Strike heal"},
+	{[0]="Current trait",[133020]="Mongoose Bite dmg",[133127]="Carve dmg",[132985]="Raptor Strike dmg",[133008]="Flanking Strike crit",[141523]="Explosive Trap dmg",[143524]="Pet's haste",[139260]="Lacerate dmg",[132800]="Exhilaration CD",[141264]="Raptor Strike heal"},
+	{[0]="Current trait",[133020]="Mongoose Bite dmg",[133127]="Carve dmg",[132985]="Raptor Strike dmg",[133008]="Flanking Strike crit",[141523]="Explosive Trap dmg",[143524]="Pet's haste",[139260]="Lacerate dmg",[132800]="Exhilaration CD",[141264]="Raptor Strike heal"}},
 	-- Mage
 		--Arcane
-	[127857] = {[0]="Current trait",[132305]="Arcane Blast dmg",[132984]="Arcane Power duration",[132995]="Arcane Missile dmg",[140813]="Arcane Barrage dmg",[133030]="Arcane Explosion dmg",[142175]="Crit chance",[147076]="Arcane Missile proc",[141272]="Displacement CD",[137490]="Prismatic Barrier absorb"},--Arcane/
+	[127857] = {
+	{[0]="Current trait",[132305]="Arcane Blast dmg",[132984]="Arcane Power duration",[132995]="Arcane Missile dmg",[140813]="Arcane Barrage dmg",[133030]="Arcane Explosion dmg",[142175]="Crit chance",[147076]="Arcane Missile proc",[141272]="Displacement CD",[137490]="Prismatic Barrier absorb"},
+	{[0]="Current trait",[132305]="Arcane Blast dmg",[132984]="Arcane Power duration",[132995]="Arcane Missile dmg",[140813]="Arcane Barrage dmg",[133030]="Arcane Explosion dmg",[142175]="Crit chance",[147076]="Arcane Missile proc",[141272]="Displacement CD",[137490]="Prismatic Barrier absorb"},
+	{[0]="Current trait",[132305]="Arcane Blast dmg",[132984]="Arcane Power duration",[132995]="Arcane Missile dmg",[140813]="Arcane Barrage dmg",[133030]="Arcane Explosion dmg",[142175]="Crit chance",[147076]="Arcane Missile proc",[141272]="Displacement CD",[137490]="Prismatic Barrier absorb"}},
 		--Fire
-	[128820] = {[0]="Current trait",[132987]="Flamestrike dmg",[141522]="Fireball dmg",[133107]="Ignite dmg",[132319]="Pyroblast dmg",[133010]="Fire Blast dmg",[132338]="Fire Ball cast time",[133055]="Fire crit dmg",[143701]="Blazing Barrier reduc",[135571]="Blink heal"},--Fire/
+	[128820] = {
+	{[0]="Current trait",[132987]="Flamestrike dmg",[141522]="Fireball dmg",[133107]="Ignite dmg",[132319]="Pyroblast dmg",[133010]="Fire Blast dmg",[132338]="Fire Ball cast time",[133055]="Fire crit dmg",[143701]="Blazing Barrier reduc",[135571]="Blink heal"},
+	{[0]="Current trait",[132987]="Flamestrike dmg",[141522]="Fireball dmg",[133107]="Ignite dmg",[132319]="Pyroblast dmg",[133010]="Fire Blast dmg",[132338]="Fire Ball cast time",[133055]="Fire crit dmg",[143701]="Blazing Barrier reduc",[135571]="Blink heal"},
+	{[0]="Current trait",[132987]="Flamestrike dmg",[141522]="Fireball dmg",[133107]="Ignite dmg",[132319]="Pyroblast dmg",[133010]="Fire Blast dmg",[132338]="Fire Ball cast time",[133055]="Fire crit dmg",[143701]="Blazing Barrier reduc",[135571]="Blink heal"}},
 		--Frost
-	[128862] = {[0]="Current trait",[136692]="Ice Lance crit dmg",[141267]="Blizzard crit chance",[132791]="Icy veins CD",[142515]="Frostbolt dmg",[132849]="Brain Freeze proc",[137308]="Flurry dmg",[142308]="Frozen Orb crit dmg",[133141]="Ice Barrier absorb",[137545]="Ice Lance dmg reduc"},--Frost/
+	[128862] = {
+	{[0]="Current trait",[136692]="Ice Lance crit dmg",[141267]="Blizzard crit chance",[132791]="Icy veins CD",[142515]="Frostbolt dmg",[132849]="Brain Freeze proc",[137308]="Flurry dmg",[142308]="Frozen Orb crit dmg",[133141]="Ice Barrier absorb",[137545]="Ice Lance dmg reduc"},
+	{[0]="Current trait",[136692]="Ice Lance crit dmg",[141267]="Blizzard crit chance",[132791]="Icy veins CD",[142515]="Frostbolt dmg",[132849]="Brain Freeze proc",[137308]="Flurry dmg",[142308]="Frozen Orb crit dmg",[133141]="Ice Barrier absorb",[137545]="Ice Lance dmg reduc"},
+	{[0]="Current trait",[136692]="Ice Lance crit dmg",[141267]="Blizzard crit chance",[132791]="Icy veins CD",[142515]="Frostbolt dmg",[132849]="Brain Freeze proc",[137308]="Flurry dmg",[142308]="Frozen Orb crit dmg",[133141]="Ice Barrier absorb",[137545]="Ice Lance dmg reduc"}},
 	-- Monk
 		--Brew
-	[128938] = {},
-		--WW
-	[128937] = {[0]="Current trait",[133016]="Rising Sun Kick dmg",[132993]="Touch of Death CD",[137468]="Dodge up",[146932]="Fist of Fury dmg",[144531]="Max Energy up",[137365]="Tiger Palm dmg",[132808]="Transcendence heal",[141514]="Spinning Crane Kick dmg",[137421]="Blackout Kick no chi"},--Windwalker/
+	[128938] = {{},{},{}},
+		--WW (Storm, Iron, Storm)-
+	[128937] = {
+	{[0]="Current trait",[133016]="Rising Sun Kick dmg",[146932]="Fist of Fury dmg",[144531]="Max Energy up",[137365]="Tiger Palm dmg",[137421]="Blackout Kick no chi",[141514]="Spinning Crane Kick dmg",[132993]="Touch of Death CD",[137468]="Dodge up",[132808]="Transcendence heal"},
+	{[0]="Current trait",[147101]="Rising Sun Kick dmg",[140815]="Fist of Fury dmg",[133075]="Max Energy up",[144522]="Tiger Palm dmg",[134081]="Blackout Kick no chi",[133763]="Spinning Crane Kick dmg",[132781]="Touch of Death CD",[147759]="Dodge up",[133120]="Transcendence heal"},
+	{[0]="Current trait",[133016]="Rising Sun Kick dmg",[146932]="Fist of Fury dmg",[144531]="Max Energy up",[137365]="Tiger Palm dmg",[137421]="Blackout Kick no chi",[141514]="Spinning Crane Kick dmg",[132993]="Touch of Death CD",[137468]="Dodge up",[132808]="Transcendence heal"}},
 		--Mist
-	[128940] = {},
+	[128940] = {{},{},{}},
 	-- Paladin
 		--Holy
-	[128823] = {},
+	[128823] = {{},{},{}},
 		--Prot
-	[128866] = {},
-		--Ret
-	[120978] = {[0]="Current trait",[140411]="Divine Storm dmg",[135572]="Templar's Verdict dmg",[147097]="Blade of Justice dmg",[143695]="Crusader Strike crit",[147758]="Judgment dmg",[136717]="Avenging Wrath duration",[137402]="Shield of Vengeance CD",[140042]="Blessing of Protection CD",[137548]="Flash of Light heal"},--Retribution
+	[128866] = {{},{},{}},
+		--Ret (Holy, Fire, Holy)-
+	[120978] = {
+	{[0]="Current trait",[136717]="Avenging Wrath duration",[140411]="Divine Storm dmg",[147097]="Blade of Justice dmg",[135572]="Templar's Verdict dmg",[147758]="Judgment dmg",[143695]="Crusader Strike crit",[137402]="Shield of Vengeance CD",[140042]="Blessing of Protection CD",[137548]="Flash of Light heal"},
+	{[0]="Current trait",[132987]="Avenging Wrath duration",[133055]="Divine Storm dmg",[141522]="Blade of Justice dmg",[133107]="Templar's Verdict dmg",[147756]="Judgment dmg",[133010]="Crusader Strike crit",[143701]="Shield of Vengeance CD",[132319]="Blessing of Protection CD",[135571]="Flash of Light heal"},
+	{[0]="Current trait",[136717]="Avenging Wrath duration",[140411]="Divine Storm dmg",[147097]="Blade of Justice dmg",[135572]="Templar's Verdict dmg",[147758]="Judgment dmg",[143695]="Crusader Strike crit",[137402]="Shield of Vengeance CD",[140042]="Blessing of Protection CD",[137548]="Flash of Light heal"}},
 	-- Priest
 		--Disc
-	[128868] = {},
+	[128868] = {{},{},{}},
 		--Holy
-	[128825] = {},
-		--SP (Shadow/Blood/Shadow)-
+	[128825] = {{},{},{}},
+		--SP (Shadow, Blood, Shadow)-
 	[128827] ={ 
-	{[0]="Current trait",[135576]="Shadow Word Pain dmg",[133100]="Vampiric Touch dmg",[152512]="Shadow dmg",[141518]="Mind Blast dmg",[133026]="Vampiric Touch Apparition",[132783]="Shadow Word Death dmg",[142310]="Mind Sear dmg",[133088]="Dispersion CD",[132806]="ShadowMend heal"}, 
-	{[0]="Current trait",[139260]="Shadow Word Pain dmg",[143524]="Vampiric Touch dmg",[133127]="Shadow dmg",[133008]="Mind Blast dmg",[133020]="Vampiric Touch Apparition",[132985]="Shadow Word Death dmg",[136718]="Mind Sear dmg",[141264]="Dispersion CD",[132800]="ShadowMend heal"},
-	{[0]="Current trait",[135576]="Shadow Word Pain dmg",[133100]="Vampiric Touch dmg",[152512]="Shadow dmg",[141518]="Mind Blast dmg",[133026]="Vampiric Touch Apparition",[132783]="Shadow Word Death dmg",[142310]="Mind Sear dmg",[133088]="Dispersion CD",[132806]="ShadowMend heal"}},--Shadow
+	{[0]="Current trait",[133100]="Vampiric Touch dmg",[135576]="Shadow Word Pain dmg",[152512]="Shadow dmg",[141518]="Mind Blast dmg",[133026]="Vampiric Touch Apparition",[132783]="Shadow Word Death dmg",[142310]="Mind Sear dmg",[133088]="Dispersion CD",[132806]="ShadowMend heal"}, 
+	{[0]="Current trait",[143524]="Vampiric Touch dmg",[139260]="Shadow Word Pain dmg",[133127]="Shadow dmg",[133008]="Mind Blast dmg",[133020]="Vampiric Touch Apparition",[132985]="Shadow Word Death dmg",[136718]="Mind Sear dmg",[141264]="Dispersion CD",[132800]="ShadowMend heal"},
+	{[0]="Current trait",[133100]="Vampiric Touch dmg",[135576]="Shadow Word Pain dmg",[152512]="Shadow dmg",[141518]="Mind Blast dmg",[133026]="Vampiric Touch Apparition",[132783]="Shadow Word Death dmg",[142310]="Mind Sear dmg",[133088]="Dispersion CD",[132806]="ShadowMend heal"}},
 	-- Rogue
 		--Assa
-	[128870] = {[0]="Current trait",[141523]="Vendetta CD",[133020]="Envenom dmg",[133008]="Rupture crit chance",[143524]="Rupture dmg",[143691]="Poisons dmg",[132985]="Mutilate crit chance",[133127]="Fan of Knives proc",[137471]="Sprint CD",[141264]="Cloak of Shadows CDs"},--Assassination/
+	[128870] = {
+	{[0]="Current trait",[141523]="Vendetta CD",[133020]="Envenom dmg",[133008]="Rupture crit chance",[143524]="Rupture dmg",[143691]="Poisons dmg",[132985]="Mutilate crit chance",[133127]="Fan of Knives proc",[137471]="Sprint CD",[141264]="Cloak of Shadows CDs"},
+	{[0]="Current trait",[141523]="Vendetta CD",[133020]="Envenom dmg",[133008]="Rupture crit chance",[143524]="Rupture dmg",[143691]="Poisons dmg",[132985]="Mutilate crit chance",[133127]="Fan of Knives proc",[137471]="Sprint CD",[141264]="Cloak of Shadows CDs"},
+	{[0]="Current trait",[141523]="Vendetta CD",[133020]="Envenom dmg",[133008]="Rupture crit chance",[143524]="Rupture dmg",[143691]="Poisons dmg",[132985]="Mutilate crit chance",[133127]="Fan of Knives proc",[137471]="Sprint CD",[141264]="Cloak of Shadows CDs"}},
 		--Outlaw
-	[128872] = {[0]="Current trait",[141278]="Run through dmg",[133016]="Blade Furry regeneration",[133039]="Finishing moves cost",[146932]="Combat Potency generation",[132993]="Pistol Shot crit chance",[144531]="Between the Eyes dmg",[137421]="Adrenaline Rush CD",[137468]="Main Gauche dmg",[132808]="Cloak of Shadows heal"},--Outlaw/
+	[128872] = {
+	{[0]="Current trait",[141278]="Run through dmg",[133016]="Blade Furry regeneration",[133039]="Finishing moves cost",[146932]="Combat Potency generation",[132993]="Pistol Shot crit chance",[144531]="Between the Eyes dmg",[137421]="Adrenaline Rush CD",[137468]="Main Gauche dmg",[132808]="Cloak of Shadows heal"},
+	{[0]="Current trait",[141278]="Run through dmg",[133016]="Blade Furry regeneration",[133039]="Finishing moves cost",[146932]="Combat Potency generation",[132993]="Pistol Shot crit chance",[144531]="Between the Eyes dmg",[137421]="Adrenaline Rush CD",[137468]="Main Gauche dmg",[132808]="Cloak of Shadows heal"},
+	{[0]="Current trait",[141278]="Run through dmg",[133016]="Blade Furry regeneration",[133039]="Finishing moves cost",[146932]="Combat Potency generation",[132993]="Pistol Shot crit chance",[144531]="Between the Eyes dmg",[137421]="Adrenaline Rush CD",[137468]="Main Gauche dmg",[132808]="Cloak of Shadows heal"}},
 		--Sub
-	[128476] = {[0]="Current trait",[136687]="Eviscerate dmg",[133117]="Shadow Technique generation",[137476]="Shadowstrike dmg",[139267]="Cheap Shot refund",[147086]="Nightblade dmg",[147755]="Shadow Blades duration",[132337]="Backstab dmg",[144512]="Dodge+immune fall",[141255]="Dodge"},--Subtlety/
+	[128476] = {
+	{[0]="Current trait",[136687]="Eviscerate dmg",[133117]="Shadow Technique generation",[137476]="Shadowstrike dmg",[139267]="Cheap Shot refund",[147086]="Nightblade dmg",[147755]="Shadow Blades duration",[132337]="Backstab dmg",[144512]="Dodge+immune fall",[141255]="Dodge"},
+	{[0]="Current trait",[136687]="Eviscerate dmg",[133117]="Shadow Technique generation",[137476]="Shadowstrike dmg",[139267]="Cheap Shot refund",[147086]="Nightblade dmg",[147755]="Shadow Blades duration",[132337]="Backstab dmg",[144512]="Dodge+immune fall",[141255]="Dodge"},
+	{[0]="Current trait",[136687]="Eviscerate dmg",[133117]="Shadow Technique generation",[137476]="Shadowstrike dmg",[139267]="Cheap Shot refund",[147086]="Nightblade dmg",[147755]="Shadow Blades duration",[132337]="Backstab dmg",[144512]="Dodge+immune fall",[141255]="Dodge"}},
 	-- Shaman
-		--Elem
-	[128935] = {[0]="Current trait",[133682]="Flame Shock dmg",[146932]="Chain Lightning dmg",[133016]="EarthQuake dmg",[141514]="Lava Burst crit dmg",[137365]="Lava Burst dmg",[144531]="Nature dmg",[137421]="Earth Shock dmg",[132808]="Heal when low",[137468]="Healing Surge Heal"},--Elemental
-		--Enh
-	[128819] = {[0]="Current trait",[141522]="Stormstrike dmg",[132987]="Attack speed bonus",[133107]="Rockbiter generation",[133055]="Windfury dmg",[147756]="Flametongue/Rockbiter/Frostband dmg",[133010]="Lava Lash dmg",[132319]="Ghost wolf generation",[143701]="Astral Shift heal",[135571]="Healing Surge heal"},--Enhancement
+		--Elem (Storm, Frost, Storm)-
+	[128935] = {
+	{[0]="Current trait",[137365]="Lava Burst dmg",[141514]="Lava Burst crit dmg",[144531]="Nature dmg",[133682]="Flame Shock dmg",[137421]="Earth Shock dmg",[146932]="Chain Lightning dmg",[133016]="EarthQuake dmg",[132808]="Heal when low",[137468]="Healing Surge Heal"},
+	{[0]="Current trait",[136692]="Lava Burst dmg",[132791]="Lava Burst crit dmg",[142515]="Nature dmg",[142308]="Flame Shock dmg",[141267]="Earth Shock dmg",[132849]="Chain Lightning dmg",[137308]="EarthQuake dmg",[137545]="Heal when low",[137403]="Healing Surge Heal"},
+	{[0]="Current trait",[137365]="Lava Burst dmg",[141514]="Lava Burst crit dmg",[144531]="Nature dmg",[133682]="Flame Shock dmg",[137421]="Earth Shock dmg",[146932]="Chain Lightning dmg",[133016]="EarthQuake dmg",[132808]="Heal when low",[137468]="Healing Surge Heal"}},
+		--Enh (Fire, Iron, Storm)-
+	[128819] = {
+	{[0]="Current trait",[132987]="Attack speed bonus",[133010]="Lava Lash dmg",[133107]="Rockbiter generation",[141522]="Stormstrike dmg",[133055]="Windfury dmg",[147756]="Flametongue/Rockbiter/Frostband dmg",[132319]="Ghost wolf generation",[143701]="Astral Shift heal",[135571]="Healing Surge heal"},
+	{[0]="Current trait",[132781]="Attack speed bonus",[147101]="Lava Lash dmg",[140815]="Rockbiter generation",[133763]="Stormstrike dmg",[144522]="Windfury dmg",[133075]="Flametongue/Rockbiter/Frostband dmg",[134081]="Ghost wolf generation",[133120]="Astral Shift heal",[147759]="Healing Surge heal"},
+	{[0]="Current trait",[132993]="Attack speed bonus",[133016]="Lava Lash dmg",[146932]="Rockbiter generation",[141514]="Stormstrike dmg",[137365]="Windfury dmg",[144531]="Flametongue/Rockbiter/Frostband dmg",[137421]="Ghost wolf generation",[132808]="Astral Shift heal",[137468]="Healing Surge heal"}},
 		--Rest
-	[128911] = {},
+	[128911] = {{},{},{}},
 	-- Warlock
 		--Affli
-	[128942] = {[0]="Current trait",[147108]="Unstable Affliction crit chance",[145370]="Agony dmg",[133122]="Corruption dmg",[142512]="Shadow dmg",[142310]="Crit dmg",[133100]="Seed of Corruption dmg",[135576]="Drain life dmg",[133088]="Soul Leech absorb",[132806]="Drain Life heal"},--Affliction/
+	[128942] = {
+	{[0]="Current trait",[147108]="Unstable Affliction crit chance",[145370]="Agony dmg",[133122]="Corruption dmg",[142512]="Shadow dmg",[142310]="Crit dmg",[133100]="Seed of Corruption dmg",[135576]="Drain life dmg",[133088]="Soul Leech absorb",[132806]="Drain Life heal"},
+	{[0]="Current trait",[147108]="Unstable Affliction crit chance",[145370]="Agony dmg",[133122]="Corruption dmg",[142512]="Shadow dmg",[142310]="Crit dmg",[133100]="Seed of Corruption dmg",[135576]="Drain life dmg",[133088]="Soul Leech absorb",[132806]="Drain Life heal"},
+	{[0]="Current trait",[147108]="Unstable Affliction crit chance",[145370]="Agony dmg",[133122]="Corruption dmg",[142512]="Shadow dmg",[142310]="Crit dmg",[133100]="Seed of Corruption dmg",[135576]="Drain life dmg",[133088]="Soul Leech absorb",[132806]="Drain Life heal"}},
 		--Demo
-	[128943] = {[0]="Current trait",[132987]="Dreadstalkers crit chance",[132319]="Shadow Bolt Crit chance",[147091]="Wild Imp's Firebolt dmg",[141522]="Hand of Gul'dan",[147756]="Demonic Empowerment bonus",[133010]="Demonwrath dmg",[133055]="Doom dmg",[143701]="Unending Resolve CD",[135571]="Soul Link heal"},--Demonology/
+	[128943] = {
+	{[0]="Current trait",[132987]="Dreadstalkers crit chance",[132319]="Shadow Bolt Crit chance",[147091]="Wild Imp's Firebolt dmg",[141522]="Hand of Gul'dan",[147756]="Demonic Empowerment bonus",[133010]="Demonwrath dmg",[133055]="Doom dmg",[143701]="Unending Resolve CD",[135571]="Soul Link heal"},
+	{[0]="Current trait",[132987]="Dreadstalkers crit chance",[132319]="Shadow Bolt Crit chance",[147091]="Wild Imp's Firebolt dmg",[141522]="Hand of Gul'dan",[147756]="Demonic Empowerment bonus",[133010]="Demonwrath dmg",[133055]="Doom dmg",[143701]="Unending Resolve CD",[135571]="Soul Link heal"},
+	{[0]="Current trait",[132987]="Dreadstalkers crit chance",[132319]="Shadow Bolt Crit chance",[147091]="Wild Imp's Firebolt dmg",[141522]="Hand of Gul'dan",[147756]="Demonic Empowerment bonus",[133010]="Demonwrath dmg",[133055]="Doom dmg",[143701]="Unending Resolve CD",[135571]="Soul Link heal"}},
 		--Destru
-	[128941] = {[0]="Current trait",[137476]="Immolate dmg",[147755]="Immolate crit chance",[136687]="Incinerate cast time",[133095]="Chaos Bolt refund",[147086]="Chaos Bolt crit dmg",[132337]="Incinerate dmg",[139267]="Rain of Fire dmg",[141255]="Life Tap dmg reduc",[144512]="Drain Life proc"},--Destruction/
+	[128941] = {
+	{[0]="Current trait",[137476]="Immolate dmg",[147755]="Immolate crit chance",[136687]="Incinerate cast time",[133095]="Chaos Bolt refund",[147086]="Chaos Bolt crit dmg",[132337]="Incinerate dmg",[139267]="Rain of Fire dmg",[141255]="Life Tap dmg reduc",[144512]="Drain Life proc"},
+	{[0]="Current trait",[137476]="Immolate dmg",[147755]="Immolate crit chance",[136687]="Incinerate cast time",[133095]="Chaos Bolt refund",[147086]="Chaos Bolt crit dmg",[132337]="Incinerate dmg",[139267]="Rain of Fire dmg",[141255]="Life Tap dmg reduc",[144512]="Drain Life proc"},
+	{[0]="Current trait",[137476]="Immolate dmg",[147755]="Immolate crit chance",[136687]="Incinerate cast time",[133095]="Chaos Bolt refund",[147086]="Chaos Bolt crit dmg",[132337]="Incinerate dmg",[139267]="Rain of Fire dmg",[141255]="Life Tap dmg reduc",[144512]="Drain Life proc"}},
 	-- Warrior
-		--Arms
-	[128910] = {[0]="Current trait",[133122]="Cleave+Whirlwind dmg",[147108]="Whirlwind dmg",[135576]="Slam dmg",[142512]="Tactician's chance bonus",[133100]="Execute crit dmg",[142310]="Mortal Strike&Execute cost",[145370]="Rage max up",[143823]="Heroic Leap +armor",[132806]="Mortal Strike heal"},--Arms
-		--Fury
-	[128908] = {[0]="Current trait",[132781]="Rampage dmg",[147101]="Furious Slash dmg",[133075]="Execute crit chance",[144522]="Raging blow dmg",[134081]="Enrage dmg bonus",[140815]="Battle cry crit",[133763]="Charge rage bonus",[147759]="Enrage health bonus",[133120]="Bloodthirst heal"},--Fury
+		--Arms (Iron, Blood, Shadow)-
+	[128910] = {
+	{[0]="Current trait",[134081]="Tactician's chance bonus",[140815]="Mortal Strike&Execute cost",[133075]="Rage max up",[132781]="Whirlwind dmg",[147101]="Cleave+Whirlwind dmg",[144522]="Slam dmg",[133763]="Execute crit dmg",[147759]="Heroic Leap +armor",[133120]="Mortal Strike heal"},
+	{[0]="Current trait",[133127]="Tactician's chance bonus",[141523]="Mortal Strike&Execute cost",[133020]="Rage max up",[132985]="Whirlwind dmg",[133008]="Cleave+Whirlwind dmg",[139260]="Slam dmg",[143524]="Execute crit dmg",[141264]="Heroic Leap +armor",[132800]="Mortal Strike heal"},
+	{[0]="Current trait",[142512]="Tactician's chance bonus",[142310]="Mortal Strike&Execute cost",[145370]="Rage max up",[147108]="Whirlwind dmg",[133122]="Cleave+Whirlwind dmg",[135576]="Slam dmg",[133100]="Execute crit dmg",[143823]="Heroic Leap +armor",[132806]="Mortal Strike heal"}},
+		--Fury (Fire, Storm, Iron)-
+	[128908] = {
+	{[0]="Current trait",[133107]="Battle cry crit",[132319]="Enrage dmg bonus",[133055]="Raging blow dmg",[132987]="Rampage dmg",[133010]="Furious Slash dmg",[147756]="Execute crit chance",[141522]="Charge rage bonus",[135571]="Enrage health bonus",[143701]="Bloodthirst heal"},
+	{[0]="Current trait",[146932]="Battle cry crit",[137421]="Enrage dmg bonus",[137365]="Raging blow dmg",[132993]="Rampage dmg",[133016]="Furious Slash dmg",[144531]="Execute crit chance",[141514]="Charge rage bonus",[137468]="Enrage health bonus",[132808]="Bloodthirst heal"},
+	{[0]="Current trait",[140815]="Battle cry crit",[134081]="Enrage dmg bonus",[144522]="Raging blow dmg",[132781]="Rampage dmg",[147101]="Furious Slash dmg",[133075]="Execute crit chance",[133763]="Charge rage bonus",[147759]="Enrage health bonus",[133120]="Bloodthirst heal"}},
 		--Prot
-	[128289] = {}
+	[128289] = {{},{},{}}
 }
 
 SimPermut.ArtifactTableTraitsOrder = {
 	-- Death Knight
-	[128402] = {},
-	[128292] = {0,135576,145370,133122,137399,142512,142310,147108,132806,133088},--Frost
-	[128403] = {0,133055,133107,133010,132319,141522,132987,147756,135571,143701},--Unholy
+	[128402] = {{},{},{}},
+	[128292] = {{0,136692,142515,137308,132791,141267,132849,142308,137545,133141},{0,135576,145370,133122,137399,142512,142310,147108,132806,133088},{0,136692,142515,137308,132791,141267,132849,142308,137545,133141}},--Frost
+	[128403] = {{0,133055,133107,133010,132319,141522,132987,147756,135571,143701},{0,135576,142310,133122,142512,133100,132783,145370,133088,132806},{0,139260,141523,133008,133127,143524,132985,133020,141264,137471}},--Unholy
 	-- Demon Hunter
-	[127829] = {0,147086,137476,147755,132337,136687,133095,141255,139267,144512},--Havoc
-	[128832] = {},
+	[127829] = {{0,147086,137476,147755,132337,136687,133095,141255,139267,144512},{0,133122,147108,142310,145370,135576,133100,132806,142512,133088},{0,147086,137476,147755,132337,136687,133095,141255,139267,144512}},--Havoc
+	[128832] = {{},{},{}},
 	-- Druid
-	[128858] = {0,132984,142175,140813,142176,147076,132305,133030,141272,132799},--Balance
-	[128860] = {0,139263,138228,142309,143803,144458,141290,140838,133047,134079},--Feral
-	[128821] = {},
-	[128306] = {},
+	[128858] = {{0,132984,142175,140813,142176,147076,132305,133030,141272,132799},{0,142309,143702,138228,144458,147076,143803,139263,134079,133047},{0,132984,142175,140813,142176,147076,132305,133030,141272,132799}},--Balance
+	[128860] = {{0,132791,142515,142308,137308,141267,132849,136692,133141,137545},{0,143524,133020,132985,133008,133127,141523,139260,141264,132800},{0,139263,138228,142309,143803,144458,141290,140838,133047,134079}},--Feral
+	[128821] = {{},{},{}},
+	[128306] = {{},{},{}},
 	-- Hunter
-	[128861] = {0,144522,140815,133763,132781,133075,147101,134081,133120,147759},--Beast Mastery
-	[128826] = {0,141290,138228,143803,140078,142309,140838,144458,134079,136973},--Marksmanship
-	[128808] = {0,133020,133127,132985,133008,141523,139260,143524,132800,141264},--Survival
+	[128861] = {{0,144522,140815,133763,132781,133075,147101,134081,133120,147759},{0,144522,140815,133763,132781,133075,147101,134081,133120,147759},{0,144522,140815,133763,132781,133075,147101,134081,133120,147759}},--Beast Mastery
+	[128826] = {{0,141290,138228,143803,140078,142309,140838,144458,134079,136973},{0,141290,138228,143803,140078,142309,140838,144458,134079,136973},{0,141290,138228,143803,140078,142309,140838,144458,134079,136973}},--Marksmanship
+	[128808] = {{0,133020,133127,132985,133008,141523,139260,143524,132800,141264},{0,133020,133127,132985,133008,141523,139260,143524,132800,141264},{0,133020,133127,132985,133008,141523,139260,143524,132800,141264}},--Survival
 	-- Mage
-	[127857] = {0,147076,142175,132305,132995,133030,132984,140813,141272,137490},--Arcane
-	[128820] = {0,133107,133055,132319,141522,132987,133010,132338,143701,135571},--Fire
-	[128862] = {0,136692,132791,137308,132849,142515,141267,142308,133141,137545},--Frost
+	[127857] = {{0,147076,142175,132305,132995,133030,132984,140813,141272,137490},{0,147076,142175,132305,132995,133030,132984,140813,141272,137490},{0,147076,142175,132305,132995,133030,132984,140813,141272,137490}},--Arcane
+	[128820] = {{0,133107,133055,132319,141522,132987,133010,132338,143701,135571},{0,133107,133055,132319,141522,132987,133010,132338,143701,135571},{0,133107,133055,132319,141522,132987,133010,132338,143701,135571}},--Fire
+	[128862] = {{0,136692,132791,137308,132849,142515,141267,142308,133141,137545},{0,136692,132791,137308,132849,142515,141267,142308,133141,137545},{0,136692,132791,137308,132849,142515,141267,142308,133141,137545}},--Frost
 	-- Monk
-	[128938] = {},
-	[128937] = {0,133016,146932,144531,137365,137421,141514,132993,137468,132808},--Windwalker
-	[128940] = {},
+	[128938] = {{},{},{}},
+	[128937] = {{0,133016,146932,144531,137365,137421,141514,132993,137468,132808},{0,147101,140815,133075,144522,134081,133763,132781,147759,133120},{0,133016,146932,144531,137365,137421,141514,132993,137468,132808}},--Windwalker
+	[128940] = {{},{},{}},
 	-- Paladin
-	[128823] = {},
-	[128866] = {},
-	[120978] = {0,136717,140411,147097,135572,147758,143695,137402,140042,137548},--Retribution
+	[128823] = {{},{},{}},
+	[128866] = {{},{},{}},
+	[120978] = {{0,136717,140411,147097,135572,147758,143695,137402,140042,137548},{0,132987,133055,141522,133107,147756,133010,143701,132319,135571},{0,136717,140411,147097,135572,147758,143695,137402,140042,137548}},--Retribution
 	-- Priest
-	[128868] = {},
-	[128825] = {},
+	[128868] = {{},{},{}},
+	[128825] = {{},{},{}},
 	[128827] = {{0,133100,135576,152512,141518,133026,132783,142310,133088,132806},{0,143524,139260,133127,133008,133020,132985,136718,141264,132800},{0,133100,135576,152512,141518,133026,132783,142310,133088,132806}},--Shadow
 	-- Rogue
-	[128870] = {0,141523,143524,133020,132985,133008,133127,143691,137471,141264},--Assassination
-	[128872] = {0,141278,133039,146932,133016,137421,132993,144531,137468,132808},--Outlaw
-	[128476] = {0,139267,136687,147086,137476,147755,133117,132337,144512,141255},--Subtlety
+	[128870] = {{0,141523,143524,133020,132985,133008,133127,143691,137471,141264},{0,141523,143524,133020,132985,133008,133127,143691,137471,141264},{0,141523,143524,133020,132985,133008,133127,143691,137471,141264}},--Assassination
+	[128872] = {{0,141278,133039,146932,133016,137421,132993,144531,137468,132808},{0,141278,133039,146932,133016,137421,132993,144531,137468,132808},{0,141278,133039,146932,133016,137421,132993,144531,137468,132808}},--Outlaw
+	[128476] = {{0,139267,136687,147086,137476,147755,133117,132337,144512,141255},{0,139267,136687,147086,137476,147755,133117,132337,144512,141255},{0,139267,136687,147086,137476,147755,133117,132337,144512,141255}},--Subtlety
 	-- Shaman
-	[128935] = {0,137365,141514,144531,133682,137421,146932,133016,132808,137468},--Elemental
-	[128819] = {0,132987,133010,133107,141522,133055,147756,132319,143701,135571},--Enhancement
-	[128911] = {},
+	[128935] = {{0,137365,141514,144531,133682,137421,146932,133016,132808,137468},{0,136692,132791,142515,142308,141267,132849,137308,137545,137403},{0,137365,141514,144531,133682,137421,146932,133016,132808,137468}},--Elemental
+	[128819] = {{0,132987,133010,133107,141522,133055,147756,132319,143701,135571},{0,132781,147101,140815,133763,144522,133075,134081,133120,147759},{0,132993,133016,146932,141514,137365,144531,137421,132808,137468}},--Enhancement
+	[128911] = {{},{},{}},
 	-- Warlock
-	[128942] = {0,142310,142512,147108,145370,133122,135576,133100,133088,132806},--Affliction
-	[128943] = {0,147091,133055,132319,147756,132987,141522,133010,143701,135571},--Demonology
-	[128941] = {0,147755,137476,147086,136687,132337,133095,139267,141255,144512},--Destruction
+	[128942] = {{0,142310,142512,147108,145370,133122,135576,133100,133088,132806},{0,142310,142512,147108,145370,133122,135576,133100,133088,132806},{0,142310,142512,147108,145370,133122,135576,133100,133088,132806}},--Affliction
+	[128943] = {{0,147091,133055,132319,147756,132987,141522,133010,143701,135571},{0,147091,133055,132319,147756,132987,141522,133010,143701,135571},{0,147091,133055,132319,147756,132987,141522,133010,143701,135571}},--Demonology
+	[128941] = {{0,147755,137476,147086,136687,132337,133095,139267,141255,144512},{0,147755,137476,147086,136687,132337,133095,139267,141255,144512},{0,147755,137476,147086,136687,132337,133095,139267,141255,144512}},--Destruction
 	-- Warrior
-	[128910] = {0,142512,142310,145370,147108,133122,135576,133100,143823,132806},--Arms
-	[128908] = {0,140815,134081,144522,132781,147101,133075,133763,147759,133120},--Fury
-	[128289] = {}
+	[128910] = {{0,134081,140815,133075,132781,147101,144522,133763,147759,133120},{0,133127,141523,133020,132985,133008,139260,143524,141264,132800},{0,142512,142310,145370,147108,133122,135576,133100,143823,132806}},--Arms
+	[128908] = {{0,133107,132319,133055,132987,133010,147756,141522,135571,143701},{0,146932,137421,137365,132993,133016,144531,141514,137468,132808},{0,140815,134081,144522,132781,147101,133075,133763,147759,133120}},--Fury
+	[128289] = {{},{},{}}
 }
 
 -- regionID lookup
