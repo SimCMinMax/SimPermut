@@ -239,7 +239,7 @@ function SimPermut:BuildFrame()
 	end)
 	mainframe:SetLayout("Flow")
 	mainframe:SetWidth(1300)
-	mainframe:SetHeight(790)
+	mainframe:SetHeight(810)
 	
 	local frameDropdown = AceGUI:Create("Dropdown")
     frameDropdown:SetWidth(200)
@@ -416,7 +416,21 @@ function SimPermut:BuildGearFrame()
 	
 	local labelSpacerline= AceGUI:Create("Label")
 	labelSpacerline:SetText(" ")
-	labelSpacerline:SetWidth(250)
+	labelSpacerline:SetWidth(90)
+	
+	local labelreportTypeGear= AceGUI:Create("Label")
+	labelreportTypeGear:SetText("Report Type : Gear")
+	labelreportTypeGear:SetWidth(150)
+	-- container1:AddChild(labelreportTypeGear)
+	local ReportDropdownGear = AceGUI:Create("Dropdown")
+    ReportDropdownGear:SetWidth(160)
+	ReportDropdownGear:SetList(ReportTypeGear)
+	ReportDropdownGear:SetLabel("Report Type")
+	ReportDropdownGear:SetValue(actualSettings.report_typeGear)
+	ReportDropdownGear:SetCallback("OnValueChanged", function (this, event, item)
+		actualSettings.report_typeGear=item
+    end)
+	-- container1:AddChild(ReportDropdownGear)
 
 	local buttonGenerate = AceGUI:Create("Button")
 	buttonGenerate:SetText("Generate")
@@ -446,6 +460,9 @@ function SimPermut:BuildGearFrame()
 	mainGroup:AddChild(labelSets)
 	mainGroup:AddChild(dropdownSets)
 	mainGroup:AddChild(labelSpacerline)
+	-- mainGroup:AddChild(labelreportTypeGear)
+	mainGroup:AddChild(ReportDropdownGear)
+	
 	mainGroup:AddChild(buttonGenerate)
 	mainGroup:AddChild(labelCount)
 	
@@ -533,8 +550,18 @@ function SimPermut:BuildTalentFrame()
 		end
 	end
 	local labelSpacer=AceGUI:Create("Label")
-	labelSpacer:SetRelativeWidth(0.4)
+	labelSpacer:SetRelativeWidth(0.2)
 	mainGroup:AddChild(labelSpacer)
+	
+	local ReportDropdownTalents = AceGUI:Create("Dropdown")
+    ReportDropdownTalents:SetWidth(160)
+	ReportDropdownTalents:SetList(ReportTypeTalents)
+	ReportDropdownTalents:SetLabel("Report Type")
+	ReportDropdownTalents:SetValue(actualSettings.report_typeTalents)
+	ReportDropdownTalents:SetCallback("OnValueChanged", function (this, event, item)
+		actualSettings.report_typeTalents=item
+    end)
+	mainGroup:AddChild(ReportDropdownTalents)
 	
 	local buttonGenerate = AceGUI:Create("Button")
 	buttonGenerate:SetText("Generate")
@@ -879,8 +906,18 @@ function SimPermut:BuildRelicFrame()
 	end
 	
 	local labelspacer15= AceGUI:Create("Label")
-	labelspacer15:SetRelativeWidth(0.4)
+	labelspacer15:SetRelativeWidth(0.3)
 	container1:AddChild(labelspacer15)
+	local ReportDropdownRelics = AceGUI:Create("Dropdown")
+    ReportDropdownRelics:SetWidth(160)
+	ReportDropdownRelics:SetList(ReportTypeRelics)
+	ReportDropdownRelics:SetLabel("Report Type")
+	ReportDropdownRelics:SetValue(actualSettings.report_typeRelics)
+	ReportDropdownRelics:SetCallback("OnValueChanged", function (this, event, item)
+		SimPermutVars.report_typeRelics=item
+		PersoLib:MergeTables(defaultSettings,SimPermutVars,actualSettings)
+    end)
+	container1:AddChild(ReportDropdownRelics)
 	local buttonGenerate = AceGUI:Create("Button")
 	buttonGenerate:SetText("Generate")
 	buttonGenerate:SetRelativeWidth(0.2)
@@ -974,8 +1011,6 @@ function SimPermut:BuildOptionFrame()
 		end
     end)
 	container1:AddChild(ilvlMinRelic)
-	
-	
 	
 	local ilvlMaxRelic= AceGUI:Create("EditBox")
 	ilvlMaxRelic:SetText(actualSettings.ilvl_RelicMax)
