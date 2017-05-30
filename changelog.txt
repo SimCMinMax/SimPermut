@@ -1,8 +1,10 @@
-v1.12-beta 05/24/2019
+v1.12-beta 05/30/2017
 [UI]Added an artifact generator/comparison
-[CODE]Update artifact lib
 [UI]Added more classes to relic comparison
+[UI]Added report types for relics and talents
+[CODE]Update artifact lib
 [CODE]Added some more security check
+[FIX]Show an error when no profiles printed
 
 v1.11.1 05/13/2017
 [FIX]Fix generation
