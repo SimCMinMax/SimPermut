@@ -726,16 +726,18 @@ function SimPermut:BuildRelicFrame()
 	relicinfo2:SetText(_G["RELIC_SLOT_TYPE_"..artifactData.relics[2].type:upper()])
 	reliccontainer2:AddChild(relicinfo2)
 	
-	local labelspacer5= AceGUI:Create("Label")
-	labelspacer5:SetRelativeWidth(0.42)
-	reliccontainer3:AddChild(labelspacer5)
-	local relicinfo3= AceGUI:Create("Label")
-	relicinfo3:SetRelativeWidth(0.58)
-	relicinfo3:SetColor(1,.82,0)
-	relicinfo3:SetText(_G["RELIC_SLOT_TYPE_"..artifactData.relics[3].type:upper()])
-	reliccontainer3:AddChild(relicinfo3)
+	if not artifactData.relics[3].isLocked then
+		local labelspacer5= AceGUI:Create("Label")
+		labelspacer5:SetRelativeWidth(0.42)
+		reliccontainer3:AddChild(labelspacer5)
+		local relicinfo3= AceGUI:Create("Label")
+		relicinfo3:SetRelativeWidth(0.58)
+		relicinfo3:SetColor(1,.82,0)
+		relicinfo3:SetText(_G["RELIC_SLOT_TYPE_"..artifactData.relics[3].type:upper()])
+		reliccontainer3:AddChild(relicinfo3)
+	end
 	
-			local labelspacer31= AceGUI:Create("Label")
+	local labelspacer31= AceGUI:Create("Label")
 	labelspacer31:SetRelativeWidth(0.4)
 	reliccontainer1:AddChild(labelspacer31)
 	_, _, _, itemLevel1, _, _, _, _, _, itemTexture1, _ = GetItemInfo(artifactData.relics[1].link)
@@ -777,26 +779,28 @@ function SimPermut:BuildRelicFrame()
 	end)
 	reliccontainer2:AddChild(artifactRelicIcon2)
 	
-	local labelspacer33= AceGUI:Create("Label")
-	labelspacer33:SetRelativeWidth(0.4)
-	reliccontainer3:AddChild(labelspacer33)
-	_, _, _, itemLevel3, _, _, _, _, _, itemTexture3, _ = GetItemInfo(artifactData.relics[3].link)
-	local artifactRelicIcon3=AceGUI:Create("Icon")
-	if itemTexture then
-		artifactRelicIcon3:SetImage(itemTexture3)
+	if not artifactData.relics[3].isLocked then
+		local labelspacer33= AceGUI:Create("Label")
+		labelspacer33:SetRelativeWidth(0.4)
+		reliccontainer3:AddChild(labelspacer33)
+		_, _, _, itemLevel3, _, _, _, _, _, itemTexture3, _ = GetItemInfo(artifactData.relics[3].link)
+		local artifactRelicIcon3=AceGUI:Create("Icon")
+		if itemTexture then
+			artifactRelicIcon3:SetImage(itemTexture3)
+		end
+		artifactRelicIcon3:SetImageSize(35,35)
+		artifactRelicIcon3:SetRelativeWidth(0.2)
+		-- artifactRelicIcon3:SetWidth(60)
+		artifactRelicIcon3:SetCallback("OnEnter", function(widget)
+			GameTooltip:SetOwner(widget.frame, "ANCHOR_TOPRIGHT")
+			GameTooltip:SetHyperlink(artifactData.relics[3].link)
+			GameTooltip:Show()
+		end)			
+		artifactRelicIcon3:SetCallback("OnLeave", function(widget)
+			GameTooltip:Hide()
+		end)
+		reliccontainer3:AddChild(artifactRelicIcon3)
 	end
-	artifactRelicIcon3:SetImageSize(35,35)
-	artifactRelicIcon3:SetRelativeWidth(0.2)
-	-- artifactRelicIcon3:SetWidth(60)
-	artifactRelicIcon3:SetCallback("OnEnter", function(widget)
-		GameTooltip:SetOwner(widget.frame, "ANCHOR_TOPRIGHT")
-		GameTooltip:SetHyperlink(artifactData.relics[3].link)
-		GameTooltip:Show()
-	end)			
-	artifactRelicIcon3:SetCallback("OnLeave", function(widget)
-		GameTooltip:Hide()
-	end)
-	reliccontainer3:AddChild(artifactRelicIcon3)
 	
 	local labelspacer6= AceGUI:Create("Label")
 	labelspacer6:SetFullWidth(true)
@@ -824,18 +828,20 @@ function SimPermut:BuildRelicFrame()
 	DropdownTrait2:SetValue(0)
 	reliccontainer2:AddChild(DropdownTrait2)
 	
-	local labelspacer10= AceGUI:Create("Label")
-	labelspacer10:SetFullWidth(true)
-	reliccontainer3:AddChild(labelspacer10)
-	local labelspacer11= AceGUI:Create("Label")
-	labelspacer11:SetRelativeWidth(0.1)
-	reliccontainer3:AddChild(labelspacer11)
-	DropdownTrait3 = AceGUI:Create("Dropdown")
-	DropdownTrait3:SetRelativeWidth(0.8)
-	DropdownTrait3:SetList(ArtifactTableTraits[artifactID][3],ArtifactTableTraitsOrder[artifactID][3])
-	DropdownTrait3:SetLabel("")
-	DropdownTrait3:SetValue(0)
-	reliccontainer3:AddChild(DropdownTrait3)
+	if not artifactData.relics[3].isLocked then
+		local labelspacer10= AceGUI:Create("Label")
+		labelspacer10:SetFullWidth(true)
+		reliccontainer3:AddChild(labelspacer10)
+		local labelspacer11= AceGUI:Create("Label")
+		labelspacer11:SetRelativeWidth(0.1)
+		reliccontainer3:AddChild(labelspacer11)
+		DropdownTrait3 = AceGUI:Create("Dropdown")
+		DropdownTrait3:SetRelativeWidth(0.8)
+		DropdownTrait3:SetList(ArtifactTableTraits[artifactID][3],ArtifactTableTraitsOrder[artifactID][3])
+		DropdownTrait3:SetLabel("")
+		DropdownTrait3:SetValue(0)
+		reliccontainer3:AddChild(DropdownTrait3)
+	end
 	
 	if relicComparisonTypeValue==1 then
 		local labelspacer12= AceGUI:Create("Label")
@@ -882,27 +888,29 @@ function SimPermut:BuildRelicFrame()
 		end)
 		reliccontainer2:AddChild(ilvlTrait2)
 		
-		local labelspacer14= AceGUI:Create("Label")
-		labelspacer14:SetRelativeWidth(0.3)
-		reliccontainer3:AddChild(labelspacer14)
-		ilvlTrait3= AceGUI:Create("EditBox")
-		ilvlTrait3:SetRelativeWidth(0.4)
-		ilvlTrait3:SetMaxLetters(3)
-		-- ilvlTrait3:SetText(actualSettings.ilvl_RelicMin)
-		ilvlTrait3:SetText(itemLevel3)
-		ilvlTrait3:SetCallback("OnEnterPressed", function (this, event, item)
-			ilvlTrait3:SetText(string.match(item, '(%d+)'))
-			if ilvlTrait3:GetText()~=nil and ilvlTrait3:GetText()~="" then
-				if tonumber(ilvlTrait3:GetText())<actualSettings.ilvl_RelicMin then
+		if not artifactData.relics[3].isLocked then
+			local labelspacer14= AceGUI:Create("Label")
+			labelspacer14:SetRelativeWidth(0.3)
+			reliccontainer3:AddChild(labelspacer14)
+			ilvlTrait3= AceGUI:Create("EditBox")
+			ilvlTrait3:SetRelativeWidth(0.4)
+			ilvlTrait3:SetMaxLetters(3)
+			-- ilvlTrait3:SetText(actualSettings.ilvl_RelicMin)
+			ilvlTrait3:SetText(itemLevel3)
+			ilvlTrait3:SetCallback("OnEnterPressed", function (this, event, item)
+				ilvlTrait3:SetText(string.match(item, '(%d+)'))
+				if ilvlTrait3:GetText()~=nil and ilvlTrait3:GetText()~="" then
+					if tonumber(ilvlTrait3:GetText())<actualSettings.ilvl_RelicMin then
+						ilvlTrait3:SetText(actualSettings.ilvl_RelicMin)
+					elseif tonumber(ilvlTrait3:GetText())>actualSettings.ilvl_RelicMax then
+						ilvlTrait3:SetText(actualSettings.ilvl_RelicMax)
+					end
+				else
 					ilvlTrait3:SetText(actualSettings.ilvl_RelicMin)
-				elseif tonumber(ilvlTrait3:GetText())>actualSettings.ilvl_RelicMax then
-					ilvlTrait3:SetText(actualSettings.ilvl_RelicMax)
 				end
-			else
-				ilvlTrait3:SetText(actualSettings.ilvl_RelicMin)
-			end
-		end)
-		reliccontainer3:AddChild(ilvlTrait3)
+			end)
+			reliccontainer3:AddChild(ilvlTrait3)
+		end
 	end
 	
 	local labelspacer15= AceGUI:Create("Label")
@@ -2223,14 +2231,16 @@ function SimPermut:GenerateRelicString()
 	local artifactID,artifactData = LAD:GetArtifactInfo() 
 	local CopyString=""
 	local artifactID,artifactData = LAD:GetArtifactInfo()
+	local itemLevel1,itemLevel2,itemLevel3
 	_, _, _, itemLevel1 = GetItemInfo(artifactData.relics[1].link)
 	_, _, _, itemLevel2 = GetItemInfo(artifactData.relics[2].link)
-	_, _, _, itemLevel3 = GetItemInfo(artifactData.relics[3].link)
-
+	
+	if not artifactData.relics[3].isLocked then
+		_, _, _, itemLevel3 = GetItemInfo(artifactData.relics[3].link)
+	end
+	
 	itemLink = GetInventoryItemLink('player', INVSLOT_MAINHAND)
-	if itemLink and DropdownTrait1:GetValue() and DropdownTrait2:GetValue() and DropdownTrait3:GetValue() 
-		and ((relicComparisonTypeValue==1 and ilvlTrait1:GetText() and ilvlTrait2:GetText() and ilvlTrait3:GetText()) 
-		or (relicComparisonTypeValue==2 and ilvlWeapon:GetText())) then
+	if itemLink and (relicComparisonTypeValue==1 and ilvlTrait1:GetText() and ilvlTrait2:GetText() or (relicComparisonTypeValue==2 and ilvlWeapon:GetText())) then
 			local relicid1,relicid2,relicid3,relicilvl1,relicilvl2,relicilvl3,weaponilvl
 			
 			if DropdownTrait1:GetValue()==0 then
@@ -2244,16 +2254,19 @@ function SimPermut:GenerateRelicString()
 			else
 				relicid2=DropdownTrait2:GetValue()
 			end
-			if DropdownTrait3:GetValue()==0 then
-				relicid3=artifactData.relics[3].itemID
-			else
-				relicid3=DropdownTrait3:GetValue()
+			if not artifactData.relics[3].isLocked then
+				if DropdownTrait3:GetValue()==0 then
+					relicid3=artifactData.relics[3].itemID
+				else
+					relicid3=DropdownTrait3:GetValue()
+				end
 			end
 			if relicComparisonTypeValue==1 then
 				relicilvl1=ilvlTrait1:GetText()
 				relicilvl2=ilvlTrait2:GetText()
-				relicilvl3=ilvlTrait3:GetText()
-				
+				if not artifactData.relics[3].isLocked then
+					relicilvl3=ilvlTrait3:GetText()
+				end
 			else
 				weaponilvl=ilvlWeapon:GetText()
 			end
@@ -2280,15 +2293,16 @@ function SimPermut:GenerateRelicString()
 				CopyString=CopyString..ArtifactTableTraits[artifactID][2][relicid2].."_"
 			end
 			
-			if relicComparisonTypeValue==1 and tonumber(relicilvl3)~=itemLevel3 then
-				CopyString=CopyString..relicilvl3.."-"
+			if not artifactData.relics[3].isLocked then
+				if relicComparisonTypeValue==1 and tonumber(relicilvl3)~=itemLevel3 then
+					CopyString=CopyString..relicilvl3.."-"
+				end
+				if DropdownTrait3:GetValue()==0 then
+					CopyString=CopyString.."Current"
+				else
+					CopyString=CopyString..ArtifactTableTraits[artifactID][3][relicid3]
+				end
 			end
-			if DropdownTrait3:GetValue()==0 then
-				CopyString=CopyString.."Current"
-			else
-				CopyString=CopyString..ArtifactTableTraits[artifactID][3][relicid3]
-			end
-			
 			
 			local copynb = SimPermut:GetCopyName(relicCopyCount,nil,nil,CopyString,1,3)
 			weaponString = SimPermut:OverrideWeapon(itemLink,relicid1,relicid2,relicid3,relicilvl1,relicilvl2,relicilvl3,weaponilvl)
@@ -2327,9 +2341,15 @@ function SimPermut:OverrideWeapon(itemLink,relic1,relic2,relic3,ilvlRelic1,ilvlR
 		weaponString = weaponString..",enchant_id=" .. itemSplit[OFFSET_ENCHANT_ID]
 	end
 	weaponString=weaponString..",relic_id=//"
-	weaponString=weaponString..",gem_id="..relic1.."/"..relic2.."/"..relic3
+	weaponString=weaponString..",gem_id="..relic1.."/"..relic2.."/"
+	if not artifactData.relics[3].isLocked then
+		weaponString=weaponString..relic3
+	end
 	if relicComparisonTypeValue==1 then
-		weaponString=weaponString..",relic_ilevel="..ilvlRelic1.."/"..ilvlRelic2.."/"..ilvlRelic3
+		weaponString=weaponString..",relic_ilevel="..ilvlRelic1.."/"..ilvlRelic2.."/"
+		if not artifactData.relics[3].isLocked then
+		weaponString=weaponString..ilvlRelic3
+	end
 	else
 		weaponString=weaponString..",ilevel="..ilvlWeapon
 	end
