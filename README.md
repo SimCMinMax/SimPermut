@@ -41,8 +41,6 @@ See [AutoSimC on GitHub](https://github.com/SimCMinMax/AutoSimC)
 
 ## Known issues and developement plan
 
-- Add relic comparison
-
 - Epic Gem management
 
 - Add the ability to add gear from dungeon journal to compare

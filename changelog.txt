@@ -1,9 +1,11 @@
-v1.12-beta 05/30/2017
+v1.12.3 05/31/2017
 [UI]Added an artifact generator/comparison
 [UI]Added more classes to relic comparison
-[UI]Added report types for relics and talents
+[UI]Added report type selection near generate button
+[UI]Added default report types for relics and talents in option pannel
 [CODE]Update artifact lib
-[CODE]Added some more security check
+[CODE]Added some more security check for atifact
+[CODE]Added some more security check when 3rd relic slot is not unlocked
 [FIX]Show an error when no profiles printed
 
 v1.11.1 05/13/2017
