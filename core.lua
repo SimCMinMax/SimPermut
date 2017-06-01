@@ -18,8 +18,6 @@ local TALENTS_MAX_ROW	= 7
 local RELIC_MIN_ILVL	= 780
 local RELIC_MAX_ILVL	= 999
 
-
-
 -- Libs
 local ArtifactUI          	= _G.C_ArtifactUI
 local Clear                 = ArtifactUI.Clear
@@ -48,7 +46,8 @@ local editLegMin=0
 local editLegMax=0
 local actualLegMin=0
 local actualLegMax=0
-local actualSets=0
+local actualSetsT19=0
+local actualSetsT20=0
 local tableListItems={}
 local tableTitres={}
 local tableLabel={}
@@ -101,7 +100,8 @@ local defaultSettings={
 	enchant_back		= 0,	
 	enchant_ring		= 0,		
 	gems				= 0,	
-	sets				= 0,
+	setsT19				= 0,
+	setsT20				= 0,
 	generateStart		= true,
 	replaceEnchants		= false,
 	replaceEnchantsBase	= false,
@@ -123,7 +123,8 @@ local artifactTable 	= SimPermut.ArtifactTable
 local ArtifactTableTraits = SimPermut.ArtifactTableTraits
 local ArtifactTableTraitsOrder = SimPermut.ArtifactTableTraitsOrder
 local gemList 			= SimPermut.gemList
-local SetsList			= SimPermut.Sets
+local SetsListT19		= SimPermut.SetsT19
+local SetsListT20		= SimPermut.SetsT20
 local enchantRing 		= SimPermut.enchantRing
 local enchantCloak 		= SimPermut.enchantCloak
 local enchantNeck 		= SimPermut.enchantNeck
@@ -224,6 +225,7 @@ end
 ----------------------------
 -- Main Frame construction
 function SimPermut:BuildFrame()
+	--Init Vars
 	artifactID,artifactData = LAD:GetArtifactInfo() 
 	
 	mainframe = AceGUI:Create("Frame")
@@ -273,6 +275,10 @@ function SimPermut:BuildFrame()
 	elseif currentFrame==3 then --relics
 		currentFrame=3
 		SimPermut:BuildRelicFrame()
+		SimPermut:BuildResultFrame(false)
+	-- elseif currentFrame==4 then --relics
+		-- currentFrame=4
+		-- SimPermut:BuildDungeonJournalFrame()
 		SimPermut:BuildResultFrame(false)
 	elseif currentFrame==4 then --options
 		currentFrame=4
@@ -358,7 +364,7 @@ function SimPermut:BuildGearFrame()
     end)
 	
 	checkBoxForce = AceGUI:Create("CheckBox")
-	checkBoxForce:SetWidth(250)
+	checkBoxForce:SetWidth(210)
 	checkBoxForce:SetLabel("Replace current enchant/gems")
 	checkBoxForce:SetValue(actualSettings.replaceEnchants)
 	checkBoxForce:SetCallback("OnValueChanged", function (this, event, item)
@@ -367,10 +373,10 @@ function SimPermut:BuildGearFrame()
 	
 	local labelSpacerFull= AceGUI:Create("Label")
 	labelSpacerFull:SetText("")
-	labelSpacerFull:SetWidth(182)
+	labelSpacerFull:SetWidth(15)
 	
 	local labelLeg= AceGUI:Create("Label")
-	labelLeg:SetText("Legendaries")
+	labelLeg:SetText(" Legendaries")
 	labelLeg:SetWidth(80)
 	
 	editLegMin= AceGUI:Create("EditBox")
@@ -399,20 +405,32 @@ function SimPermut:BuildGearFrame()
 	
 	local labelSpacer2= AceGUI:Create("Label")
 	labelSpacer2:SetText(" ")
-	labelSpacer2:SetWidth(60)
+	labelSpacer2:SetWidth(89)
 	
-	local labelSets= AceGUI:Create("Label")
-	labelSets:SetText("Sets (min)")
-	labelSets:SetWidth(63)
+
+	local labelSetsT19= AceGUI:Create("Label")
+	labelSetsT19:SetText("T19 (min)")
+	labelSetsT19:SetWidth(76)
 	
-	local dropdownSets = AceGUI:Create("Dropdown")
-	dropdownSets:SetList(SetsList)
-	dropdownSets:SetWidth(110)
-	dropdownSets:SetValue(actualSettings.sets)
-	dropdownSets:SetCallback("OnValueChanged", function (this, event, item)
-		actualSets=item
+	local dropdownSetsT19 = AceGUI:Create("Dropdown")
+	dropdownSetsT19:SetList(SetsListT19)
+	dropdownSetsT19:SetWidth(110)
+	dropdownSetsT19:SetValue(actualSettings.setsT19)
+	dropdownSetsT19:SetCallback("OnValueChanged", function (this, event, item)
+		actualSetsT19=item
     end)
 	
+	local labelSetsT20= AceGUI:Create("Label")
+	labelSetsT20:SetText("T20 (min)")
+	labelSetsT20:SetWidth(55)
+	
+	local dropdownSetsT20 = AceGUI:Create("Dropdown")
+	dropdownSetsT20:SetList(SetsListT20)
+	dropdownSetsT20:SetWidth(110)
+	dropdownSetsT20:SetValue(actualSettings.setsT20)
+	dropdownSetsT20:SetCallback("OnValueChanged", function (this, event, item)
+		actualSetsT20=item
+    end)
 	
 	local labelSpacerline= AceGUI:Create("Label")
 	labelSpacerline:SetText(" ")
@@ -421,7 +439,6 @@ function SimPermut:BuildGearFrame()
 	local labelreportTypeGear= AceGUI:Create("Label")
 	labelreportTypeGear:SetText("Report Type : Gear")
 	labelreportTypeGear:SetWidth(150)
-	-- container1:AddChild(labelreportTypeGear)
 	local ReportDropdownGear = AceGUI:Create("Dropdown")
     ReportDropdownGear:SetWidth(160)
 	ReportDropdownGear:SetList(ReportTypeGear)
@@ -430,7 +447,6 @@ function SimPermut:BuildGearFrame()
 	ReportDropdownGear:SetCallback("OnValueChanged", function (this, event, item)
 		actualSettings.report_typeGear=item
     end)
-	-- container1:AddChild(ReportDropdownGear)
 
 	local buttonGenerate = AceGUI:Create("Button")
 	buttonGenerate:SetText("Generate")
@@ -451,16 +467,19 @@ function SimPermut:BuildGearFrame()
 	mainGroup:AddChild(dropdownEnchantFinger)
 	mainGroup:AddChild(labelGem)
 	mainGroup:AddChild(dropdownGem)
+	
 	mainGroup:AddChild(checkBoxForce)
 	mainGroup:AddChild(labelSpacerFull)
 	mainGroup:AddChild(labelLeg)
 	mainGroup:AddChild(editLegMin)
 	mainGroup:AddChild(editLegMax)
 	mainGroup:AddChild(labelSpacer2)
-	mainGroup:AddChild(labelSets)
-	mainGroup:AddChild(dropdownSets)
+	mainGroup:AddChild(labelSetsT19)
+	mainGroup:AddChild(dropdownSetsT19)
+	mainGroup:AddChild(labelSetsT20)
+	mainGroup:AddChild(dropdownSetsT20)
+
 	mainGroup:AddChild(labelSpacerline)
-	-- mainGroup:AddChild(labelreportTypeGear)
 	mainGroup:AddChild(ReportDropdownGear)
 	
 	mainGroup:AddChild(buttonGenerate)
@@ -937,6 +956,20 @@ function SimPermut:BuildRelicFrame()
 	
 end
 
+-- Field construction for Dungeon Journal Frame
+function SimPermut:BuildDungeonJournalFrame()
+	mainGroup = AceGUI:Create("SimpleGroup")
+    mainGroup:SetLayout("Fill")
+    mainGroup:SetRelativeWidth(1)
+	mainframe:AddChild(mainGroup)
+	
+	local container1 = AceGUI:Create("SimpleGroup")
+	container1:SetFullWidth(true)
+	container1:SetHeight(600)
+	container1:SetLayout("Flow")
+	mainGroup:AddChild(container1)
+end
+
 -- Field construction for option Frame
 function SimPermut:BuildOptionFrame()
 	mainGroup = AceGUI:Create("SimpleGroup")
@@ -1041,13 +1074,13 @@ function SimPermut:BuildOptionFrame()
 	container1:AddChild(labelspacer2)
 	
 	local labelreportTypeGear= AceGUI:Create("Label")
-	labelreportTypeGear:SetText("Report Type : Gear")
+	labelreportTypeGear:SetText("Report Type")
 	labelreportTypeGear:SetWidth(150)
 	container1:AddChild(labelreportTypeGear)
 	local ReportDropdownGear = AceGUI:Create("Dropdown")
     ReportDropdownGear:SetWidth(160)
 	ReportDropdownGear:SetList(ReportTypeGear)
-	ReportDropdownGear:SetLabel("")
+	ReportDropdownGear:SetLabel("Gear")
 	ReportDropdownGear:SetValue(actualSettings.report_typeGear)
 	ReportDropdownGear:SetCallback("OnValueChanged", function (this, event, item)
 		SimPermutVars.report_typeGear=item
@@ -1058,11 +1091,11 @@ function SimPermut:BuildOptionFrame()
 	local labelreportTypeTalents= AceGUI:Create("Label")
 	labelreportTypeTalents:SetText("     Report Type : Talents")
 	labelreportTypeTalents:SetWidth(150)
-	container1:AddChild(labelreportTypeTalents)
+	-- container1:AddChild(labelreportTypeTalents)
 	local ReportDropdownTalents = AceGUI:Create("Dropdown")
     ReportDropdownTalents:SetWidth(160)
 	ReportDropdownTalents:SetList(ReportTypeTalents)
-	ReportDropdownTalents:SetLabel("")
+	ReportDropdownTalents:SetLabel("Talents")
 	ReportDropdownTalents:SetValue(actualSettings.report_typeTalents)
 	ReportDropdownTalents:SetCallback("OnValueChanged", function (this, event, item)
 		SimPermutVars.report_typeTalents=item
@@ -1073,11 +1106,11 @@ function SimPermut:BuildOptionFrame()
 	local labelreportTypeRelics= AceGUI:Create("Label")
 	labelreportTypeRelics:SetText("     Report Type : Relics")
 	labelreportTypeRelics:SetWidth(150)
-	container1:AddChild(labelreportTypeRelics)
+	-- container1:AddChild(labelreportTypeRelics)
 	local ReportDropdownRelics = AceGUI:Create("Dropdown")
     ReportDropdownRelics:SetWidth(160)
 	ReportDropdownRelics:SetList(ReportTypeRelics)
-	ReportDropdownRelics:SetLabel("")
+	ReportDropdownRelics:SetLabel("Artifact")
 	ReportDropdownRelics:SetValue(actualSettings.report_typeRelics)
 	ReportDropdownRelics:SetCallback("OnValueChanged", function (this, event, item)
 		SimPermutVars.report_typeRelics=item
@@ -1208,23 +1241,38 @@ function SimPermut:BuildOptionFrame()
 	
 	local labelSpacerFull= AceGUI:Create("Label")
 	labelSpacerFull:SetText("")
-	labelSpacerFull:SetWidth(362)
+	labelSpacerFull:SetWidth(180)
 	container1:AddChild(labelSpacerFull)
 	
-	local labelSets= AceGUI:Create("Label")
-	labelSets:SetText("Sets (min)")
-	labelSets:SetWidth(63)
-	container1:AddChild(labelSets)
+	local labelSetsT19= AceGUI:Create("Label")
+	labelSetsT19:SetText("T19 (min)")
+	labelSetsT19:SetWidth(80)
+	container1:AddChild(labelSetsT19)
 	
-	local dropdownSets = AceGUI:Create("Dropdown")
-	dropdownSets:SetList(SetsList)
-	dropdownSets:SetWidth(110)
-	dropdownSets:SetValue(actualSettings.sets)
-	dropdownSets:SetCallback("OnValueChanged", function (this, event, item)
-		SimPermutVars.sets=item
+	local dropdownSetsT19 = AceGUI:Create("Dropdown")
+	dropdownSetsT19:SetList(SetsListT19)
+	dropdownSetsT19:SetWidth(110)
+	dropdownSetsT19:SetValue(actualSettings.setsT19)
+	dropdownSetsT19:SetCallback("OnValueChanged", function (this, event, item)
+		SimPermutVars.setsT19=item
 		PersoLib:MergeTables(defaultSettings,SimPermutVars,actualSettings)
     end)
-	container1:AddChild(dropdownSets)
+	container1:AddChild(dropdownSetsT19)
+	
+	local labelSetsT20= AceGUI:Create("Label")
+	labelSetsT20:SetText("T20 (min)")
+	labelSetsT20:SetWidth(55)
+	container1:AddChild(labelSetsT20)
+	
+	local dropdownSetsT20 = AceGUI:Create("Dropdown")
+	dropdownSetsT20:SetList(SetsListT20)
+	dropdownSetsT20:SetWidth(110)
+	dropdownSetsT20:SetValue(actualSettings.setsT20)
+	dropdownSetsT20:SetCallback("OnValueChanged", function (this, event, item)
+		SimPermutVars.setsT20=item
+		PersoLib:MergeTables(defaultSettings,SimPermutVars,actualSettings)
+    end)
+	container1:AddChild(dropdownSetsT20)
 	
 	mainframe:AddChild(mainGroup)
 end
@@ -1279,8 +1327,8 @@ function SimPermut:InitGearFrame()
 	actualEnchantBack=actualSettings.enchant_back
 	actualGem=actualSettings.gems
 	actualForce=actualSettings.replaceEnchants
-	actualSets=actualSettings.sets
-	
+	actualSetsT19=actualSettings.setsT19
+	actualSetsT20=actualSettings.setsT20
 	
 	_,tableBaseLink=SimPermut:GetBaseString()
 	
@@ -2097,6 +2145,7 @@ function SimPermut:GetPermutationString(permuttable)
 	
 	for i=1,#permuttable do
 		T192p,T194p=SimPermut:HasTier("T19",permuttable[i])
+		T202p,T204p=SimPermut:HasTier("T20",permuttable[i])
 		SimPermut:ReorganizeEquip(permuttable[i])
 		result=SimPermut:CheckUsability(permuttable[i],tableBaseLink)
 		if result=="" or ad then
@@ -2171,7 +2220,7 @@ function SimPermut:GetPermutationString(permuttable)
 			
 			itemList=itemList:sub(1, -2)
 			
-			if((nbLeg >=actualLegMin and nbLeg<=actualLegMax and nbitem>0 and (actualSets==0 or (actualSets==2 and T192p) or (actualSets==4 and T194p))) or ad) then
+			if((nbLeg >=actualLegMin and nbLeg<=actualLegMax and nbitem>0 and (actualSetsT19==0 or (actualSetsT19==2 and T192p) or (actualSetsT19==4 and T194p)) and (actualSetsT20==0 or (actualSetsT20==2 and T202p) or (actualSetsT20==4 and T204p))) or ad) then
 				local adString=""
 				if ad then
 					if result ~= "" then
@@ -2180,10 +2229,14 @@ function SimPermut:GetPermutationString(permuttable)
 						adString=" # Debug print : Not printed:Too much Leg ("..nbLeg..")\n"
 					elseif(nbLeg<actualLegMin) then
 						adString=" # Debug print : Not printed:Too few Leg ("..nbLeg..")\n"
-					elseif(not T192p and actualSets==2) then
+					elseif(not T192p and actualSetsT19==2) then
 						adString=" # Debug print : Not printed:No 2p T19\n"
-					elseif(not T194p and actualSets==4) then
+					elseif(not T194p and actualSetsT19==4) then
 						adString=" # Debug print : Not printed:No 4p T19\n"
+					elseif(not T202p and actualSetsT20==2) then
+						adString=" # Debug print : Not printed:No 2p T20\n"
+					elseif(not T204p and actualSetsT20==4) then
+						adString=" # Debug print : Not printed:No 4p T20\n"	
 					end
 				end
 				returnString =  returnString .. adString..SimPermut:GetCopyName(copynumber,pool,nbitem,itemList,#permuttable,1) .. "\n".. currentString.."\n"

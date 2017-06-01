@@ -354,7 +354,8 @@ SimPermut.FrameMenu={
 	[1]	= "Gear permutation",
 	[2] = "Talent permutation",
 	[3] = "Relic permutation",
-	[4] = "Options"
+	[4] = "Dungeon Journal",
+	[5] = "Options"
 }
 SimPermut.RelicComparisonType = {
   [1] = 'relic ilevel',
@@ -406,10 +407,15 @@ SimPermut.HasTierSets = {
       [12] = {[5] = 147127, [4] = 147128, [7] = 147129, [1] = 147130, [9] = 147131, [3] = 147132}   -- Demon Hunter: Chest, Back, Hands, Head, Legs, Shoulder
     }
   }
-SimPermut.Sets = {
+SimPermut.SetsT19 = {
   [0] = 'All',
   [2] = 'T19 2P',
   [4] = 'T19 4P'
+}
+SimPermut.SetsT20 = {
+  [0] = 'All',
+  [2] = 'T20 2P',
+  [4] = 'T20 4P'
 }
 
 SimPermut.enchantNeck = {
