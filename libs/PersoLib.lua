@@ -346,20 +346,6 @@ function PersoLib:MergeTables(tableDefault,tableVars,tablereception)
 	return tablereception
 end
 
-function PersoLib:OrdreTraitTable(ArtifactTableTraitsOrder,ArtifactTableTraits)
-	local n
-	for k,v in pairs(ArtifactTableTraits) do
-		ArtifactTableTraitsOrder[k]={}
-		n=1
-		print(k)
-		for k2,v2 in ipairs(ArtifactTableTraits[k]) do
-			ArtifactTableTraitsOrder[k][n]=k2
-			print("-"..k2)
-			n=n+1
-		end
-	end
-end
-
 function PersoLib:GetRealIlvl(itemLink)
 	local itemString = string.match(itemLink, "item:([%-?%d:]+)")
 	local itemSplit = {}
