@@ -86,6 +86,7 @@ local ilvlWeapon
 local relicCopyCount=1
 local relicString=""
 local relicComparisonTypeValue=1
+local editLink
 
 -- Parameters
 local ITEM_COUNT_THRESHOLD 		= 22
@@ -183,7 +184,6 @@ SlashCmdList["SIMPERMUTSLASH"] = function (arg)
 		if not variablesLoaded then
 			if not SimPermutVars then SimPermutVars = {} end
 			PersoLib:MergeTables(defaultSettings,SimPermutVars,actualSettings)
-			-- PersoLib:OrdreTraitTable(ArtifactTableTraitsOrder,ArtifactTableTraits)
 			variablesLoaded=true
 		end
 	
@@ -276,12 +276,12 @@ function SimPermut:BuildFrame()
 		currentFrame=3
 		SimPermut:BuildRelicFrame()
 		SimPermut:BuildResultFrame(false)
-	-- elseif currentFrame==4 then --relics
+	-- elseif currentFrame==4 then --Dungeon Journal
 		-- currentFrame=4
 		-- SimPermut:BuildDungeonJournalFrame()
-		SimPermut:BuildResultFrame(false)
-	elseif currentFrame==4 then --options
-		currentFrame=4
+		-- SimPermut:BuildResultFrame(false)
+	elseif currentFrame==5 then --options
+		currentFrame=5
 		SimPermut:BuildOptionFrame()
 		--SimPermut:BuildResultFrame(false)
 	end
@@ -968,6 +968,21 @@ function SimPermut:BuildDungeonJournalFrame()
 	container1:SetHeight(600)
 	container1:SetLayout("Flow")
 	mainGroup:AddChild(container1)
+	
+	editLink= AceGUI:Create("EditBox")
+	editLink:SetRelativeWidth(0.7)
+	-- editLink:SetMaxLetters(3)
+	editLink:SetText("")
+	container1:AddChild(editLink)
+	
+	local buttonAdd = AceGUI:Create("Button")
+	buttonAdd:SetText("Generate")
+	buttonAdd:SetRelativeWidth(0.2)
+	buttonAdd:SetCallback("OnClick", function()
+		SimPermut:AddItemLink()
+		SimPermut:BuildFrame() --refresh
+	end)
+	container1:AddChild(buttonAdd)
 end
 
 -- Field construction for option Frame
@@ -1234,7 +1249,7 @@ function SimPermut:BuildOptionFrame()
 	checkBoxForce:SetWidth(250)
 	checkBoxForce:SetLabel("Replace current enchant/gems")
 	checkBoxForce:SetCallback("OnValueChanged", function (this, event, item)
-		SimPermutVars.gems=checkBoxForce:GetValue()
+		SimPermutVars.replaceEnchants=checkBoxForce:GetValue()
 		PersoLib:MergeTables(defaultSettings,SimPermutVars,actualSettings)
     end)
 	container1:AddChild(checkBoxForce)
@@ -2651,4 +2666,9 @@ function SimPermut:HasTier(stier,tableEquip)
     else
       return false;
     end
+end
+
+--add item to the list
+function SimPermut:AddItemLink()
+
 end
