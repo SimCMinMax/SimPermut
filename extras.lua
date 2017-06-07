@@ -354,7 +354,7 @@ SimPermut.FrameMenu={
 	[1]	= "Gear permutation",
 	[2] = "Talent permutation",
 	[3] = "Relic permutation",
-	[4] = "Dungeon Journal",
+	--[4] = "Dungeon Journal",
 	[5] = "Options"
 }
 SimPermut.RelicComparisonType = {

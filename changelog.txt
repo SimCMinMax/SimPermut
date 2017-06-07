@@ -1,3 +1,8 @@
+v1.12.4 06/07/2017
+[UI]Added T20 selection
+[UI]Added tier print for autosimc export
+[FIX]Option pannel error with replace checkbox
+
 v1.12.3 05/31/2017
 [UI]Added an artifact generator/comparison
 [UI]Added more classes to relic comparison
