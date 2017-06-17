@@ -6,7 +6,7 @@ This repository is for the addon SimPermut which make a string usable by Simulat
 
 Latest updates also add talents permutations and Artifact generator, aswell as more control over the profiles created. 
 
-Don't hesitate to go on the [SimcMinMax](https://discordapp.com/invite/tFR2uvK) Discord to ask about specific stuff.
+Don't hesitate to go on the [SimcMinMax](https://discordapp.com/invite/tFR2uvK) Discord in the #simpermut-autosimc Channel to ask about specific stuff.
 
 Get it on curse : https://mods.curse.com/addons/wow/254069-simpermut
 
@@ -47,9 +47,10 @@ See [AutoSimC on GitHub](https://github.com/SimCMinMax/AutoSimC)
 
 - Add the ability to add gear from dungeon journal to compare
 
+- Add a way to add simc parameters
+
 - Artifact Path Permutation
 
-- Add a way to add simc parameters
 
 [- Better way of detecting sets]
  
