@@ -2301,6 +2301,9 @@ function SimPermut:GenerateRelicString()
 	local CopyString=""
 	local artifactID,artifactData = LAD:GetArtifactInfo()
 	local itemLevel1,itemLevel2,itemLevel3
+	if not artifactData.relics[1].link or not artifactData.relics[2].link then
+		return ""
+	end
 	_, _, _, itemLevel1 = GetItemInfo(artifactData.relics[1].link)
 	_, _, _, itemLevel2 = GetItemInfo(artifactData.relics[2].link)
 	
