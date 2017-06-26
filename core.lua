@@ -1747,7 +1747,7 @@ function SimPermut:GetItemString(itemLink,itemType,base)
       end
 
 	-- Gems
-	if itemType=="main_hand" then --exception for relics
+	if itemType=="main_hand" or itemType=="off_hand" then --exception for relics
 		local gems = {}
 		for i=1, 4 do -- hardcoded here to just grab all 4 sockets
 			local _,gemLink = GetItemGem(itemLink, i)
@@ -1800,7 +1800,7 @@ function SimPermut:GetItemStrings()
 	local slotId,itemLink
 	local itemString = {}
 	local pool={}
-	local stats = {}
+	-- local stats = {}
 	
 	equipedLegendaries = 0
 	for i, value in pairs(statsString) do 
@@ -1825,13 +1825,13 @@ function SimPermut:GetItemStrings()
 			items[slotNum] = PermutSimcNames[slotNum] .. "=" .. table.concat(itemString, ',')
 
 			--stats
-			stats={}
-			stats = GetItemStats(itemLink)
-			for stat, value in pairs(statsString) do 
-				if stats[value] then
-					pool[value]=pool[value]+stats[value]
-				end
-			end
+			-- stats={}
+			-- stats = GetItemStats(itemLink)
+			-- for stat, value in pairs(statsString) do 
+				-- if stats[value] then
+					-- pool[value]=pool[value]+stats[value]
+				-- end
+			-- end
 		end
 	end
 
