@@ -1,3 +1,7 @@
+v1.12.5 06/28/2017
+[FIX]Corrected artifact in off-hand
+[UI]Added TOS relics
+
 v1.12.4 06/07/2017
 [UI]Added T20 selection
 [UI]Added tier print for autosimc export
