@@ -1798,7 +1798,7 @@ function SimPermut:GetItemString(itemLink,itemType,base,forceilvl)
 						if i>1 then 
 							gemstring=gemstring.."/"
 						end
-						gemstring=actualGem
+						gemstring=gemstring..actualGem
 					end
 					simcItemOptions[#simcItemOptions + 1] = gemstring
 				end
@@ -1825,7 +1825,7 @@ function SimPermut:GetItemString(itemLink,itemType,base,forceilvl)
 							if i>1 then 
 								gemstring=gemstring.."/"
 							end
-							gemstring=actualGem
+							gemstring=gemstring..actualGem
 						end
 						simcItemOptions[#simcItemOptions + 1] = gemstring
 					end
