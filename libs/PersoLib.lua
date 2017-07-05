@@ -179,26 +179,27 @@ function PersoLib:tokenize(str)
   -- convert to lowercase and remove spaces
   str = string.lower(str)
   str = string.gsub(str, ' ', '_')
+  str = string.gsub(str, ',', '_')
 
   -- keep stuff we want, dumpster everything else
-  local s = ""
-  for i=1,str:len() do
+  -- local s = ""
+  -- for i=1,str:len() do
     -- keep digits 0-9
-    if str:byte(i) >= 48 and str:byte(i) <= 57 then
-      s = s .. str:sub(i,i)
+    -- if str:byte(i) >= 48 and str:byte(i) <= 57 then
+      -- s = s .. str:sub(i,i)
       -- keep lowercase letters
-    elseif str:byte(i) >= 97 and str:byte(i) <= 122 then
-      s = s .. str:sub(i,i)
+    -- elseif str:byte(i) >= 97 and str:byte(i) <= 122 then
+      -- s = s .. str:sub(i,i)
       -- keep %, +, ., _
-    elseif str:byte(i)==37 or str:byte(i)==43 or str:byte(i)==46 or str:byte(i)==95 then
-      s = s .. str:sub(i,i)
-    end
-  end
+    -- elseif str:byte(i)==37 or str:byte(i)==43 or str:byte(i)==46 or str:byte(i)==95 then
+      -- s = s .. str:sub(i,i)
+    -- end
+  -- end
   -- strip trailing spaces
-  if string.sub(s, s:len())=='_' then
-    s = string.sub(s, 0, s:len()-1)
+  if string.sub(str, str:len())=='_' then
+    str = string.sub(str, 0, str:len()-1)
   end
-  return s
+  return str
 end
 
 -- simc, method for constructing the talent string

@@ -2136,7 +2136,7 @@ function SimPermut:GetPermutationString(permuttable)
 	local returnString="\n"
 	
 	local copynumber=1
-	local stats
+	-- local stats
 	local pool={}
 	local itemString
 	local itemStringFinal
@@ -2220,13 +2220,13 @@ function SimPermut:GetPermutationString(permuttable)
 					nbitem=nbitem+1
 					itemList=itemList..PersoLib:tokenize(itemname).."-"
 					--stats
-					stats={}
-					stats = GetItemStats(permuttable[i][j])
-					for stat, value in pairs(statsString) do 
-						if stats[value] then
-							pool[value]=pool[value]+stats[value]
-						end
-					end
+					-- stats={}
+					-- stats = GetItemStats(permuttable[i][j])
+					-- for stat, value in pairs(statsString) do 
+						-- if stats[value] then
+							-- pool[value]=pool[value]+stats[value]
+						-- end
+					-- end
 				else
 					PersoLib:debugPrint("Not printed: not drawn",ad)
 					notDrawn=notDrawn+1
