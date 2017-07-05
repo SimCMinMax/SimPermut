@@ -1894,34 +1894,44 @@ function SimPermut:GetListItem(strItem,itemLine)
 	local linkTable={}
 	local equippableItems = {}
 	local copyname
-	
-	local blizzardname,simcname,slotID
+
+	local blizzardname,simcname,slotID,realSlot
 	if strItem=="head" then
 		slotID=1
+		realSlot=1
 	elseif strItem=="neck" then
 		slotID=2
+		realSlot=2
 	elseif strItem=="shoulder" then
 		slotID=3
+		realSlot=3
 	elseif strItem=="back" then
 		slotID=4
+		realSlot=4
 	elseif strItem=="chest" then
 		slotID=5
+		realSlot=5
 	elseif strItem=="wrist" then
 		slotID=8
+		realSlot=6
 	elseif strItem=="hands" then
 		slotID=9
+		realSlot=7
 	elseif strItem=="waist" then
 		slotID=10
+		realSlot=8
 	elseif strItem=="legs" then
 		slotID=11
+		realSlot=9
 	elseif strItem=="feet" then
 		slotID=12
+		realSlot=10
 	elseif strItem=="finger" then
 		slotID=13
+		realSlot=11
 	elseif strItem=="trinket" then
 		slotID=15
-	--elseif strItem=="relic" then
-	--	slotID=15
+		realSlot=13
 	end
 	blizzardname=SimPermut.slotNames[slotID]
 	simcname=simcSlotNames[slotID]
@@ -1944,7 +1954,7 @@ function SimPermut:GetListItem(strItem,itemLine)
 			if itemLink~=nil then
 				_,_,itemRarity,ilvl = GetItemInfo(itemLink)
 				ilvl = PersoLib:GetRealIlvl(itemLink)
-				if (ilvl >= actualSettings.ilvl_thresholdMin and ilvl <= actualSettings.ilvl_thresholdMax) or itemRarity==7 then
+				if (ilvl >= actualSettings.ilvl_thresholdMin and ilvl <= actualSettings.ilvl_thresholdMax) or itemRarity==7 or (SimPermut:isEquiped(itemLink,realSlot) or SimPermut:isEquiped(itemLink,realSlot+1)) then
 					linkTable[#linkTable+1]=itemLink
 				end
 			end
