@@ -1624,7 +1624,7 @@ function SimPermut:GetItemString(itemLink,itemType,base)
 	end
 	
 	-- Item id
-	local itemId = itemSplit[OFFSET_ITEM_ID]
+	local itemId = tonumber(itemSplit[OFFSET_ITEM_ID])
 	simcItemOptions[#simcItemOptions + 1] = ',id=' .. itemId
 	
 	-- Enchant
@@ -1748,6 +1748,7 @@ function SimPermut:GetItemString(itemLink,itemType,base)
 
 	-- Gems
 	if itemType=="main_hand" or itemType=="off_hand" then --exception for relics
+		
 		local gems = {}
 		for i=1, 4 do -- hardcoded here to just grab all 4 sockets
 			local _,gemLink = GetItemGem(itemLink, i)
@@ -1762,28 +1763,75 @@ function SimPermut:GetItemString(itemLink,itemType,base)
 			simcItemOptions[#simcItemOptions + 1] = 'gem_id=' .. table.concat(gems, '/')
 		end
 	else
-		local hasSocket=false
+		local hasSocket=0
+		local gemstring=""
+		local legendaryItems={[146666]=true,[146667]=true,[146668]=true,[146669]=true}
 		local stats = GetItemStats(itemLink)
 		local _,_,itemRarity = GetItemInfo(itemLink)
-		--for some reason, GetItemStats doesn't gives sockets to neck and finger that have one by default
-		if stats and stats['EMPTY_SOCKET_PRISMATIC']==1 or (itemRarity== 5 and (itemType== 'neck' or itemType== 'finger1' or itemType== 'finger2')) then
-			hasSocket=true 
+		--for some reason, GetItemStats doesn't gives sockets to legendary neck and finger that have one by default
+		if (stats and stats['EMPTY_SOCKET_PRISMATIC'] and stats['EMPTY_SOCKET_PRISMATIC']>=1) or (itemRarity== 5 and (itemType== 'neck' or itemType== 'finger1' or itemType== 'finger2')) then
+			if stats['EMPTY_SOCKET_PRISMATIC'] then
+				hasSocket=stats['EMPTY_SOCKET_PRISMATIC']
+			else
+				hasSocket=1
+			end
 		end
 		if base and not SimPermutVars.replaceEnchantsBase then
 			if tonumber(itemSplit[OFFSET_GEM_ID_1]) ~= 0 then
-				simcItemOptions[#simcItemOptions + 1] = 'gem_id=' .. itemSplit[OFFSET_GEM_ID_1]
+				gemstring='gem_id='
+				if (itemSplit[OFFSET_GEM_ID_1]~=0) then 
+					gemstring=gemstring..itemSplit[OFFSET_GEM_ID_1]
+					if (itemSplit[OFFSET_GEM_ID_2]~=0) then 
+						gemstring=gemstring..itemSplit[OFFSET_GEM_ID_2]
+						if (itemSplit[OFFSET_GEM_ID_3]~=0) then 
+							gemstring=gemstring..itemSplit[OFFSET_GEM_ID_3]
+							if (itemSplit[OFFSET_GEM_ID_4]~=0) then 
+								gemstring=gemstring..itemSplit[OFFSET_GEM_ID_4]
+							end
+						end
+					end
+				end
+				simcItemOptions[#simcItemOptions + 1] = gemstring
 			end
 		else
 			if (actualForce or (base and SimPermutVars.replaceEnchantsBase)) and actualGem~=0 then
-				if actualGem and actualGem~=0 and (hasSocket or tonumber(itemSplit[OFFSET_GEM_ID_1]) ~= 0) then
-					simcItemOptions[#simcItemOptions + 1] = 'gem_id=' .. actualGem
+				if actualGem and actualGem~=0 and (hasSocket>0 or tonumber(itemSplit[OFFSET_GEM_ID_1]) ~= 0) then
+					-- simcItemOptions[#simcItemOptions + 1] = 'gem_id=' .. actualGem
+					gemstring='gem_id='
+					for i=1,hasSocket do
+						if i>1 then 
+							gemstring=gemstring.."/"
+						end
+						gemstring=actualGem
+					end
+					simcItemOptions[#simcItemOptions + 1] = gemstring
 				end
 			else
 				if tonumber(itemSplit[OFFSET_GEM_ID_1]) ~= 0 then
-					simcItemOptions[#simcItemOptions + 1] = 'gem_id=' .. itemSplit[OFFSET_GEM_ID_1]
+					gemstring='gem_id='
+					if (itemSplit[OFFSET_GEM_ID_1]~=0) then 
+						gemstring=gemstring..itemSplit[OFFSET_GEM_ID_1]
+						if (itemSplit[OFFSET_GEM_ID_2]~=0) then 
+							gemstring=gemstring..itemSplit[OFFSET_GEM_ID_2]
+							if (itemSplit[OFFSET_GEM_ID_3]~=0) then 
+								gemstring=gemstring..itemSplit[OFFSET_GEM_ID_3]
+								if (itemSplit[OFFSET_GEM_ID_4]~=0) then 
+									gemstring=gemstring..itemSplit[OFFSET_GEM_ID_4]
+								end
+							end
+						end
+					end
+					simcItemOptions[#simcItemOptions + 1] = gemstring
 				else
-					if actualGem and actualGem~=0 and hasSocket then
-						simcItemOptions[#simcItemOptions + 1] = 'gem_id=' .. actualGem
+					if actualGem and actualGem~=0 and hasSocket>0 then
+						gemstring='gem_id='
+						for i=1,hasSocket do
+							if i>1 then 
+								gemstring=gemstring.."/"
+							end
+							gemstring=actualGem
+						end
+						simcItemOptions[#simcItemOptions + 1] = gemstring
 					end
 				end
 			end
