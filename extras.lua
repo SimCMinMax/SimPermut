@@ -348,6 +348,22 @@ SimPermut.simcSlotNames = {'head','neck','shoulder','back','chest','shirt','taba
 SimPermut.listNames = {'head','neck','shoulder','back','chest','wrist','hands','waist','legs','feet','finger','trinket'}
 SimPermut.PermutSimcNames = {'head','neck','shoulder','back','chest','wrist','hands','waist','legs','feet','finger1','finger2','trinket1','trinket2'}
 SimPermut.PermutSlotNames = {"HeadSlot", "NeckSlot", "ShoulderSlot", "BackSlot", "ChestSlot", "WristSlot", "HandsSlot", "WaistSlot", "LegsSlot", "FeetSlot", "Finger0Slot", "Finger1Slot", "Trinket0Slot", "Trinket1Slot"}
+
+SimPermut.GetItemInfoName = {
+	["INVTYPE_HEAD"]=1,
+	["INVTYPE_NECK"]=2,
+	["INVTYPE_SHOULDER"]=3,
+	["INVTYPE_CLOAK"]=4,
+	["INVTYPE_CHEST"]=5,
+	["INVTYPE_ROBE"]=5,
+	["INVTYPE_WRIST"]=6,
+	["INVTYPE_HAND"]=7,
+	["INVTYPE_WAIST"]=8,
+	["INVTYPE_LEGS"]=9,
+	["INVTYPE_FEET"]=10,
+	["INVTYPE_FINGER"]=11,
+	["INVTYPE_TRINKET"]=12
+}
 -- SimPermut.Official = {0 = "ammo",1 = "head",2 = "neck",3 = "shoulder",4 = "shirt",5 = "chest",6 = "waist",7 = "legs",8 = "feet",9 = "wrist",10 = "hands",11 = "finger 1",12 = "finger 2",13 = "trinket 1",14 = "trinket 2",15 = "back",16 = "main hand",17 = "off hand",18 = "ranged",19 = "tabard",20 = "first bag (the rightmost one)",21 = "second bag",22 = "third bag",23 = "fourth bag (the leftmost one)"}
 
 -- UI
@@ -355,7 +371,7 @@ SimPermut.FrameMenu={
 	[1]	= "Gear permutation",
 	[2] = "Talent permutation",
 	[3] = "Relic permutation",
-	--[4] = "Dungeon Journal",
+	[4] = "Dungeon Journal",
 	[5] = "Options"
 }
 SimPermut.RelicComparisonType = {
