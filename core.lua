@@ -970,7 +970,7 @@ function SimPermut:BuildDungeonJournalFrame()
 	buttonAdd:SetText("Add to List")
 	buttonAdd:SetRelativeWidth(0.3)
 	buttonAdd:SetCallback("OnClick", function(this, event, item)
-		SimPermut:AddItemLink(editLink:GetText(),editLinkilvl:GetText())
+		SimPermut:AddItemLink(editLink:GetText(),editLinkilvl:GetText(),true)
 		-- SimPermut:BuildFrame() --refresh
 	end)
 	container1:AddChild(buttonAdd)
@@ -1596,7 +1596,7 @@ end
 -- Permutation Management --
 ----------------------------
 -- get item string
-function SimPermut:GetItemString(itemLink,itemType,base,forceilvl)
+function SimPermut:GetItemString(itemLink,itemType,base,forceilvl,forcegem)
 	--itemLink 	: link of the item
 	--itemType 	: item slot
 	--base 		: true if item from equiped gear, false from inventory
@@ -1761,12 +1761,11 @@ function SimPermut:GetItemString(itemLink,itemType,base,forceilvl)
 	else
 		local hasSocket=0
 		local gemstring=""
-		local legendaryItems={[146666]=true,[146667]=true,[146668]=true,[146669]=true}
 		local stats = GetItemStats(itemLink)
 		local _,_,itemRarity = GetItemInfo(itemLink)
 		--for some reason, GetItemStats doesn't gives sockets to legendary neck and finger that have one by default
-		if (stats and stats['EMPTY_SOCKET_PRISMATIC'] and stats['EMPTY_SOCKET_PRISMATIC']>=1) or (itemRarity== 5 and (itemType== 'neck' or itemType== 'finger1' or itemType== 'finger2')) then
-			if stats['EMPTY_SOCKET_PRISMATIC'] then
+		if (stats and stats['EMPTY_SOCKET_PRISMATIC'] and stats['EMPTY_SOCKET_PRISMATIC']>=1) or (itemRarity== 5 and (itemType== 'neck' or itemType== 'finger1' or itemType== 'finger2')) or forcegem then
+			if stats and stats['EMPTY_SOCKET_PRISMATIC'] then
 				hasSocket=stats['EMPTY_SOCKET_PRISMATIC']
 			else
 				hasSocket=1
@@ -1790,7 +1789,7 @@ function SimPermut:GetItemString(itemLink,itemType,base,forceilvl)
 				simcItemOptions[#simcItemOptions + 1] = gemstring
 			end
 		else
-			if (actualForce or (base and SimPermutVars.replaceEnchantsBase)) and actualGem~=0 then
+			if (actualForce or forcegem or (base and SimPermutVars.replaceEnchantsBase)) and actualGem~=0 then
 				if actualGem and actualGem~=0 and (hasSocket>0 or tonumber(itemSplit[OFFSET_GEM_ID_1]) ~= 0) then
 					-- simcItemOptions[#simcItemOptions + 1] = 'gem_id=' .. actualGem
 					gemstring='gem_id='
@@ -1946,7 +1945,7 @@ function SimPermut:GetListItem(strItem,itemLine)
 				
 				ilvl = PersoLib:GetRealIlvl(itemLink)
 				if (ilvl >= actualSettings.ilvl_thresholdMin and ilvl <= actualSettings.ilvl_thresholdMax) or itemRarity==7 then
-					linkTable[#linkTable+1]={itemLink,nil}
+					linkTable[#linkTable+1]={itemLink,nil,nil}
 				end
 			end
 		else
@@ -1955,7 +1954,7 @@ function SimPermut:GetListItem(strItem,itemLine)
 				_,_,itemRarity,ilvl = GetItemInfo(itemLink)
 				ilvl = PersoLib:GetRealIlvl(itemLink)
 				if (ilvl >= actualSettings.ilvl_thresholdMin and ilvl <= actualSettings.ilvl_thresholdMax) or itemRarity==7 or (SimPermut:isEquiped(itemLink,realSlot) or SimPermut:isEquiped(itemLink,realSlot+1)) then
-					linkTable[#linkTable+1]={itemLink,nil}
+					linkTable[#linkTable+1]={itemLink,nil,nil}
 				end
 			end
 		end
@@ -1977,9 +1976,6 @@ function SimPermut:GetListItems()
 			end
 		end
 	end
-	
-	
-	
 end
 
 -- generates tablelink to be ready for permuts
@@ -1991,7 +1987,7 @@ function SimPermut:GetTableLink()
 		if tableListItems[i] and #tableListItems[i]>0 then
 			for j=1,#tableListItems[i] do
 				if tableCheckBoxes[i][j]:GetValue() then
-					tableLinkPermut[i][#tableLinkPermut[i] + 1] = {tableListItems[i][j][1],tableListItems[i][j][2]}
+					tableLinkPermut[i][#tableLinkPermut[i] + 1] = {tableListItems[i][j][1],tableListItems[i][j][2],tableListItems[i][j][3]}
 				end
 			end
 		end
@@ -2003,7 +1999,7 @@ function SimPermut:GetTableLink()
 			else
 				slotid=i
 			end
-			tableLinkPermut[i][1]={GetInventoryItemLink('player', GetInventorySlotInfo(slotNames[slotid])),nil}
+			tableLinkPermut[i][1]={GetInventoryItemLink('player', GetInventorySlotInfo(slotNames[slotid])),nil,nil}
 		end
 			
 	end
@@ -2011,9 +2007,9 @@ function SimPermut:GetTableLink()
 	--manage fingers and trinkets
 	if #tableLinkPermut[12]==0 then --if no trinket chosen, we take the equiped ones
 		tableLinkPermut[13]={}
-		tableLinkPermut[13][1]={GetInventoryItemLink('player', GetInventorySlotInfo(slotNames[15])),nil}
+		tableLinkPermut[13][1]={GetInventoryItemLink('player', GetInventorySlotInfo(slotNames[15])),nil,nil}
 		tableLinkPermut[14]={}
-		tableLinkPermut[14][1]={GetInventoryItemLink('player', GetInventorySlotInfo(slotNames[16])),nil}
+		tableLinkPermut[14][1]={GetInventoryItemLink('player', GetInventorySlotInfo(slotNames[16])),nil,nil}
 	else --else we copy the selected ones on the second slot and reposition the slot in the good position
 		if #tableLinkPermut[12]==1 then
 			errorMessage="Can't permut with only one trinket"
@@ -2032,8 +2028,8 @@ function SimPermut:GetTableLink()
 	end
 	
 	if #tableLinkPermut[11]==0 then --if no finger chosen, we take the equiped ones
-		tableLinkPermut[11][1]={GetInventoryItemLink('player', GetInventorySlotInfo(slotNames[13])),nil}
-		tableLinkPermut[12][1]={GetInventoryItemLink('player', GetInventorySlotInfo(slotNames[14])),nil}
+		tableLinkPermut[11][1]={GetInventoryItemLink('player', GetInventorySlotInfo(slotNames[13])),nil,nil}
+		tableLinkPermut[12][1]={GetInventoryItemLink('player', GetInventorySlotInfo(slotNames[14])),nil,nil}
 	else --else we copy the selected ones on the second slot
 		if #tableLinkPermut[11]==1 then
 			errorMessage="Can't permut with only one ring"
@@ -2141,9 +2137,9 @@ function SimPermut:ReorganizeEquip(tabletoPermut)
 		itemIdRing2 = PersoLib:GetIDFromLink(tabletoPermut[12][1])
 		PersoLib:debugPrint("fingerInf:"..tostring(fingerInf).."("..itemIdRing1.."-"..itemIdRing2..")",ad)
 		if (fingerInf and itemIdRing1>itemIdRing2) or (not fingerInf and itemIdRing1<itemIdRing2) then
-			local tempring = tabletoPermut[11][1]
-			tabletoPermut[11][1] = tabletoPermut[12][1]
-			tabletoPermut[12][1] = tempring
+			local tempring = tabletoPermut[11]
+			tabletoPermut[11] = tabletoPermut[12]
+			tabletoPermut[12] = tempring
 		end
 	end
 	if tableNumberSelected[12]<=2 then
@@ -2152,9 +2148,9 @@ function SimPermut:ReorganizeEquip(tabletoPermut)
 		itemIdTrinket2 = PersoLib:GetIDFromLink(tabletoPermut[14][1])
 		PersoLib:debugPrint("trinketInf:"..tostring(trinketInf).."("..itemIdTrinket1.."-"..itemIdTrinket2..")",ad)
 		if (trinketInf and itemIdTrinket1>itemIdTrinket2) or (not trinketInf and itemIdTrinket1<itemIdTrinket2) then
-			local temptrinket = tabletoPermut[13][1]
-			tabletoPermut[13][1] = tabletoPermut[14][1]
-			tabletoPermut[14][1] = temptrinket
+			local temptrinket = tabletoPermut[13]
+			tabletoPermut[13] = tabletoPermut[14]
+			tabletoPermut[14] = temptrinket
 		end
 	end
 	
@@ -2247,11 +2243,11 @@ function SimPermut:GetPermutationString(permuttable)
 					nbLeg=nbLeg+1
 				end
 				
-				itemString,bonuspool=SimPermut:GetItemString(permuttable[i][j][1],PermutSimcNames[j],false,permuttable[i][j][2])
+				itemString,bonuspool=SimPermut:GetItemString(permuttable[i][j][1],PermutSimcNames[j],false,permuttable[i][j][2],permuttable[i][j][3])
 				itemStringFinal=table.concat(itemString, ',')
 				if (j>10) then
 					if (j==11 or j==13) then
-						itemString2 =SimPermut:GetItemString(permuttable[i][j+1][1],PermutSimcNames[j+1],false,permuttable[i][j][2])
+						itemString2 =SimPermut:GetItemString(permuttable[i][j+1][1],PermutSimcNames[j+1],false,permuttable[i][j][2],permuttable[i][j][3])
 						itemStringFinal2 = table.concat(itemString2, ',')
 						if(itemStringFinal==tableBaseString[j] or (itemStringFinal==tableBaseString[j+1] and itemStringFinal2==tableBaseString[j]))then
 							draw=false
@@ -2259,7 +2255,7 @@ function SimPermut:GetPermutationString(permuttable)
 							draw=true
 						end
 					else
-						itemString2 =SimPermut:GetItemString(permuttable[i][j-1][1],PermutSimcNames[j-1],false,permuttable[i][j][2])
+						itemString2 =SimPermut:GetItemString(permuttable[i][j-1][1],PermutSimcNames[j-1],false,permuttable[i][j][2],permuttable[i][j][3])
 						itemStringFinal2 = table.concat(itemString2, ',')
 						if(itemStringFinal==tableBaseString[j] or (itemStringFinal==tableBaseString[j-1] and itemStringFinal2==tableBaseString[j]))then
 							draw=false
@@ -2738,7 +2734,7 @@ function SimPermut:HasTier(stier,tableEquip)
 end
 
 --add item to the list
-function SimPermut:AddItemLink(itemLink,itemilvl)
+function SimPermut:AddItemLink(itemLink,itemilvl,socket)
 	print(itemLink,itemilvl)
 	name, link, quality, iLevel, reqLevel, class, subclass, maxStack, equipSlot, texture, vendorPrice = GetItemInfo(itemLink)
 	if link then
@@ -2749,7 +2745,7 @@ function SimPermut:AddItemLink(itemLink,itemilvl)
 			if not SimPermutVars.addedItemsTable[GetItemInfoName[equipSlot]] then 
 				SimPermutVars.addedItemsTable[GetItemInfoName[equipSlot]]={}
 			end
-			table.insert(SimPermutVars.addedItemsTable[GetItemInfoName[equipSlot]],{itemLink,itemilvl})
+			table.insert(SimPermutVars.addedItemsTable[GetItemInfoName[equipSlot]],{itemLink,itemilvl,socket})
 			print(SimPermutVars.addedItemsTable[GetItemInfoName[equipSlot]][#SimPermutVars.addedItemsTable[GetItemInfoName[equipSlot]]])
 			PersoLib:MergeTables(defaultSettings,SimPermutVars,actualSettings)
 			
