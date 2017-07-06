@@ -1,3 +1,6 @@
+v1.13.2 07/06/2017
+[Fix]Fix autosimc export
+
 v1.13.1 07/06/2017
 [UI]Added an option to add gear from a link to permut
 [FIX]Fix copy names with weird caracters
