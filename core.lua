@@ -951,8 +951,7 @@ function SimPermut:BuildDungeonJournalFrame()
 	mainGroup:AddChild(container1)
 	
 	local editLink= AceGUI:Create("EditBox")
-	editLink:SetRelativeWidth(0.6)
-	-- editLink:SetMaxLetters(3)
+	editLink:SetRelativeWidth(0.5)
 	editLink:SetText("")
 	editLink:SetLabel("Link")
 	editLink:DisableButton(true)
@@ -960,17 +959,23 @@ function SimPermut:BuildDungeonJournalFrame()
 	
 	local editLinkilvl= AceGUI:Create("EditBox")
 	editLinkilvl:SetRelativeWidth(0.1)
-	-- editLink:SetMaxLetters(3)
 	editLinkilvl:SetText("")
+	editLinkilvl:SetMaxLetters(4)
 	editLinkilvl:SetLabel("iLVL")
 	editLinkilvl:DisableButton(true)
 	container1:AddChild(editLinkilvl)
+	
+	local checkBoxSocket = AceGUI:Create("CheckBox")
+	checkBoxSocket:SetRelativeWidth(0.1)
+	checkBoxSocket:SetLabel("Socket")
+	checkBoxSocket:SetValue(false)
+	container1:AddChild(checkBoxSocket)
 	
 	local buttonAdd = AceGUI:Create("Button")
 	buttonAdd:SetText("Add to List")
 	buttonAdd:SetRelativeWidth(0.3)
 	buttonAdd:SetCallback("OnClick", function(this, event, item)
-		SimPermut:AddItemLink(editLink:GetText(),editLinkilvl:GetText(),true)
+		SimPermut:AddItemLink(editLink:GetText(),editLinkilvl:GetText(),checkBoxSocket:GetValue())
 		-- SimPermut:BuildFrame() --refresh
 	end)
 	container1:AddChild(buttonAdd)
@@ -1358,6 +1363,8 @@ end
 
 -- Load Item list
 function SimPermut:BuildItemFrame()
+	local socketString=""
+	local ilvlString=""
 	for j=1,#listNames do
 		--if tableDropDown[j] then
 		tableTitres[j]=AceGUI:Create("Label")
@@ -1396,8 +1403,19 @@ function SimPermut:BuildItemFrame()
 				scroll2:AddChild(tableCheckBoxes[j][i])
 			end
 			
+			if tableListItems[j][i][2] then 
+				ilvlString=" "..tableListItems[j][i][2] 
+			else
+				ilvlString=""
+			end
+			if tableListItems[j][i][3] then 
+				socketString="+S" 
+			else
+				socketString="" 
+			end
+			
 			tableLabel[j][i]=AceGUI:Create("InteractiveLabel")
-			tableLabel[j][i]:SetText(tableListItems[j][i][1])
+			tableLabel[j][i]:SetText(tableListItems[j][i][1]..ilvlString..socketString)
 			tableLabel[j][i]:SetRelativeWidth(0.95)
 			tableLabel[j][i]:SetCallback("OnEnter", function(widget)
 				GameTooltip:SetOwner(widget.frame, "ANCHOR_BOTTOMLEFT")
