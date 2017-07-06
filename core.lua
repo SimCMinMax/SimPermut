@@ -593,7 +593,7 @@ function SimPermut:BuildRelicFrame()
 	mainGroup:AddChild(container1)
 	
 	local artifactID,artifactData = LAD:GetArtifactInfo()
-	if not ArtifactTableTraitsOrder[artifactID] or #ArtifactTableTraitsOrder[artifactID] == 0 then
+	if not ArtifactTableTraitsOrder[artifactID] or #ArtifactTableTraitsOrder[artifactID][1] == 0 then
 		local labeltitre2= AceGUI:Create("Label")
 		labeltitre2:SetText("Class/Spec Not yet implemented")
 		labeltitre2:SetFullWidth(true)
@@ -2735,7 +2735,7 @@ end
 
 --add item to the list
 function SimPermut:AddItemLink(itemLink,itemilvl,socket)
-	print(itemLink,itemilvl)
+	print(itemLink,itemilvl,socket)
 	name, link, quality, iLevel, reqLevel, class, subclass, maxStack, equipSlot, texture, vendorPrice = GetItemInfo(itemLink)
 	if link then
 		if GetItemInfoName[equipSlot] then
@@ -2746,14 +2746,13 @@ function SimPermut:AddItemLink(itemLink,itemilvl,socket)
 				SimPermutVars.addedItemsTable[GetItemInfoName[equipSlot]]={}
 			end
 			table.insert(SimPermutVars.addedItemsTable[GetItemInfoName[equipSlot]],{itemLink,itemilvl,socket})
-			print(SimPermutVars.addedItemsTable[GetItemInfoName[equipSlot]][#SimPermutVars.addedItemsTable[GetItemInfoName[equipSlot]]])
 			PersoLib:MergeTables(defaultSettings,SimPermutVars,actualSettings)
 			
 		else
-			print("slot non reconnu")
+			print("Unknown itemslot")
 		end
 	else
-		print("pas un item")
+		print("Not a proper item")
 	end
 	
 end
