@@ -1029,7 +1029,7 @@ function SimPermut:BuildDungeonJournalFrame()
 		
 		tableCheckBoxes[j]={}
 		tableLabel[j]={}
-		if SimPermutVars.addedItemsTable[j] then
+		if SimPermutVars.addedItemsTable and SimPermutVars.addedItemsTable[j] then
 			for i,_ in pairs(SimPermutVars.addedItemsTable[j]) do
 				tableCheckBoxes[j][i]=AceGUI:Create("CheckBox")
 				tableCheckBoxes[j][i]:SetLabel("")
@@ -1079,7 +1079,7 @@ function SimPermut:BuildDungeonJournalFrame()
 	buttonAdd:SetRelativeWidth(0.3)
 	buttonAdd:SetCallback("OnClick", function(this, event, item)
 		for j=1,#listNames do
-			if SimPermutVars.addedItemsTable[j] then
+			if SimPermutVars.addedItemsTable and SimPermutVars.addedItemsTable[j] then
 				for i,_ in pairs(SimPermutVars.addedItemsTable[j]) do
 					if tableCheckBoxes[j][i]:GetValue() then
 						SimPermutVars.addedItemsTable[j][i]=nil
@@ -2094,8 +2094,8 @@ function SimPermut:GetListItems()
 		tableListItems[i]=SimPermut:GetListItem(listNames[i],i)
 		
 		--added items
-		if SimPermutVars.addedItemsTable[i] then
-			for j=1,#SimPermutVars.addedItemsTable[i] do
+		if SimPermutVars.addedItemsTable and SimPermutVars.addedItemsTable[i] then
+			for j,_ in pairs(SimPermutVars.addedItemsTable[i]) do
 				table.insert(tableListItems[i],SimPermutVars.addedItemsTable[i][j])
 			end
 		end
