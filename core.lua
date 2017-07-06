@@ -996,7 +996,10 @@ function SimPermut:BuildDungeonJournalFrame()
 	buttonAdd:SetText("Add to List")
 	buttonAdd:SetRelativeWidth(0.3)
 	buttonAdd:SetCallback("OnClick", function(this, event, item)
-		SimPermut:AddItemLink(editLink:GetText(),editLinkilvl:GetText(),checkBoxSocket:GetValue())
+		if SimPermut:AddItemLink(editLink:GetText(),editLinkilvl:GetText(),checkBoxSocket:GetValue()) then
+			--raz if added
+			SimPermut:BuildFrame()
+		end
 	end)
 	container1:AddChild(buttonAdd)
 
@@ -2874,21 +2877,27 @@ end
 
 --add item to the list
 function SimPermut:AddItemLink(itemLink,itemilvl,socket)
-	print(itemLink,itemilvl,socket)
+	
 	name, link, quality, iLevel, reqLevel, class, subclass, maxStack, equipSlot, texture, vendorPrice = GetItemInfo(itemLink)
 	if link then
 		if GetItemInfoName[equipSlot] then
+			local _,_,itemRarity = GetItemInfo(itemLink)
 			if not SimPermutVars.addedItemsTable then 
 				SimPermutVars.addedItemsTable={}
 			end
 			if not SimPermutVars.addedItemsTable[GetItemInfoName[equipSlot]] then 
 				SimPermutVars.addedItemsTable[GetItemInfoName[equipSlot]]={}
 			end
-			if itemilvl and string.len(""..tonumber(itemilvl))>0 then
-				table.insert(SimPermutVars.addedItemsTable[GetItemInfoName[equipSlot]],{itemLink,tonumber(itemilvl),socket})
+			if itemRarity==5 or (itemilvl and tonumber(itemilvl) and string.len(""..tonumber(itemilvl))>0) then
+				local addedilvl=nil
+				if itemilvl and tonumber(itemilvl) and string.len(""..tonumber(itemilvl))>0 then
+					addedilvl=tonumber(itemilvl)
+				end
+				table.insert(SimPermutVars.addedItemsTable[GetItemInfoName[equipSlot]],{itemLink,addedilvl,socket})
 				PersoLib:MergeTables(defaultSettings,SimPermutVars,actualSettings)
+				return true
 			else
-				print("incorrect ilvl")
+				print("Incorrect ilvl")
 			end
 		else
 			print("Unknown itemslot")
@@ -2897,4 +2906,5 @@ function SimPermut:AddItemLink(itemLink,itemilvl,socket)
 		print("Not a proper item")
 	end
 	
+	return false
 end
