@@ -3,6 +3,7 @@ v1.13.1 07/06/2017
 [FIX]Fix copy names with weird caracters
 [FIX]Fix items with multiple gem slots
 [FIX]Fix ilvl threshold for equiped items
+[Code]Added security to some places where you get lua error in some rare cases
 
 v1.12.5 06/28/2017
 [FIX]Corrected artifact in off-hand
