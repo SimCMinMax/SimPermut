@@ -209,6 +209,11 @@ function SimPermut:BuildFrame()
 	--Init Vars
 	artifactID,artifactData = LAD:GetArtifactInfo() 
 	
+	if mainframe and mainframe:IsVisible() then
+		mainframe:Release()
+	end
+	
+	
 	mainframe = AceGUI:Create("Frame")
 	mainframe:SetTitle("SimPermut")
 	mainframe:SetPoint("CENTER")
@@ -940,16 +945,17 @@ end
 -- Field construction for Dungeon Journal Frame
 function SimPermut:BuildDungeonJournalFrame()
 	mainGroup = AceGUI:Create("SimpleGroup")
-    mainGroup:SetLayout("Fill")
+    mainGroup:SetLayout("Flow")
     mainGroup:SetRelativeWidth(1)
 	mainframe:AddChild(mainGroup)
 	
 	local container1 = AceGUI:Create("SimpleGroup")
 	container1:SetFullWidth(true)
-	container1:SetHeight(600)
+	container1:SetHeight(100)
 	container1:SetLayout("Flow")
 	mainGroup:AddChild(container1)
 	
+	-- Add an item
 	local editLink= AceGUI:Create("EditBox")
 	editLink:SetRelativeWidth(0.5)
 	editLink:SetText("")
@@ -976,14 +982,114 @@ function SimPermut:BuildDungeonJournalFrame()
 	buttonAdd:SetRelativeWidth(0.3)
 	buttonAdd:SetCallback("OnClick", function(this, event, item)
 		SimPermut:AddItemLink(editLink:GetText(),editLinkilvl:GetText(),checkBoxSocket:GetValue())
-		-- SimPermut:BuildFrame() --refresh
 	end)
 	container1:AddChild(buttonAdd)
-	
+
+	-- List of items	
 	local labeltitre1= AceGUI:Create("Heading")
 	labeltitre1:SetText("Already Added items")
 	labeltitre1:SetFullWidth(true)
 	container1:AddChild(labeltitre1)
+	
+	local scrollcontainer1 = AceGUI:Create("SimpleGroup")
+	scrollcontainer1:SetRelativeWidth(0.5)
+	scrollcontainer1:SetHeight(600)
+	scrollcontainer1:SetLayout("Fill")
+	mainGroup:AddChild(scrollcontainer1)
+	
+	scroll1 = AceGUI:Create("ScrollFrame")
+	scroll1:SetLayout("Flow")
+	scrollcontainer1:AddChild(scroll1)
+	
+	local scrollcontainer2 = AceGUI:Create("SimpleGroup")
+	scrollcontainer2:SetRelativeWidth(0.5)
+	scrollcontainer2:SetHeight(600)
+	scrollcontainer2:SetLayout("Fill")
+	mainGroup:AddChild(scrollcontainer2)
+	
+	scroll2 = AceGUI:Create("ScrollFrame")
+	scroll2:SetLayout("Flow")
+	scrollcontainer2:AddChild(scroll2)
+	
+	
+	
+	local socketString=""
+	local ilvlString=""
+	for j=1,#listNames do
+		--if tableDropDown[j] then
+		tableTitres[j]=AceGUI:Create("Label")
+		tableTitres[j]:SetText(PersoLib:firstToUpper(listNames[j]))
+		tableTitres[j]:SetFullWidth(true)
+		if(j<7) then
+			scroll1:AddChild(tableTitres[j])
+		else
+			scroll2:AddChild(tableTitres[j])
+		end
+		
+		
+		tableCheckBoxes[j]={}
+		tableLabel[j]={}
+		if SimPermutVars.addedItemsTable[j] then
+			for i,_ in pairs(SimPermutVars.addedItemsTable[j]) do
+				tableCheckBoxes[j][i]=AceGUI:Create("CheckBox")
+				tableCheckBoxes[j][i]:SetLabel("")
+				tableCheckBoxes[j][i]:SetRelativeWidth(0.05)
+				tableCheckBoxes[j][i]:SetValue(false)
+				if j<7 then
+					scroll1:AddChild(tableCheckBoxes[j][i])
+				else
+					scroll2:AddChild(tableCheckBoxes[j][i])
+				end
+				
+				if SimPermutVars.addedItemsTable[j][i][2] then 
+					ilvlString=" "..SimPermutVars.addedItemsTable[j][i][2] 
+				else
+					ilvlString=""
+				end
+				if SimPermutVars.addedItemsTable[j][i][3] then 
+					socketString="+S" 
+				else
+					socketString="" 
+				end
+				
+				tableLabel[j][i]=AceGUI:Create("InteractiveLabel")
+				tableLabel[j][i]:SetText(SimPermutVars.addedItemsTable[j][i][1]..ilvlString..socketString)
+				tableLabel[j][i]:SetRelativeWidth(0.95)
+				tableLabel[j][i]:SetCallback("OnEnter", function(widget)
+					GameTooltip:SetOwner(widget.frame, "ANCHOR_BOTTOMLEFT")
+					GameTooltip:SetHyperlink(SimPermutVars.addedItemsTable[j][i][1])
+					GameTooltip:Show()
+				end)
+				tableLabel[j][i]:SetCallback("OnLeave", function() GameTooltip:Hide()  end)
+				
+				if(j<7) then
+					scroll1:AddChild(tableLabel[j][i])
+				else
+					scroll2:AddChild(tableLabel[j][i])
+				end
+				
+				
+			end
+		end
+		--end
+	end
+	
+	local buttonAdd = AceGUI:Create("Button")
+	buttonAdd:SetText("Delete Selected")
+	buttonAdd:SetRelativeWidth(0.3)
+	buttonAdd:SetCallback("OnClick", function(this, event, item)
+		for j=1,#listNames do
+			if SimPermutVars.addedItemsTable[j] then
+				for i,_ in pairs(SimPermutVars.addedItemsTable[j]) do
+					if tableCheckBoxes[j][i]:GetValue() then
+						SimPermutVars.addedItemsTable[j][i]=nil
+					end
+				end
+			end
+		end
+		SimPermut:BuildFrame()
+	end)
+	mainGroup:AddChild(buttonAdd)
 end
 
 -- Field construction for option Frame
