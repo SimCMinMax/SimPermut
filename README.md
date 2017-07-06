@@ -45,12 +45,10 @@ See [AutoSimC on GitHub](https://github.com/SimCMinMax/AutoSimC)
 
 - Epic Gem management
 
-- Add the ability to add gear from dungeon journal to compare
-
 - Add a way to add simc parameters
 
-- Artifact Path Permutation
 
+[- Artifact Path Permutation]
 
 [- Better way of detecting sets]
  
