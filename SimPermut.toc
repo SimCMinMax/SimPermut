@@ -2,7 +2,7 @@
 ## Title: SimPermut
 ## Notes: Constructs SimC export strings with permutations for items in inventory. Based on SimulationCraft's Addon. 
 ## Author: Kutikuti
-## Version: 1.12.6
+## Version: 1.13.1
 ## SavedVariablesPerCharacter: SimPermutVars
 ## OptionalDependencies: Ace3
 

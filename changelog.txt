@@ -1,4 +1,5 @@
-v1.12.6 07/05/2017
+v1.13.1 07/06/2017
+[UI]Added an option to add gear from a link to permut
 [FIX]Fix copy names with weird caracters
 [FIX]Fix items with multiple gem slots
 [FIX]Fix ilvl threshold for equiped items
