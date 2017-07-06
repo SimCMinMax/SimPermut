@@ -2869,9 +2869,12 @@ function SimPermut:AddItemLink(itemLink,itemilvl,socket)
 			if not SimPermutVars.addedItemsTable[GetItemInfoName[equipSlot]] then 
 				SimPermutVars.addedItemsTable[GetItemInfoName[equipSlot]]={}
 			end
-			table.insert(SimPermutVars.addedItemsTable[GetItemInfoName[equipSlot]],{itemLink,itemilvl,socket})
-			PersoLib:MergeTables(defaultSettings,SimPermutVars,actualSettings)
-			
+			if itemilvl and string.len(""..tonumber(itemilvl))>0 then
+				table.insert(SimPermutVars.addedItemsTable[GetItemInfoName[equipSlot]],{itemLink,tonumber(itemilvl),socket})
+				PersoLib:MergeTables(defaultSettings,SimPermutVars,actualSettings)
+			else
+				print("incorrect ilvl")
+			end
 		else
 			print("Unknown itemslot")
 		end
