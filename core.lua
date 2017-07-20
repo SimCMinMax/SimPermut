@@ -1975,6 +1975,12 @@ function SimPermut:GetItemString(itemLink,itemType,base,forceilvl,forcegem)
 		end
 	end
 	
+	-- Some leveling quest items seem to use this, it'll include the drop level of the item
+	if bit.band(flags, 0x200) == 0x200 then
+		simcItemOptions[#simcItemOptions + 1] = 'drop_level=' .. itemSplit[rest_offset]
+		rest_offset = rest_offset + 1
+	end
+	
 	if not base and forceilvl then
 		simcItemOptions[#simcItemOptions + 1]='ilevel='..forceilvl
 	end
