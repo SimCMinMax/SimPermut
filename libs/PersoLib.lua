@@ -352,23 +352,19 @@ function PersoLib:GetRealIlvl(itemLink)
 	local itemSplit = {}
 	
 	-- Split data into a table
-	for v in string.gmatch(itemString, "(%d*:?)") do
-		if v == ":" then
+	for _, v in ipairs({strsplit(":", itemString)}) do
+		if v == "" then
 		  itemSplit[#itemSplit + 1] = 0
 		else
-		  itemSplit[#itemSplit + 1] = string.gsub(v, ':', '')
+		  itemSplit[#itemSplit + 1] = tonumber(v)
 		end
 	end
 	_,_,itemRarity,ilvl = GetItemInfo(itemLink)
-	
-	if tonumber(itemSplit[11])==512 then --timelaking
-		if itemRarity==3 then
-			return 850
-		else
-			return 780
-		end
-	else
-		return ilvl
+	if itemRarity==7 then --heirloom
+		ilvl = 815
+	elseif tonumber(itemSplit[11])==512 and tonumber(itemSplit[12])==22 and tonumber(itemSplit[15])==110 then --timewalking
+		ilvl = 815
 	end
 	
+	return ilvl
 end
