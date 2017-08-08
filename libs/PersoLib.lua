@@ -363,7 +363,7 @@ function PersoLib:GetRealIlvl(itemLink)
 	if itemRarity==7 then --heirloom
 		ilvl = 815
 	elseif tonumber(itemSplit[11])==512 and tonumber(itemSplit[12])==22 and tonumber(itemSplit[15])==110 then --timewalking
-		ilvl = 815
+		ilvl = 850
 	end
 	
 	return ilvl

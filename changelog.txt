@@ -1,3 +1,6 @@
+[Fix]Fixed size of an otpion that would sometimes cut itself
+[Fix]Fixed timewalking items
+
 v1.13.2 07/06/2017
 [Fix]Fix autosimc export
 
