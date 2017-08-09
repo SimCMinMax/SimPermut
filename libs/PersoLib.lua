@@ -1,8 +1,6 @@
 local MAJOR, MINOR = "PersoLib", 1
 local PersoLib = LibStub:NewLibrary(MAJOR, MINOR)
 
-if not PersoLib then return end
-
 local ArtifactUI          	= _G.C_ArtifactUI
 local HasArtifactEquipped 	= _G.HasArtifactEquipped
 local SocketInventoryItem 	= _G.SocketInventoryItem
@@ -173,7 +171,7 @@ function PersoLib:doCartesianALACON(tableToPermut)
 	return tableReturn
 end
 
--- SimC, tokenize function
+-- tokenize function
 function PersoLib:tokenize(str)
   str = str or ""
   -- convert to lowercase and remove spaces
@@ -181,28 +179,13 @@ function PersoLib:tokenize(str)
   str = string.gsub(str, ' ', '_')
   str = string.gsub(str, ',', '_')
 
-  -- keep stuff we want, dumpster everything else
-  -- local s = ""
-  -- for i=1,str:len() do
-    -- keep digits 0-9
-    -- if str:byte(i) >= 48 and str:byte(i) <= 57 then
-      -- s = s .. str:sub(i,i)
-      -- keep lowercase letters
-    -- elseif str:byte(i) >= 97 and str:byte(i) <= 122 then
-      -- s = s .. str:sub(i,i)
-      -- keep %, +, ., _
-    -- elseif str:byte(i)==37 or str:byte(i)==43 or str:byte(i)==46 or str:byte(i)==95 then
-      -- s = s .. str:sub(i,i)
-    -- end
-  -- end
-  -- strip trailing spaces
   if string.sub(str, str:len())=='_' then
     str = string.sub(str, 0, str:len()-1)
   end
   return str
 end
 
--- simc, method for constructing the talent string
+-- method for constructing the talent string
 function PersoLib:CreateSimcTalentString()
   local talentInfo = {}
   local maxTiers = 7
@@ -228,14 +211,14 @@ function PersoLib:CreateSimcTalentString()
   return str
 end
 
--- simc, function that translates between the game's role values and ours
+-- function that translates between the game's role values and ours
 function PersoLib:translateRole(spec_id)
-  local spec_role = RoleTable[spec_id]
-  if spec_role ~= nil then
-    return spec_role
-  end
+	if not spec_id then return nil end
+	local spec_role = RoleTable[spec_id]
+	if spec_role then return spec_role end
 end
 
+-- function that return race with some translation for simc
 function PersoLib:getRace()
 	-- Race info
 	local _, playerRace = UnitRace('player')
@@ -251,29 +234,27 @@ function PersoLib:getRace()
 	return playerRace
 end
 
+-- function that return spec ID
 function PersoLib:getSpecID()
-	local globalSpecID
 	local specId = GetSpecialization()
 	if specId then
-		globalSpecID = GetSpecializationInfo(specId)
+		return GetSpecializationInfo(specId)
 	end
-	return globalSpecID
 end
 
--- simc, Artifact Information
+-- function that returns Artifact Information
 function PersoLib:IsArtifactFrameOpen()
   local ArtifactFrame 	  = _G.ArtifactFrame
   return ArtifactFrame and ArtifactFrame:IsShown() or false
 end
 
--- simc, generates artifact string
+-- function that generates artifact string
 function PersoLib:GetArtifactString()
   if not HasArtifactEquipped() then
     return nil
   end
     
   -- Unregister the events to prevent unwanted call. (thx Aethys :o)
-  --UIParent:UnregisterEvent("ARTIFACT_UPDATE");
   UIParent:UnregisterEvent("ARTIFACT_UPDATE");
   if not PersoLib:IsArtifactFrameOpen() then
     SocketInventoryItem(INVSLOT_MAINHAND)
@@ -306,8 +287,9 @@ function PersoLib:GetArtifactString()
   UIParent:RegisterEvent("ARTIFACT_UPDATE");
 end
 
--- get item id from link
+-- function that gets the item id from a link
 function PersoLib:GetIDFromLink(itemLink)
+	if not itemLink then return nil end
 	local itemString = string.match(itemLink, "item:([%-?%d:]+)")
 	local itemSplit = {}
 
@@ -323,19 +305,19 @@ function PersoLib:GetIDFromLink(itemLink)
 	return itemSplit[1]
 end
 
--- get item id from link
+-- function that gets the item level from a link
 function PersoLib:GetILVLFromLink(itemLink)
-	local ilvl
-	_,_,_,ilvl = GetItemInfo(itemLink)
+	if not itemLink then return nil end
+	local _,_,_,ilvl = GetItemInfo(itemLink)
 	return ilvl
 end
 
+-- function that prints something in chat only if in debug
 function PersoLib:debugPrint(str,affichedebug)
-	if affichedebug then
-		print(str)
-	end
+	if affichedebug then print(str) end
 end
 
+-- function that merges two tables into the first one. Used to handle config with the default parameters)
 function PersoLib:MergeTables(tableDefault,tableVars,tablereception)
 	for k,v in pairs(tableDefault) do
 		if tableVars[k] == nil then
@@ -347,24 +329,29 @@ function PersoLib:MergeTables(tableDefault,tableVars,tablereception)
 	return tablereception
 end
 
+-- function that returns the real ilvl of the item (used to handle timewalking gear)
 function PersoLib:GetRealIlvl(itemLink)
 	local itemString = string.match(itemLink, "item:([%-?%d:]+)")
 	local itemSplit = {}
 	
 	-- Split data into a table
-	for _, v in ipairs({strsplit(":", itemString)}) do
-		if v == "" then
+	for v in string.gmatch(itemString, "(%d*:?)") do
+		if v == ":" then
 		  itemSplit[#itemSplit + 1] = 0
 		else
-		  itemSplit[#itemSplit + 1] = tonumber(v)
+		  itemSplit[#itemSplit + 1] = string.gsub(v, ':', '')
 		end
 	end
 	_,_,itemRarity,ilvl = GetItemInfo(itemLink)
-	if itemRarity==7 then --heirloom
-		ilvl = 815
-	elseif tonumber(itemSplit[11])==512 and tonumber(itemSplit[12])==22 and tonumber(itemSplit[15])==110 then --timewalking
-		ilvl = 850
+	
+	if tonumber(itemSplit[11])==512 then --timelaking
+		if itemRarity==3 then
+			return 850
+		else
+			return 780
+		end
+	else
+		return ilvl
 	end
 	
-	return ilvl
 end

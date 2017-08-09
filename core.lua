@@ -1876,16 +1876,17 @@ function SimPermut:GetItemString(itemLink,itemType,base,forceilvl,forcegem)
 
           if rest_offset < #itemSplit then
             relic_str = relic_str .. '/'
-		  end
-		end
+          end
+        end
 
         if relic_str ~= '' then
           simcItemOptions[#simcItemOptions + 1] = 'relic_id=' .. relic_str
         end
-    end
+      end
 
 	-- Gems
 	if itemType=="main_hand" or itemType=="off_hand" then --exception for relics
+		
 		local gems = {}
 		for i=1, 4 do -- hardcoded here to just grab all 4 sockets
 			local _,gemLink = GetItemGem(itemLink, i)
@@ -2089,6 +2090,7 @@ function SimPermut:GetListItem(strItem,itemLine)
 			_, _, _, _, _, _, itemLink, _, _, itemId = GetContainerItemInfo(bag, slot)
 			if itemLink~=nil then
 				_,_,itemRarity,ilvl = GetItemInfo(itemLink)
+				
 				ilvl = PersoLib:GetRealIlvl(itemLink)
 				if (ilvl >= actualSettings.ilvl_thresholdMin and ilvl <= actualSettings.ilvl_thresholdMax) then
 					linkTable[#linkTable+1]={itemLink,nil,nil}
