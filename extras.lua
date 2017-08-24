@@ -69,9 +69,9 @@ SimPermut.ArtifactTableTraits = {
 	-- Demon Hunter
 		--Havoc (Fel, Shadow, Fel)-
 	[127829] = {
-	{[0]="Current trait",[147086]="Chaos Strike crit",[137476]="Throw Glaive dmg",[147085]="Metamorphosis Duration",[147755]="Metamorphosis CD",[132337]="Max Fury",[136687]="Eye Beam dmg",[133095]="Demon's Bite dmg",[141255]="Fury generation when dodging",[139267]="Chaos Nova stun",[144512]="Magic dmg reduction"},
+	{[0]="Current trait",[147086]="Chaos Strike crit",[137476]="Throw Glaive dmg",[147085]="Eye Beam cost reduction",[147755]="Metamorphosis CD",[132337]="Max Fury",[136687]="Eye Beam dmg",[133095]="Demon's Bite dmg",[141255]="Fury generation when dodging",[139267]="Chaos Nova stun",[144512]="Magic dmg reduction"},
 	{[0]="Current trait",[133122]="Chaos Strike crit",[147108]="Throw Glaive dmg",[142310]="Metamorphosis CD",[145370]="Max Fury",[135576]="Eye Beam dmg",[133100]="Demon's Bite dmg",[132806]="Fury generation when dodging",[142512]="Chaos Nova stun",[133088]="Magic dmg reduction"},
-	{[0]="Current trait",[147086]="Chaos Strike crit",[137476]="Throw Glaive dmg",[147085]="Metamorphosis Duration",[147755]="Metamorphosis CD",[132337]="Max Fury",[136687]="Eye Beam dmg",[133095]="Demon's Bite dmg",[141255]="Fury generation when dodging",[139267]="Chaos Nova stun",[144512]="Magic dmg reduction"}},
+	{[0]="Current trait",[147086]="Chaos Strike crit",[137476]="Throw Glaive dmg",[147085]="Eye Beam cost reduction",[147755]="Metamorphosis CD",[132337]="Max Fury",[136687]="Eye Beam dmg",[133095]="Demon's Bite dmg",[141255]="Fury generation when dodging",[139267]="Chaos Nova stun",[144512]="Magic dmg reduction"}},
 		--Vengeance
 	[128832] = {{},{},{}},
 	-- Druid
