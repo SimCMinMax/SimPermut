@@ -2,28 +2,22 @@
 ## Title: SimPermut
 ## Notes: Constructs SimC export strings with permutations for items in inventory. Based on SimulationCraft's Addon. 
 ## Author: Kutikuti
-## Version: 2.0
+## Version: 1.14
 ## SavedVariablesPerCharacter: SimPermutVars
-## DefaultState: enabled
+## OptionalDependencies: Ace3
 
-#Libs
-Libs\AceAddon-3.0\AceAddon-3.0.xml
-Libs\AceConsole-3.0\AceConsole-3.0.xml
-Libs\AceEvent-3.0\AceEvent-3.0.xml
-Libs\AceGUI-3.0\AceGUI-3.0.xml
-Libs\LibArtifactData-1.0\LibArtifactData-1.0.lua
-Libs\PersoLib.lua
+libs\LibStub\LibStub.lua
+libs\CallbackHandler-1.0\CallbackHandler-1.0.lua
+#@no-lib-strip@
+libs\AceAddon-3.0\AceAddon-3.0.xml
+libs\AceConsole-3.0\AceConsole-3.0.xml
+libs\AceEvent-3.0\AceEvent-3.0.xml
+libs\AceGUI-3.0\AceGUI-3.0.xml
+libs\PersoLib.lua
+libs\LibStub\LibStub.lua
+libs\CallbackHandler-1.0\CallbackHandler-1.0.lua
+libs\LibArtifactData-1.0\LibArtifactData-1.0.lua
+#@end-no-lib-strip@
 
-#Classes
-Item.lua
-Gearset.lua
-Character.lua
-
-#Data
-Data.lua
-
-#UI
-UI.lua
-
-#Core
-Core.lua
+extras.lua
+core.lua

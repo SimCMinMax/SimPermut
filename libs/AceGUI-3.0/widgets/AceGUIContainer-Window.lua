@@ -21,11 +21,7 @@ local CreateFrame, UIParent = CreateFrame, UIParent
 ]]
 do
 	local Type = "Window"
-	local Version = 5
-
-	local function frameOnShow(this)
-		this.obj:Fire("OnShow")
-	end
+	local Version = 4
 
 	local function frameOnClose(this)
 		this.obj:Fire("OnClose")
@@ -184,7 +180,6 @@ do
 		frame:SetFrameStrata("FULLSCREEN_DIALOG")
 		frame:SetScript("OnMouseDown", frameOnMouseDown)
 		
-		frame:SetScript("OnShow",frameOnShow)
 		frame:SetScript("OnHide",frameOnClose)
 		frame:SetMinResize(240,240)
 		frame:SetToplevel(true)
