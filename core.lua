@@ -139,6 +139,7 @@ local ReportTypeGear 	= SimPermut.ReportTypeGear
 local ReportTypeTalents = SimPermut.ReportTypeTalents
 local ReportTypeRelics  = SimPermut.ReportTypeRelics
 local GetItemInfoName   = SimPermut.GetItemInfoName
+local NetherlightData	= SimPermut.NetherlightData
 
 SLASH_SIMPERMUTSLASH1 = "/SimPermut"
 SLASH_SIMPERMUTSLASHDEBUG1 = "/SimPermutDebug"
@@ -247,7 +248,6 @@ function SimPermut:BuildFrame()
 	labelSpacer:SetFullWidth(true)
 	mainframe:AddChild(labelSpacer)
 	
-	
 	if currentFrame==1 then --gear
 		currentFrame=1
 		SimPermut:BuildGearFrame()
@@ -262,14 +262,16 @@ function SimPermut:BuildFrame()
 		currentFrame=3
 		SimPermut:BuildRelicFrame()
 		SimPermut:BuildResultFrame(false)
-	elseif currentFrame==4 then --Dungeon Journal
+	elseif currentFrame==4 then --NetherLight crucible
 		currentFrame=4
-		SimPermut:BuildDungeonJournalFrame()
-		-- SimPermut:BuildResultFrame(false)
-	elseif currentFrame==5 then --options
+		SimPermut:BuildNetherlightFrame()
+		SimPermut:BuildResultFrame(false)
+	elseif currentFrame==5 then --add items
 		currentFrame=5
+		SimPermut:BuildDungeonJournalFrame()
+	elseif currentFrame==6 then --options
+		currentFrame=6
 		SimPermut:BuildOptionFrame()
-		--SimPermut:BuildResultFrame(false)
 	end
 end
 
@@ -928,10 +930,6 @@ function SimPermut:BuildRelicFrame()
 			end
 		end
 	end
-	
-	-- if not artifactData.relics[3].isLocked then
-		
-	-- end
 
 	local labelspacer15= AceGUI:Create("Label")
 	labelspacer15:SetRelativeWidth(0.3)
@@ -955,6 +953,23 @@ function SimPermut:BuildRelicFrame()
 	container1:AddChild(buttonGenerate)
 	
 	
+end
+
+function SimPermut:BuildNetherlightFrame()
+	--init Artifact
+	SimPermut:GetArtifactString()
+
+	mainGroup = AceGUI:Create("SimpleGroup")
+    mainGroup:SetLayout("Fill")
+	mainGroup:SetHeight(600)
+    mainGroup:SetRelativeWidth(0.65)
+	mainframe:AddChild(mainGroup)
+	
+	local container1 = AceGUI:Create("SimpleGroup")
+	container1:SetFullWidth(true)
+	container1:SetHeight(600)
+	container1:SetLayout("Flow")
+	mainGroup:AddChild(container1)	
 end
 
 -- Field construction for Dungeon Journal Frame
@@ -1481,8 +1496,6 @@ function SimPermut:InitGearFrame()
 	if actualSettings.generateStart then
 		SimPermut:Generate()
 	end
-	
-	SimPermut:CleanVar()
 end
 
 -- Load Item list
@@ -1727,11 +1740,6 @@ function SimPermut:PrintPermut(finalString)
 	resultBox:SetText(finalString)
 	resultBox:HighlightText()
 	resultBox:SetFocus()
-end
-
--- Clean all var for memory
-function SimPermut:CleanVar()
-	
 end
 
 ----------------------------

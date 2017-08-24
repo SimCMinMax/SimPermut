@@ -262,6 +262,21 @@ SimPermut.ArtifactTableTraitsOrder = {
 	[128289] = {{},{},{}}
 }
 
+SimPermut.NetherlightData = {
+[252091]="Master of Shadows",
+[252191]="Murderous Intent",
+[252875]="Shadowbind",
+[252888]="Chaotic Darkness",
+[252906]="Torment the Weak",
+[252922]="Dark Sorrows",
+[252088]="Light Speed",
+[252207]="Refractive Shell",
+[252799]="Shocklight",
+[253070]="Secure in the Light",
+[253093]="Infusion of Light",
+[253111]="Light's Embrace",
+
+}
 -- regionID lookup
 SimPermut.RegionString = {
   [1] = 'us',
@@ -371,8 +386,9 @@ SimPermut.FrameMenu={
 	[1]	= "Gear permutation",
 	[2] = "Talent permutation",
 	[3] = "Relic permutation",
-	[4] = "Add Items",
-	[5] = "Options"
+	[4] = "Netherlight Crucible",
+	[5] = "Add Items",
+	[6] = "Options"
 }
 SimPermut.RelicComparisonType = {
   [1] = 'relic ilevel',
