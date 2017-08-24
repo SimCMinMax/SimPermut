@@ -79,6 +79,8 @@ local tablePreCheck={}
 local DropdownTrait1
 local DropdownTrait2
 local DropdownTrait3
+local DropdownCrucible1
+local DropdownCrucible2
 local ilvlTrait1
 local ilvlTrait2
 local ilvlTrait3
@@ -140,6 +142,7 @@ local ReportTypeTalents = SimPermut.ReportTypeTalents
 local ReportTypeRelics  = SimPermut.ReportTypeRelics
 local GetItemInfoName   = SimPermut.GetItemInfoName
 local NetherlightData	= SimPermut.NetherlightData
+local ArtifactTableTraitsCrucible	= SimPermut.ArtifactTableTraitsCrucible
 
 SLASH_SIMPERMUTSLASH1 = "/SimPermut"
 SLASH_SIMPERMUTSLASHDEBUG1 = "/SimPermutDebug"
@@ -213,7 +216,6 @@ function SimPermut:BuildFrame()
 	if mainframe and mainframe:IsVisible() then
 		mainframe:Release()
 	end
-	
 	
 	mainframe = AceGUI:Create("Frame")
 	mainframe:SetTitle("SimPermut")
@@ -706,16 +708,6 @@ function SimPermut:BuildRelicFrame()
 	local labelspacer2= AceGUI:Create("Label")
 	labelspacer2:SetFullWidth(true)
 	container1:AddChild(labelspacer2)	
-	
-	local reliccontainer2 = AceGUI:Create("SimpleGroup")
-	reliccontainer2:SetRelativeWidth(0.33)
-	reliccontainer2:SetLayout("Flow")
-	container1:AddChild(reliccontainer2)
-	
-	local reliccontainer3 = AceGUI:Create("SimpleGroup")
-	reliccontainer3:SetRelativeWidth(0.33)
-	reliccontainer3:SetLayout("Flow")
-	container1:AddChild(reliccontainer3)
 
 	if drawRelic1 then
 		local reliccontainer1 = AceGUI:Create("SimpleGroup")
@@ -792,6 +784,11 @@ function SimPermut:BuildRelicFrame()
 	end
 	
 	if drawRelic2 then
+		local reliccontainer2 = AceGUI:Create("SimpleGroup")
+		reliccontainer2:SetRelativeWidth(0.33)
+		reliccontainer2:SetLayout("Flow")
+		container1:AddChild(reliccontainer2)
+	
 		local labelspacer4= AceGUI:Create("Label")
 		labelspacer4:SetRelativeWidth(0.42)
 		reliccontainer2:AddChild(labelspacer4)
@@ -861,6 +858,11 @@ function SimPermut:BuildRelicFrame()
 	end
 	
 	if drawRelic3 then
+		local reliccontainer3 = AceGUI:Create("SimpleGroup")
+		reliccontainer3:SetRelativeWidth(0.33)
+		reliccontainer3:SetLayout("Flow")
+		container1:AddChild(reliccontainer3)
+		
 		local labelspacer5= AceGUI:Create("Label")
 		labelspacer5:SetRelativeWidth(0.42)
 		reliccontainer3:AddChild(labelspacer5)
@@ -970,6 +972,133 @@ function SimPermut:BuildNetherlightFrame()
 	container1:SetHeight(600)
 	container1:SetLayout("Flow")
 	mainGroup:AddChild(container1)	
+	
+	local labeltitre1= AceGUI:Create("Heading")
+	labeltitre1:SetText("Netherlight Crucible")
+	labeltitre1:SetFullWidth(true)
+	container1:AddChild(labeltitre1)
+	
+	local labeltitre2= AceGUI:Create("Label")
+	labeltitre2:SetFullWidth(true)
+	container1:AddChild(labeltitre2)
+		
+	local labelspacer1= AceGUI:Create("Label")
+	labelspacer1:SetWidth(80)
+	container1:AddChild(labelspacer1)
+	
+	local itemLink = GetInventoryItemLink('player', INVSLOT_MAINHAND)
+    if not itemLink then
+		local labeltitre2= AceGUI:Create("Label")
+		labeltitre2:SetText("Artifact not found")
+		labeltitre2:SetFullWidth(true)
+		container1:AddChild(labeltitre2)
+		do return end
+	end
+	
+	local itemName, itemLevel, itemTexture, artifactIcon
+	itemName, _, _, itemLevel, _, _, _, _, _, itemTexture, _ = GetItemInfo(itemLink)
+	artifactIcon=AceGUI:Create("Icon")
+	if itemTexture then
+		artifactIcon:SetImage(itemTexture)
+	end
+	artifactIcon:SetImageSize(40,40)
+	artifactIcon:SetWidth(60)
+	artifactIcon:SetCallback("OnEnter", function(widget)
+		GameTooltip:SetOwner(widget.frame, "ANCHOR_TOPRIGHT")
+		GameTooltip:SetHyperlink(itemLink)
+		GameTooltip:Show()
+	end)			
+	artifactIcon:SetCallback("OnLeave", function(widget)
+		GameTooltip:Hide()
+	end)
+	container1:AddChild(artifactIcon)
+	
+	local labelweaponLvl= AceGUI:Create("Label")
+	labelweaponLvl:SetText(itemLevel)
+	labelweaponLvl:SetFont("Fonts\\FRIZQT__.ttf", 14, "OUTLINE, MONOCHROME")
+	labelweaponLvl:SetWidth(50)
+	container1:AddChild(labelweaponLvl)
+	
+	local labelweaponName= AceGUI:Create("Label")
+	labelweaponName:SetText("  "..itemName)
+	labelweaponName:SetFont("Fonts\\FRIZQT__.ttf", 18, "OUTLINE, MONOCHROME")
+	labelweaponName:SetWidth(400)
+	container1:AddChild(labelweaponName)
+	
+	local labelspacer2= AceGUI:Create("Label")
+	labelspacer2:SetFullWidth(true)
+	container1:AddChild(labelspacer2)
+	
+	local containerfiller = AceGUI:Create("SimpleGroup")
+	containerfiller:SetRelativeWidth(0.33)
+	containerfiller:SetLayout("Flow")
+	container1:AddChild(containerfiller)
+	
+	local cruciblecontainer = AceGUI:Create("SimpleGroup")
+	cruciblecontainer:SetRelativeWidth(0.33)
+	cruciblecontainer:SetLayout("Flow")
+	container1:AddChild(cruciblecontainer)
+	
+	local labelspacer3= AceGUI:Create("Label")
+	labelspacer3:SetRelativeWidth(0.42)
+	cruciblecontainer:AddChild(labelspacer3)
+	
+	local relicinfo1= AceGUI:Create("Label")
+	relicinfo1:SetRelativeWidth(0.58)
+	relicinfo1:SetColor(1,.82,0)
+	relicinfo1:SetText("Tier 2 trait")
+	cruciblecontainer:AddChild(relicinfo1)
+	
+	local labelspacer6= AceGUI:Create("Label")
+	labelspacer6:SetFullWidth(true)
+	cruciblecontainer:AddChild(labelspacer6)
+	local labelspacer7= AceGUI:Create("Label")
+	labelspacer7:SetRelativeWidth(0.1)
+	cruciblecontainer:AddChild(labelspacer7)
+	DropdownCrucible1 = AceGUI:Create("Dropdown")
+	DropdownCrucible1:SetRelativeWidth(0.8)
+	DropdownCrucible1:SetList(NetherlightData)
+	DropdownCrucible1:SetLabel("")
+	DropdownCrucible1:SetValue(0)
+	cruciblecontainer:AddChild(DropdownCrucible1)
+	
+	
+	local labelspacer13= AceGUI:Create("Label")
+	labelspacer13:SetFullWidth(true)
+	cruciblecontainer:AddChild(labelspacer13)
+	local labelspacer14= AceGUI:Create("Label")
+	labelspacer14:SetRelativeWidth(0.42)
+	cruciblecontainer:AddChild(labelspacer14)
+	
+	local relicinfo11= AceGUI:Create("Label")
+	relicinfo11:SetRelativeWidth(0.58)
+	relicinfo11:SetColor(1,.82,0)
+	relicinfo11:SetText("Tier 3 relic trait")
+	cruciblecontainer:AddChild(relicinfo11)
+	
+	local labelspacer16= AceGUI:Create("Label")
+	labelspacer16:SetFullWidth(true)
+	cruciblecontainer:AddChild(labelspacer16)
+	local labelspacer17= AceGUI:Create("Label")
+	labelspacer17:SetRelativeWidth(0.1)
+	cruciblecontainer:AddChild(labelspacer17)
+	DropdownCrucible2 = AceGUI:Create("Dropdown")
+	DropdownCrucible2:SetRelativeWidth(0.8)
+	DropdownCrucible2:SetList(ArtifactTableTraitsCrucible[artifactID][1],ArtifactTableTraitsOrder[artifactID][1])
+	DropdownCrucible2:SetLabel("")
+	DropdownCrucible2:SetValue(0)
+	cruciblecontainer:AddChild(DropdownCrucible2)
+	
+	local labelspacer23= AceGUI:Create("Label")
+	labelspacer23:SetFullWidth(true)
+	cruciblecontainer:AddChild(labelspacer23)
+	local buttonGenerate = AceGUI:Create("Button")
+	buttonGenerate:SetText("Generate")
+	buttonGenerate:SetFullWidth(true)
+	buttonGenerate:SetCallback("OnClick", function()
+		SimPermut:GenerateCrucible()
+	end)
+	cruciblecontainer:AddChild(buttonGenerate)
 end
 
 -- Field construction for Dungeon Journal Frame
@@ -1663,7 +1792,7 @@ function SimPermut:GenerateTalents()
 	PersoLib:debugPrint("--------------------",ad)
 end
 
--- clic btn generate Talent
+-- clic btn generate Relic
 function SimPermut:GenerateRelic()
 	local permutString=""
 	local baseString=""
@@ -1680,7 +1809,7 @@ function SimPermut:GenerateRelic()
 	PersoLib:debugPrint("--------------------",ad)
 end
 
--- clic btn generate Talent
+-- clic btn generate Talent recursion
 function SimPermut:GenerateTalentsRecursive(stacks,str)
 	local newstacks=stacks
 	local newstr=str
@@ -1700,6 +1829,19 @@ function SimPermut:GenerateTalentsRecursive(stacks,str)
 			end
 		end
 	end
+end
+
+-- clic btn generate Relic
+function SimPermut:GenerateCrucible()
+	local permutString=""
+	local baseString=""
+	local finalString=""
+	
+	PersoLib:debugPrint("--------------------",ad)
+	PersoLib:debugPrint("Generating crucible String...",ad)
+
+	PersoLib:debugPrint("End of generation",ad)
+	PersoLib:debugPrint("--------------------",ad)
 end
 
 -- Get the count of selected items
