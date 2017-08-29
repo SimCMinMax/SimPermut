@@ -87,6 +87,8 @@ local ilvlTrait3
 local ilvlWeapon
 local relicCopyCount=1
 local relicString=""
+local crucibleCopyCount=1
+local crucibleString=""
 local relicComparisonTypeValue=1
 
 
@@ -97,6 +99,7 @@ local defaultSettings={
 	report_typeGear		= 2,
 	report_typeTalents	= 2,
 	report_typeRelics	= 2,
+	report_typeCrucible	= 2,
 	ilvl_thresholdMin 	= 800,
 	ilvl_thresholdMax 	= 999,
 	enchant_neck		= 0,
@@ -140,9 +143,9 @@ local RelicComparisonType = SimPermut.RelicComparisonType
 local ReportTypeGear 	= SimPermut.ReportTypeGear
 local ReportTypeTalents = SimPermut.ReportTypeTalents
 local ReportTypeRelics  = SimPermut.ReportTypeRelics
+local ReportTypeCrucible= SimPermut.ReportTypeCrucible
 local GetItemInfoName   = SimPermut.GetItemInfoName
 local NetherlightData	= SimPermut.NetherlightData
-local ArtifactTableTraitsCrucible	= SimPermut.ArtifactTableTraitsCrucible
 
 SLASH_SIMPERMUTSLASH1 = "/SimPermut"
 SLASH_SIMPERMUTSLASHDEBUG1 = "/SimPermutDebug"
@@ -150,13 +153,7 @@ SLASH_SIMPERMUTSLASHDEBUG1 = "/SimPermutDebug"
 -------------Test-----------------
 SLASH_SIMPERMUTSLASHTEST1 = "/Simtest"
 SlashCmdList["SIMPERMUTSLASHTEST"] = function (arg)
-	local testTable={[1]="test",[2]={"test2","test3"}}
-	
-	print(testTable[1])
-	print(testTable[2])
-	print(testTable[1][1])
-	print(testTable[2][1])
-	print(testTable[2][2])
+
 end
 -------------Test-----------------
 
@@ -957,10 +954,20 @@ function SimPermut:BuildRelicFrame()
 	
 end
 
+-- Field construction for crucible Frame
 function SimPermut:BuildNetherlightFrame()
 	--init Artifact
 	SimPermut:GetArtifactString()
-
+	
+	local artifactID,artifactData = LAD:GetArtifactInfo()
+	if not ArtifactTableTraitsOrder[artifactID] or #ArtifactTableTraitsOrder[artifactID][1] == 0 then
+		local labeltitre2= AceGUI:Create("Label")
+		labeltitre2:SetText("Class/Spec Not yet implemented")
+		labeltitre2:SetFullWidth(true)
+		container1:AddChild(labeltitre2)
+		do return end
+	end
+	
 	mainGroup = AceGUI:Create("SimpleGroup")
     mainGroup:SetLayout("Fill")
 	mainGroup:SetHeight(600)
@@ -1057,11 +1064,14 @@ function SimPermut:BuildNetherlightFrame()
 	cruciblecontainer:AddChild(labelspacer7)
 	DropdownCrucible1 = AceGUI:Create("Dropdown")
 	DropdownCrucible1:SetRelativeWidth(0.8)
-	DropdownCrucible1:SetList(NetherlightData)
+	DropdownCrucible1:SetList(NetherlightData[2])
 	DropdownCrucible1:SetLabel("")
-	DropdownCrucible1:SetValue(0)
+	local T2 = math.huge
+	for k,v in pairs(NetherlightData[2])do
+		T2 = math.min(k, T2)
+	end
+	DropdownCrucible1:SetValue(T2)
 	cruciblecontainer:AddChild(DropdownCrucible1)
-	
 	
 	local labelspacer13= AceGUI:Create("Label")
 	labelspacer13:SetFullWidth(true)
@@ -1084,9 +1094,13 @@ function SimPermut:BuildNetherlightFrame()
 	cruciblecontainer:AddChild(labelspacer17)
 	DropdownCrucible2 = AceGUI:Create("Dropdown")
 	DropdownCrucible2:SetRelativeWidth(0.8)
-	DropdownCrucible2:SetList(ArtifactTableTraitsCrucible[artifactID][1],ArtifactTableTraitsOrder[artifactID][1])
+	DropdownCrucible2:SetList(NetherlightData[3][artifactID])
 	DropdownCrucible2:SetLabel("")
-	DropdownCrucible2:SetValue(0)
+	local T3 = math.huge
+	for k,v in pairs(NetherlightData[3][artifactID])do
+		T3 = math.min(k, T3)
+	end
+	DropdownCrucible2:SetValue(T3)
 	cruciblecontainer:AddChild(DropdownCrucible2)
 	
 	local labelspacer23= AceGUI:Create("Label")
@@ -1372,10 +1386,6 @@ function SimPermut:BuildOptionFrame()
     end)
 	container1:AddChild(ReportDropdownGear)
 
-	local labelreportTypeTalents= AceGUI:Create("Label")
-	labelreportTypeTalents:SetText("     Report Type : Talents")
-	labelreportTypeTalents:SetWidth(150)
-	-- container1:AddChild(labelreportTypeTalents)
 	local ReportDropdownTalents = AceGUI:Create("Dropdown")
     ReportDropdownTalents:SetWidth(160)
 	ReportDropdownTalents:SetList(ReportTypeTalents)
@@ -1387,10 +1397,6 @@ function SimPermut:BuildOptionFrame()
     end)
 	container1:AddChild(ReportDropdownTalents)
 
-	local labelreportTypeRelics= AceGUI:Create("Label")
-	labelreportTypeRelics:SetText("     Report Type : Relics")
-	labelreportTypeRelics:SetWidth(150)
-	-- container1:AddChild(labelreportTypeRelics)
 	local ReportDropdownRelics = AceGUI:Create("Dropdown")
     ReportDropdownRelics:SetWidth(160)
 	ReportDropdownRelics:SetList(ReportTypeRelics)
@@ -1401,6 +1407,17 @@ function SimPermut:BuildOptionFrame()
 		PersoLib:MergeTables(defaultSettings,SimPermutVars,actualSettings)
     end)
 	container1:AddChild(ReportDropdownRelics)
+	
+	local ReportDropdownCrucible = AceGUI:Create("Dropdown")
+    ReportDropdownCrucible:SetWidth(160)
+	ReportDropdownCrucible:SetList(ReportTypeCrucible)
+	ReportDropdownCrucible:SetLabel("Crucible")
+	ReportDropdownCrucible:SetValue(actualSettings.report_typeCrucible)
+	ReportDropdownCrucible:SetCallback("OnValueChanged", function (this, event, item)
+		SimPermutVars.report_typeCrucible=item
+		PersoLib:MergeTables(defaultSettings,SimPermutVars,actualSettings)
+    end)
+	container1:AddChild(ReportDropdownCrucible)
 	
 	local labelspacer3= AceGUI:Create("Label")
 	labelspacer3:SetFullWidth(true)
@@ -1797,10 +1814,10 @@ function SimPermut:GenerateRelic()
 	local permutString=""
 	local baseString=""
 	local finalString=""
-	
+
 	PersoLib:debugPrint("--------------------",ad)
 	PersoLib:debugPrint("Generating Relic String...",ad)
-	baseString=SimPermut:GetBaseString()
+	baseString=SimPermut:GetBaseString(true)
 	permutString=SimPermut:GenerateRelicString()
 	relicString=relicString.."\n"..permutString
 	finalString=SimPermut:GetFinalString(baseString,relicString)
@@ -1836,10 +1853,15 @@ function SimPermut:GenerateCrucible()
 	local permutString=""
 	local baseString=""
 	local finalString=""
-	
+	local artifactID,artifactData = LAD:GetArtifactInfo()
+
 	PersoLib:debugPrint("--------------------",ad)
 	PersoLib:debugPrint("Generating crucible String...",ad)
-
+	baseString=SimPermut:GetBaseString()
+	permutString=SimPermut:GenerateCrucibleString()
+	crucibleString=crucibleString.."\n"..permutString
+	finalString=SimPermut:GetFinalString(baseString,crucibleString)
+	SimPermut:PrintPermut(finalString)
 	PersoLib:debugPrint("End of generation",ad)
 	PersoLib:debugPrint("--------------------",ad)
 end
@@ -2789,12 +2811,14 @@ end
 function SimPermut:GetCopyName(copynumber,pool,nbitem,List,nbitems,typeReport)
 	local returnString="copy="
 	
-	if (typeReport==1 and actualSettings.report_typeGear==1 and List) or (typeReport==2 and actualSettings.report_typeTalents==1) or (typeReport==3 and actualSettings.report_typeRelics==1) then
+	if (typeReport==1 and actualSettings.report_typeGear==1 and List) or (typeReport==2 and actualSettings.report_typeTalents==1) or (typeReport==3 and actualSettings.report_typeRelics==1) or (typeReport==4 and actualSettings.report_typeCrucible==1) then
 		if typeReport==1 then
 			returnString=returnString..List
 		elseif typeReport==2 then
 			returnString=returnString..List
 		elseif typeReport==3 then
+			returnString=returnString..string.gsub(List, " ", "-");
+		elseif typeReport==4 then
 			returnString=returnString..string.gsub(List, " ", "-");
 		end
 	else 
@@ -2836,7 +2860,8 @@ function SimPermut:StatAddBonus(bonuspool,bonusType,itemType,enchantID)
 end
 
 -- generates the string for artifact, equiped gear and player info
-function SimPermut:GetBaseString()
+function SimPermut:GetBaseString(nocrucible)
+	if not nocrucible then nocrucible=false end
 	local playerName = UnitName('player')
 	local playerClass
 	_, playerClass,classID = UnitClass('player')
@@ -2852,7 +2877,7 @@ function SimPermut:GetBaseString()
 
 	local playerRace = PersoLib:getRace()
 	local playerTalents = PersoLib:CreateSimcTalentString()
-	local playerArtifact = SimPermut:GetArtifactString()
+	local playerArtifact,playerCrucible = SimPermut:GetArtifactString(nocrucible)
 	local playerSpec = specNames[ PersoLib:getSpecID() ]
 
 	-- Construct SimC-compatible strings from the basic information
@@ -2878,6 +2903,9 @@ function SimPermut:GetBaseString()
 	SimPermutProfile = SimPermutProfile .. playerSpec .. '\n'
 	if playerArtifact ~= "" then
 		SimPermutProfile = SimPermutProfile .. "artifact=".. playerArtifact .. '\n'
+	end
+	if playerCrucible ~= "" then
+		SimPermutProfile = SimPermutProfile .. "crucible=".. playerCrucible .. '\n'
 	end
 	SimPermutProfile = SimPermutProfile .. '\n'
 
@@ -2990,26 +3018,40 @@ function SimPermut:CheckUsability(table1,table2)
 end
 
 -- get Simc artifact string
-function SimPermut:GetArtifactString()
+function SimPermut:GetArtifactString(nocrucible)
 	
 	SocketInventoryItem(INVSLOT_MAINHAND)
 	if artifactID and artifactTable[artifactID] then
 		local str = artifactTable[artifactID] .. ':0:0:0:0'
+		local cruciblestr = ""
 
 		local powers = ArtifactUI.GetPowers()
 		for i = 1, #powers do
-			local power_id = powers[i]
-			local info = ArtifactUI.GetPowerInfo(power_id)
-			
-			if info.currentRank > 0 and info.currentRank - info.bonusRanks > 0 then
-				str = str .. ':' .. power_id .. ':' .. (info.currentRank - info.bonusRanks)
+			local powerId, powerRank = SimPermut:GetPowerData(powers[i], false)
+			if powerRank > 0 then
+				str = str .. ':' .. powerId .. ':' .. powerRank
 			end
 		end
+
+		-- Grab 7.3 artifact trait information
+		for _, powerId in ipairs(NetherlightData[1]) do
+			local _, powerRank = SimPermut:GetPowerData(powerId, true)
+			if powerRank > 0 then
+				cruciblestr = cruciblestr .. ':' .. powerId .. ':' .. powerRank
+			end
+		end
+		for _, powerId in ipairs(NetherlightData[2]) do
+			local _, powerRank = SimPermut:GetPowerData(powerId, true)
+			if powerRank > 0 then
+				cruciblestr = cruciblestr .. ':' .. powerId .. ':' .. powerRank
+			end
+		end
+		--TODO : tier3 ?
 		Clear()
 		
-		return str
+		return str,cruciblestr
 	end
-	return ""
+	return "",""
 end
 
 -- check for Tier Sets
@@ -3061,4 +3103,32 @@ function SimPermut:AddItemLink(itemLink,itemilvl,socket)
 	end
 	
 	return false
+end
+
+function SimPermut:GetPowerData(powerId, isCrucible)
+  if not powerId then
+    return 0, 0
+  end
+
+  local powerInfo = ArtifactUI.GetPowerInfo(powerId)
+  if powerInfo == nil then
+    return powerId, 0
+  end
+
+  return powerId, powerInfo.currentRank - (isCrucible and powerInfo.bonusRanks or 0)
+end
+
+function SimPermut:GenerateCrucibleString()
+	local str=""
+	local artifactID,artifactData = LAD:GetArtifactInfo() 
+	local CopyString=""
+	local crucibleString
+	local T1,_=next(NetherlightData[1],nil)
+	
+	CopyString=NetherlightData[1][T1].."_"..NetherlightData[2][DropdownCrucible1:GetValue()].."_"..NetherlightData[3][artifactID][DropdownCrucible2:GetValue()]
+	local copynb = SimPermut:GetCopyName(crucibleCopyCount,nil,nil,CopyString,1,4)
+	crucibleString = T1..":1:"..DropdownCrucible1:GetValue()..":1:"..DropdownCrucible2:GetValue()..":1"
+	str =  "\n" ..copynb .. "\n".. "crucible=" .. crucibleString.. '\n'
+	crucibleCopyCount=crucibleCopyCount+1
+	return str
 end
