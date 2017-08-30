@@ -48,6 +48,7 @@ local actualLegMin=0
 local actualLegMax=0
 local actualSetsT19=0
 local actualSetsT20=0
+local actualSetsT21=0
 local tableListItems={}
 local tableTitres={}
 local tableLabel={}
@@ -108,6 +109,7 @@ local defaultSettings={
 	gems				= 0,	
 	setsT19				= 0,
 	setsT20				= 0,
+	setsT21				= 0,
 	generateStart		= true,
 	replaceEnchants		= false,
 	replaceEnchantsBase	= false,
@@ -132,6 +134,7 @@ local ArtifactTableTraitsOrder = SimPermut.ArtifactTableTraitsOrder
 local gemList 			= SimPermut.gemList
 local SetsListT19		= SimPermut.SetsT19
 local SetsListT20		= SimPermut.SetsT20
+local SetsListT21		= SimPermut.SetsT21
 local enchantRing 		= SimPermut.enchantRing
 local enchantCloak 		= SimPermut.enchantCloak
 local enchantNeck 		= SimPermut.enchantNeck
@@ -1575,6 +1578,21 @@ function SimPermut:BuildOptionFrame()
     end)
 	container1:AddChild(dropdownSetsT20)
 	
+	local labelSetsT21= AceGUI:Create("Label")
+	labelSetsT21:SetText("T21 (min)")
+	labelSetsT21:SetWidth(55)
+	container1:AddChild(labelSetsT21)
+	
+	local dropdownSetsT21 = AceGUI:Create("Dropdown")
+	dropdownSetsT21:SetList(SetsListT21)
+	dropdownSetsT21:SetWidth(110)
+	dropdownSetsT21:SetValue(actualSettings.setsT21)
+	dropdownSetsT21:SetCallback("OnValueChanged", function (this, event, item)
+		SimPermutVars.setsT21=item
+		PersoLib:MergeTables(defaultSettings,SimPermutVars,actualSettings)
+    end)
+	container1:AddChild(dropdownSetsT21)
+	
 	mainframe:AddChild(mainGroup)
 end
 
@@ -1630,6 +1648,7 @@ function SimPermut:InitGearFrame()
 	actualForce=actualSettings.replaceEnchants
 	actualSetsT19=actualSettings.setsT19
 	actualSetsT20=actualSettings.setsT20
+	actualSetsT21=actualSettings.setsT21
 	
 	_,tableBaseLink=SimPermut:GetBaseString()
 	
@@ -2532,6 +2551,8 @@ function SimPermut:GetPermutationString(permuttable)
 	local draw = true
 	local str
 	local T192p,T194p
+	local T202p,T204p
+	local T212p,T214p
 	local notDrawn=0
 	local okDrawn=0
 	
@@ -2541,6 +2562,7 @@ function SimPermut:GetPermutationString(permuttable)
 	for i=1,#permuttable do
 		T192p,T194p=SimPermut:HasTier("T19",permuttable[i])
 		T202p,T204p=SimPermut:HasTier("T20",permuttable[i])
+		T212p,T214p=SimPermut:HasTier("T21",permuttable[i])
 		SimPermut:ReorganizeEquip(permuttable[i])
 		result=SimPermut:CheckUsability(permuttable[i],tableBaseLink)
 		if result=="" or ad then
@@ -2615,7 +2637,11 @@ function SimPermut:GetPermutationString(permuttable)
 			
 			itemList=itemList:sub(1, -2)
 			
-			if((nbLeg >=actualLegMin and nbLeg<=actualLegMax and nbitem>0 and (actualSetsT19==0 or (actualSetsT19==2 and T192p) or (actualSetsT19==4 and T194p)) and (actualSetsT20==0 or (actualSetsT20==2 and T202p) or (actualSetsT20==4 and T204p))) or ad) then
+			if((nbLeg >=actualLegMin and nbLeg<=actualLegMax and nbitem>0 
+				and (actualSetsT19==0 or (actualSetsT19==2 and T192p) or (actualSetsT19==4 and T194p)) 
+				and (actualSetsT20==0 or (actualSetsT20==2 and T202p) or (actualSetsT20==4 and T204p))
+				and (actualSetsT21==0 or (actualSetsT21==2 and T212p) or (actualSetsT21==4 and T214p))) 
+				or ad) then
 				local adString=""
 				if ad then
 					if result ~= "" then

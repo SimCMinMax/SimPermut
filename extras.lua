@@ -532,6 +532,21 @@ SimPermut.HasTierSets = {
       [10] = {[5] = 147151, [4] = 147152, [7] = 147153, [1] = 147154, [9] = 147155, [3] = 147156},  -- Monk:         Chest, Back, Hands, Head, Legs, Shoulder
       [11] = {[5] = 147133, [4] = 147134, [7] = 147135, [1] = 147136, [9] = 147137, [3] = 147138},  -- Druid:        Chest, Back, Hands, Head, Legs, Shoulder
       [12] = {[5] = 147127, [4] = 147128, [7] = 147129, [1] = 147130, [9] = 147131, [3] = 147132}   -- Demon Hunter: Chest, Back, Hands, Head, Legs, Shoulder
+    },
+	["T21"] = {
+      [0]  = function (Count) return Count > 1, Count > 3; end,                                       -- Return Function
+      [1]  = {[5] = 152178, [4] = 152179, [7] = 152180, [1] = 152181, [9] = 152182, [3] = 152183},  -- Warrior:      Chest, Back, Hands, Head, Legs, Shoulder
+      [2]  = {[5] = 152148, [4] = 152149, [7] = 152150, [1] = 152151, [9] = 152152, [3] = 152153},  -- Paladin:      Chest, Back, Hands, Head, Legs, Shoulder
+      [3]  = {[5] = 152130, [4] = 152131, [7] = 152132, [1] = 152133, [9] = 152134, [3] = 152135},  -- Hunter:       Chest, Back, Hands, Head, Legs, Shoulder
+      [4]  = {[5] = 152160, [4] = 152161, [7] = 152162, [1] = 152163, [9] = 152164, [3] = 152165},  -- Rogue:        Chest, Back, Hands, Head, Legs, Shoulder
+      [5]  = {[5] = 152158, [4] = 152154, [7] = 152155, [1] = 152156, [9] = 152157, [3] = 152159},  -- Priest:       Chest, Back, Hands, Head, Legs, Shoulder
+      [6]  = {[5] = 152112, [4] = 152113, [7] = 152114, [1] = 152115, [9] = 152116, [3] = 152117},  -- Death Knight: Chest, Back, Hands, Head, Legs, Shoulder
+      [7]  = {[5] = 152166, [4] = 152167, [7] = 152168, [1] = 152169, [9] = 152170, [3] = 152171},  -- Shaman:       Chest, Back, Hands, Head, Legs, Shoulder
+      [8]  = {[5] = 152140, [4] = 152136, [7] = 152137, [1] = 152138, [9] = 152139, [3] = 152141},  -- Mage:         Chest, Back, Hands, Head, Legs, Shoulder
+      [9]  = {[5] = 152176, [4] = 152172, [7] = 152173, [1] = 152174, [9] = 152175, [3] = 152177},  -- Warlock:      Chest, Back, Hands, Head, Legs, Shoulder
+      [10] = {[5] = 152142, [4] = 152143, [7] = 152144, [1] = 152145, [9] = 152146, [3] = 152147},  -- Monk:         Chest, Back, Hands, Head, Legs, Shoulder
+      [11] = {[5] = 152124, [4] = 152125, [7] = 152126, [1] = 152127, [9] = 152128, [3] = 152129},  -- Druid:        Chest, Back, Hands, Head, Legs, Shoulder
+      [12] = {[5] = 152118, [4] = 152119, [7] = 152120, [1] = 152121, [9] = 152122, [3] = 152123}   -- Demon Hunter: Chest, Back, Hands, Head, Legs, Shoulder
     }
   }
 SimPermut.SetsT19 = {
@@ -543,6 +558,11 @@ SimPermut.SetsT20 = {
   [0] = 'All',
   [2] = 'T20 2P',
   [4] = 'T20 4P'
+}
+SimPermut.SetsT21 = {
+  [0] = 'All',
+  [2] = 'T21 2P',
+  [4] = 'T21 4P'
 }
 
 SimPermut.enchantNeck = {
