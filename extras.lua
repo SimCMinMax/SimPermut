@@ -69,22 +69,22 @@ SimPermut.ArtifactTableTraits = {
 	-- Demon Hunter
 		--Havoc (Fel, Shadow, Fel)-
 	[127829] = {
-	{[0]="Current trait",[147086]="Chaos Strike crit",[137476]="Throw Glaive dmg",[147085]="Eye Beam cost reduction",[147755]="Metamorphosis CD",[132337]="Max Fury",[136687]="Eye Beam dmg",[133095]="Demon's Bite dmg",[141255]="Fury generation when dodging",[139267]="Chaos Nova stun",[144512]="Magic dmg reduction"},
-	{[0]="Current trait",[133122]="Chaos Strike crit",[147108]="Throw Glaive dmg",[142310]="Metamorphosis CD",[145370]="Max Fury",[135576]="Eye Beam dmg",[133100]="Demon's Bite dmg",[132806]="Fury generation when dodging",[142512]="Chaos Nova stun",[133088]="Magic dmg reduction"},
-	{[0]="Current trait",[147086]="Chaos Strike crit",[137476]="Throw Glaive dmg",[147085]="Eye Beam cost reduction",[147755]="Metamorphosis CD",[132337]="Max Fury",[136687]="Eye Beam dmg",[133095]="Demon's Bite dmg",[141255]="Fury generation when dodging",[139267]="Chaos Nova stun",[144512]="Magic dmg reduction"}},
+	{[0]="Current trait",[147086]="Chaos Strike crit dmg",[137476]="Throw Glaive dmg",[147085]="Eye Beam cost reduction",[147755]="Metamorphosis CD",[132337]="Max Fury",[136687]="Eye Beam dmg",[133095]="Demon's Bite dmg",[141255]="Fury generation when dodging",[139267]="Chaos Nova stun",[144512]="Magic dmg reduction"},
+	{[0]="Current trait",[133122]="Chaos Strike crit dmg",[147108]="Throw Glaive dmg",[142310]="Metamorphosis CD",[145370]="Max Fury",[135576]="Eye Beam dmg",[133100]="Demon's Bite dmg",[132806]="Fury generation when dodging",[142512]="Chaos Nova stun",[133088]="Magic dmg reduction"},
+	{[0]="Current trait",[147086]="Chaos Strike crit dmg",[137476]="Throw Glaive dmg",[147085]="Eye Beam cost reduction",[147755]="Metamorphosis CD",[132337]="Max Fury",[136687]="Eye Beam dmg",[133095]="Demon's Bite dmg",[141255]="Fury generation when dodging",[139267]="Chaos Nova stun",[144512]="Magic dmg reduction"}},
 		--Vengeance
 	[128832] = {{},{},{}},
 	-- Druid
 		--MK (Arcane, Life, Arcane)-
 	[128858] = {
-	{[0]="Current trait",[132984]="Starsurge crit",[142175]="Solar Wrath dmg",[140813]="Lunar Strike crit",[142176]="Empowerments bonus dmg",[147076]="Sunfire dmg",[132305]="Moonfire dmg",[147079]="Starfall dmg",[133030]="Stellar Empowerment dmg",[132799]="Heal on dmg",[141272]="Moonkin Form armor"},
-	{[0]="Current trait",[142309]="Starsurge crit",[143702]="Solar Wrath dmg",[138228]="Lunar Strike crit",[144458]="Empowerments bonus dmg",[147076]="Sunfire dmg",[143803]="Moonfire dmg",[139263]="Stellar Empowerment dmg",[134079]="Heal on dmg",[133047]="Moonkin Form armor"},
-	{[0]="Current trait",[132984]="Starsurge crit",[142175]="Solar Wrath dmg",[140813]="Lunar Strike crit",[142176]="Empowerments bonus dmg",[147076]="Sunfire dmg",[132305]="Moonfire dmg",[147079]="Starfall dmg",[133030]="Stellar Empowerment dmg",[132799]="Heal on dmg",[141272]="Moonkin Form armor"}},
+	{[0]="Current trait",[132984]="Starsurge crit chance",[142175]="Solar Wrath dmg",[140813]="Lunar Strike crit",[142176]="Empowerments bonus dmg",[147076]="Sunfire dmg",[132305]="Moonfire dmg",[147079]="Starfall dmg",[133030]="Stellar Empowerment dmg",[132799]="Heal on dmg",[141272]="Moonkin Form armor"},
+	{[0]="Current trait",[142309]="Starsurge crit chance",[143702]="Solar Wrath dmg",[138228]="Lunar Strike crit",[144458]="Empowerments bonus dmg",[147076]="Sunfire dmg",[143803]="Moonfire dmg",[139263]="Stellar Empowerment dmg",[134079]="Heal on dmg",[133047]="Moonkin Form armor"},
+	{[0]="Current trait",[132984]="Starsurge crit chance",[142175]="Solar Wrath dmg",[140813]="Lunar Strike crit",[142176]="Empowerments bonus dmg",[147076]="Sunfire dmg",[132305]="Moonfire dmg",[147079]="Starfall dmg",[133030]="Stellar Empowerment dmg",[132799]="Heal on dmg",[141272]="Moonkin Form armor"}},
 		--feral (Frost, Blood, Life)-
 	[128860] = {
-	{[0]="Current trait",[132791]="Rake dmg",[142515]="Rip dmg",[142308]="Tiger's Fury generation",[137308]="Shred crit",[141267]="Berserk dmg bonus",[132849]="Swipe dmg",[136692]="Ferocious Bite crit dmg",[133141]="Survival Instinct duration",[137545]="Regrowth heal"},
-	{[0]="Current trait",[143524]="Rake dmg",[133020]="Rip dmg",[147082]="Trash dmg",[132985]="Tiger's Fury generation",[133008]="Shred crit",[133127]="Berserk dmg bonus",[141523]="Swipe dmg",[139260]="Ferocious Bite crit dmg",[141264]="Survival Instinct duration",[132800]="Regrowth heal"},
-	{[0]="Current trait",[139263]="Rake dmg",[138228]="Rip dmg",[142309]="Tiger's Fury generation",[143803]="Shred crit",[144458]="Berserk dmg bonus",[141290]="Swipe dmg",[140838]="Ferocious Bite crit dmg",[133047]="Survival Instinct duration",[134079]="Regrowth heal"}},
+	{[0]="Current trait",[132791]="Rake dmg",[142515]="Rip dmg",[142308]="Tiger's Fury generation",[137308]="Shred crit chance",[141267]="Berserk dmg bonus",[132849]="Swipe dmg",[136692]="Ferocious Bite crit dmg",[133141]="Survival Instinct duration",[137545]="Regrowth heal"},
+	{[0]="Current trait",[143524]="Rake dmg",[133020]="Rip dmg",[147082]="Trash dmg",[132985]="Tiger's Fury generation",[133008]="Shred crit chance",[133127]="Berserk dmg bonus",[141523]="Swipe dmg",[139260]="Ferocious Bite crit dmg",[141264]="Survival Instinct duration",[132800]="Regrowth heal"},
+	{[0]="Current trait",[139263]="Rake dmg",[138228]="Rip dmg",[142309]="Tiger's Fury generation",[143803]="Shred crit chance",[144458]="Berserk dmg bonus",[141290]="Swipe dmg",[140838]="Ferocious Bite crit dmg",[133047]="Survival Instinct duration",[134079]="Regrowth heal"}},
 		--Guardian
 	[128821] = {{},{},{}},
 		--Restoration
@@ -97,14 +97,14 @@ SimPermut.ArtifactTableTraits = {
 	{[0]="Current trait",[133763]="Cobra Shot dmg",[132781]="Multi-Shot dmg",[140815]="Kill command bonus dmg",[133075]="Aspect of the wild duration",[147101]="Beast Cleave dmg",[144522]="Kill command dmg",[134081]="Bestial Wrath bonus dmg",[133120]="Dodge",[147759]="Aspect of the Turtle heal"}},
 		--MM (Storm, Blood, Life)-
 	[128826] = {
-	{[0]="Current trait",[132303]="Aimed Shot crit Vulnerable",[144531]="Aimed Shot crit dmg",[147112]="Vulnerability effect",[133016]="Marked Shot dmg",[141514]="Marked Shot crit",[132993]="Multi Shot dmg",[137365]="Trueshot CD",[137421]="Bursting Shot CD",[132808]="Disengage dmg reduc",[137468]="Aspect of the Turtle heal"},
-	{[0]="Current trait",[141523]="Aimed Shot crit Vulnerable",[133020]="Aimed Shot crit dmg",[147082]="Vulnerability effect",[133008]="Marked Shot dmg",[143524]="Marked Shot crit",[132985]="Multi Shot dmg",[139260]="Trueshot CD",[133127]="Bursting Shot CD",[132800]="Disengage dmg reduc",[141264]="Aspect of the Turtle heal"},
-	{[0]="Current trait",[141290]="Aimed Shot crit Vulnerable",[138228]="Aimed Shot crit dmg",[143803]="Marked Shot dmg",[140078]="Marked Shot crit",[142309]="Multi Shot dmg",[140838]="Trueshot CD",[144458]="Bursting Shot CD",[134079]="Disengage dmg reduc",[136973]="Aspect of the Turtle heal"}},
+	{[0]="Current trait",[132303]="Aimed Shot crit Vulnerable",[144531]="Aimed Shot crit dmg",[147112]="Vulnerability effect",[133016]="Marked Shot dmg",[141514]="Marked Shot crit chance",[132993]="Multi Shot dmg",[137365]="Trueshot CD",[137421]="Bursting Shot CD",[132808]="Disengage dmg reduc",[137468]="Aspect of the Turtle heal"},
+	{[0]="Current trait",[141523]="Aimed Shot crit Vulnerable",[133020]="Aimed Shot crit dmg",[147082]="Vulnerability effect",[133008]="Marked Shot dmg",[143524]="Marked Shot crit chance",[132985]="Multi Shot dmg",[139260]="Trueshot CD",[133127]="Bursting Shot CD",[132800]="Disengage dmg reduc",[141264]="Aspect of the Turtle heal"},
+	{[0]="Current trait",[141290]="Aimed Shot crit Vulnerable",[138228]="Aimed Shot crit dmg",[143803]="Marked Shot dmg",[140078]="Marked Shot crit chance",[142309]="Multi Shot dmg",[140838]="Trueshot CD",[144458]="Bursting Shot CD",[134079]="Disengage dmg reduc",[136973]="Aspect of the Turtle heal"}},
 		--Sv (Storm, Iron, Blood)-
 	[128808] = {
-	{[0]="Current trait",[144531]="Mongoose Bite dmg",[147112]="Mongoose Bite crit dmg",[137421]="Carve dmg",[132993]="Raptor Strike dmg",[133016]="Flanking Strike crit",[146932]="Explosive Trap dmg",[137365]="Lacerate dmg",[141514]="Pet's haste",[132808]="Exhilaration CD",[137468]="Raptor Strike heal"},
-	{[0]="Current trait",[133075]="Mongoose Bite dmg",[134081]="Carve dmg",[132781]="Raptor Strike dmg",[147101]="Flanking Strike crit",[140815]="Explosive Trap dmg",[144522]="Lacerate dmg",[133763]="Pet's haste",[133120]="Exhilaration CD",[147759]="Raptor Strike heal"},
-	{[0]="Current trait",[133020]="Mongoose Bite dmg",[147082]="Mongoose Bite crit dmg",[133127]="Carve dmg",[132985]="Raptor Strike dmg",[133008]="Flanking Strike crit",[141523]="Explosive Trap dmg",[139260]="Lacerate dmg",[143524]="Pet's haste",[132800]="Exhilaration CD",[141264]="Raptor Strike heal"}},
+	{[0]="Current trait",[144531]="Mongoose Bite dmg",[147112]="Mongoose Bite crit dmg",[137421]="Carve dmg",[132993]="Raptor Strike dmg",[133016]="Flanking Strike crit chance",[146932]="Explosive Trap dmg",[137365]="Lacerate dmg",[141514]="Pet's haste",[132808]="Exhilaration CD",[137468]="Raptor Strike heal"},
+	{[0]="Current trait",[133075]="Mongoose Bite dmg",[134081]="Carve dmg",[132781]="Raptor Strike dmg",[147101]="Flanking Strike crit chance",[140815]="Explosive Trap dmg",[144522]="Lacerate dmg",[133763]="Pet's haste",[133120]="Exhilaration CD",[147759]="Raptor Strike heal"},
+	{[0]="Current trait",[133020]="Mongoose Bite dmg",[147082]="Mongoose Bite crit dmg",[133127]="Carve dmg",[132985]="Raptor Strike dmg",[133008]="Flanking Strike crit chance",[141523]="Explosive Trap dmg",[139260]="Lacerate dmg",[143524]="Pet's haste",[132800]="Exhilaration CD",[141264]="Raptor Strike heal"}},
 	-- Mage
 		--Arcane (Arcane, Frost, Arcane)-
 	[127857] = {
@@ -138,9 +138,9 @@ SimPermut.ArtifactTableTraits = {
 	[128866] = {{},{},{}},
 		--Ret (Holy, Fire, Holy)-
 	[120978] = {
-	{[0]="Current trait",[136717]="Avenging Wrath duration",[140411]="Divine Storm dmg",[147097]="Blade of Justice dmg",[147098]="Holy Power for Blade of Justice dmg",[135572]="Templar's Verdict dmg",[147758]="Judgment dmg",[143695]="Crusader Strike crit",[137402]="Shield of Vengeance CD",[140042]="Blessing of Protection CD",[137548]="Flash of Light heal"},
-	{[0]="Current trait",[132987]="Avenging Wrath duration",[133055]="Divine Storm dmg",[141522]="Blade of Justice dmg",[133107]="Templar's Verdict dmg",[147756]="Judgment dmg",[133010]="Crusader Strike crit",[143701]="Shield of Vengeance CD",[132319]="Blessing of Protection CD",[135571]="Flash of Light heal"},
-	{[0]="Current trait",[136717]="Avenging Wrath duration",[140411]="Divine Storm dmg",[147097]="Blade of Justice dmg",[147098]="Holy Power for Blade of Justice dmg",[135572]="Templar's Verdict dmg",[147758]="Judgment dmg",[143695]="Crusader Strike crit",[137402]="Shield of Vengeance CD",[140042]="Blessing of Protection CD",[137548]="Flash of Light heal"}},
+	{[0]="Current trait",[136717]="Avenging Wrath duration",[140411]="Divine Storm dmg",[147097]="Blade of Justice dmg",[147098]="Holy Power for Blade of Justice dmg",[135572]="Templar's Verdict dmg",[147758]="Judgment dmg",[143695]="Crusader Strike crit chance",[137402]="Shield of Vengeance CD",[140042]="Blessing of Protection CD",[137548]="Flash of Light heal"},
+	{[0]="Current trait",[132987]="Avenging Wrath duration",[133055]="Divine Storm dmg",[141522]="Blade of Justice dmg",[133107]="Templar's Verdict dmg",[147756]="Judgment dmg",[133010]="Crusader Strike crit chance",[143701]="Shield of Vengeance CD",[132319]="Blessing of Protection CD",[135571]="Flash of Light heal"},
+	{[0]="Current trait",[136717]="Avenging Wrath duration",[140411]="Divine Storm dmg",[147097]="Blade of Justice dmg",[147098]="Holy Power for Blade of Justice dmg",[135572]="Templar's Verdict dmg",[147758]="Judgment dmg",[143695]="Crusader Strike crit chance",[137402]="Shield of Vengeance CD",[140042]="Blessing of Protection CD",[137548]="Flash of Light heal"}},
 	-- Priest
 		--Disc
 	[128868] = {{},{},{}},
@@ -204,9 +204,9 @@ SimPermut.ArtifactTableTraits = {
 	{[0]="Current trait",[142512]="Tactician's chance bonus",[142310]="Mortal Strike&Execute crit chance",[145370]="Rage max up",[147108]="Whirlwind dmg",[133122]="Cleave+Whirlwind dmg",[135576]="Slam dmg",[133100]="Execute crit chance",[143823]="Heroic Leap +armor",[132806]="Mortal Strike heal"}},
 		--Fury (Fire, Storm, Iron)-
 	[128908] = {
-	{[0]="Current trait",[133107]="Battle cry crit",[132319]="Enrage dmg bonus",[133055]="Raging blow dmg",[132987]="Rampage dmg",[133010]="Furious Slash dmg",[147756]="Execute crit chance",[141522]="Charge rage bonus",[135571]="Enrage health bonus",[143701]="Bloodthirst heal"},
-	{[0]="Current trait",[146932]="Battle cry crit",[137421]="Enrage dmg bonus",[137365]="Raging blow dmg",[132993]="Rampage dmg",[133016]="Furious Slash dmg",[144531]="Execute crit chance",[147112]="Raging Blow crit generation",[141514]="Charge rage bonus",[137468]="Enrage health bonus",[132808]="Bloodthirst heal"},
-	{[0]="Current trait",[140815]="Battle cry crit",[134081]="Enrage dmg bonus",[144522]="Raging blow dmg",[132781]="Rampage dmg",[147101]="Furious Slash dmg",[133075]="Execute crit chance",[133763]="Charge rage bonus",[147759]="Enrage health bonus",[133120]="Bloodthirst heal"}},
+	{[0]="Current trait",[133107]="Battle cry crit dmg",[132319]="Enrage dmg bonus",[133055]="Raging blow dmg",[132987]="Rampage dmg",[133010]="Furious Slash dmg",[147756]="Execute crit chance",[141522]="Charge rage bonus",[135571]="Enrage health bonus",[143701]="Bloodthirst heal"},
+	{[0]="Current trait",[146932]="Battle cry crit dmg",[137421]="Enrage dmg bonus",[137365]="Raging blow dmg",[132993]="Rampage dmg",[133016]="Furious Slash dmg",[144531]="Execute crit chance",[147112]="Raging Blow crit generation",[141514]="Charge rage bonus",[137468]="Enrage health bonus",[132808]="Bloodthirst heal"},
+	{[0]="Current trait",[140815]="Battle cry crit dmg",[134081]="Enrage dmg bonus",[144522]="Raging blow dmg",[132781]="Rampage dmg",[147101]="Furious Slash dmg",[133075]="Execute crit chance",[133763]="Charge rage bonus",[147759]="Enrage health bonus",[133120]="Bloodthirst heal"}},
 		--Prot
 	[128289] = {{},{},{}}
 }
@@ -294,7 +294,7 @@ SimPermut.NetherlightData={
 	[128832] = {},
 	-- Druid
 		--MK (Arcane, Life, Arcane)-
-	[128858] = {[1039]="Starsurge crit",[1038]="Solar Wrath dmg",[1036]="Lunar Strike crit chance",[1042]="Empowerments bonus dmg",[1041]="Sunfire dmg",[1037]="Moonfire dmg",[1501]="Starfall dmg",[1040]="Stellar Empowerment dmg",[1035]="Heal on dmg",[1034]="Moonkin Form armor"},
+	[128858] = {[1039]="Starsurge crit chance",[1038]="Solar Wrath dmg",[1036]="Lunar Strike crit chance",[1042]="Empowerments bonus dmg",[1041]="Sunfire dmg",[1037]="Moonfire dmg",[1501]="Starfall dmg",[1040]="Stellar Empowerment dmg",[1035]="Heal on dmg",[1034]="Moonkin Form armor"},
 		--feral (Frost, Blood, Life)-
 	[128860] = {[1166]="Rake dmg",[1161]="Rip dmg",[1164]="Tiger's Fury generation",[1162]="Shred crit chance",[1167]="Berserk dmg bonus",[1168]="Swipe dmg",[1163]="Ferocious Bite crit dmg",[1160]="Survival Instinct duration",[1165]="Regrowth heal"},
 		--Guardian
@@ -328,7 +328,7 @@ SimPermut.NetherlightData={
 		--Prot
 	[128866] = {},
 		--Ret (Holy, Fire, Holy)-
-	[120978] = {[53]="Avenging Wrath duration",[43]="Divine Storm dmg",[50]="Blade of Justice dmg",[1561]="Holy Power for Blade of Justice dmg",[51]="Templar's Verdict dmg",[41]="Judgment dmg",[42]="Crusader Strike crit",[47]="Shield of Vengeance CD",[52]="Blessing of Protection CD",[44]="Flash of Light heal"},
+	[120978] = {[53]="Avenging Wrath duration",[43]="Divine Storm dmg",[50]="Blade of Justice dmg",[1561]="Holy Power for Blade of Justice dmg",[51]="Templar's Verdict dmg",[41]="Judgment dmg",[42]="Crusader Strike crit chance",[47]="Shield of Vengeance CD",[52]="Blessing of Protection CD",[44]="Flash of Light heal"},
 	-- Priest
 		--Disc
 	[128868] = {},
@@ -361,7 +361,7 @@ SimPermut.NetherlightData={
 		--Arms (Iron, Blood, Shadow)-
 	[128910] = {[1150]="Tactician's chance bonus",[1149]="Mortal Strike&Execute crit chance",[1613]="Bladestorm dmg",[1143]="Rage max up",[1146]="Whirlwind dmg",[1144]="Cleave+Whirlwind dmg",[1145]="Slam dmg",[1147]="Execute crit chance",[1148]="Heroic Leap +armor",[1151]="Mortal Strike heal"},
 		--Fury (Fire, Storm, Iron)-
-	[128908] = {[995]="Battle cry crit",[996]="Enrage dmg bonus",[990]="Raging blow dmg",[991]="Rampage dmg",[989]="Furious Slash dmg",[988]="Execute crit chance",[1617]="Raging Blow crit generation",[992]="Charge rage bonus",[993]="Enrage health bonus",[994]="Bloodthirst heal"},
+	[128908] = {[995]="Battle cry crit dmg",[996]="Enrage dmg bonus",[990]="Raging blow dmg",[991]="Rampage dmg",[989]="Furious Slash dmg",[988]="Execute crit chance",[1617]="Raging Blow crit generation",[992]="Charge rage bonus",[993]="Enrage health bonus",[994]="Bloodthirst heal"},
 		--Prot
 	[128289] = {}
 }
