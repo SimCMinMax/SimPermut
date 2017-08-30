@@ -188,9 +188,9 @@ SimPermut.ArtifactTableTraits = {
 	{[0]="Current trait",[142310]="Crit dmg",[142512]="Shadow dmg",[147108]="Unstable Affliction crit chance",[145370]="Agony dmg",[133122]="Corruption dmg",[135576]="Drain life dmg",[133100]="Seed of Corruption dmg",[133088]="Soul Leech absorb",[132806]="Drain Life heal"}},
 		--Demo (Shadow, Fire, Fel)-
 	[128943] = {
-	{[0]="Current trait",[142310]="Wild Imp's Firebolt dmg",[135576]="Doom dmg",[142512]="Shadow Bolt Crit chance",[145370]="Demonic Empowerment bonus",[147108]="Dreadstalkers crit chance",[133100]="Hand of Gul'dan",[133122]="Demonwrath dmg",[132806]="Unending Resolve CD",[133088]="Soul Link heal"},
-	{[0]="Current trait",[147091]="Wild Imp's Firebolt dmg",[133055]="Doom dmg",[132319]="Shadow Bolt Crit chance",[147756]="Demonic Empowerment bonus",[132987]="Dreadstalkers crit chance",[141522]="Hand of Gul'dan",[133010]="Demonwrath dmg",[143701]="Unending Resolve CD",[135571]="Soul Link heal"},
-	{[0]="Current trait",[147755]="Wild Imp's Firebolt dmg",[136687]="Doom dmg",[139267]="Shadow Bolt Crit chance",[132337]="Demonic Empowerment bonus",[137476]="Dreadstalkers crit chance",[133095]="Hand of Gul'dan",[147085]="Pet dmg",[147086]="Demonwrath dmg",[141255]="Unending Resolve CD",[144512]="Soul Link heal"}},
+	{[0]="Current trait",[142310]="Wild Imp's Firebolt dmg",[135576]="Doom dmg",[142512]="Shadow Bolt Crit chance",[145370]="Demonic Empowerment bonus",[147108]="Dreadstalkers crit chance",[133100]="Hand of Gul'dan dmg",[133122]="Demonwrath dmg",[132806]="Unending Resolve CD",[133088]="Soul Link heal"},
+	{[0]="Current trait",[147091]="Wild Imp's Firebolt dmg",[133055]="Doom dmg",[132319]="Shadow Bolt Crit chance",[147756]="Demonic Empowerment bonus",[132987]="Dreadstalkers crit chance",[141522]="Hand of Gul'dan dmg",[133010]="Demonwrath dmg",[143701]="Unending Resolve CD",[135571]="Soul Link heal"},
+	{[0]="Current trait",[147755]="Wild Imp's Firebolt dmg",[136687]="Doom dmg",[139267]="Shadow Bolt Crit chance",[132337]="Demonic Empowerment bonus",[137476]="Dreadstalkers crit chance",[133095]="Hand of Gul'dan dmg",[147085]="Pet dmg",[147086]="Demonwrath dmg",[141255]="Unending Resolve CD",[144512]="Soul Link heal"}},
 		--Destru (Fel, Fire, Fel)-
 	[128941] = {
 	{[0]="Current trait",[147755]="Immolate crit chance",[137476]="Immolate dmg",[147086]="Chaos Bolt crit dmg",[136687]="Incinerate cast time",[132337]="Incinerate dmg",[133095]="Chaos Bolt refund",[147085]="Conflagrate dmg",[139267]="Rain of Fire dmg",[141255]="Life Tap dmg reduc",[144512]="Drain Life proc"},
@@ -199,9 +199,9 @@ SimPermut.ArtifactTableTraits = {
 	-- Warrior
 		--Arms (Iron, Blood, Shadow)-
 	[128910] = {
-	{[0]="Current trait",[134081]="Tactician's chance bonus",[140815]="Mortal Strike&Execute cost",[133075]="Rage max up",[132781]="Whirlwind dmg",[147101]="Cleave+Whirlwind dmg",[144522]="Slam dmg",[133763]="Execute crit dmg",[147759]="Heroic Leap +armor",[133120]="Mortal Strike heal"},
-	{[0]="Current trait",[133127]="Tactician's chance bonus",[141523]="Mortal Strike&Execute cost",[147082]="Bladestorm dmg",[133020]="Rage max up",[132985]="Whirlwind dmg",[133008]="Cleave+Whirlwind dmg",[139260]="Slam dmg",[143524]="Execute crit dmg",[141264]="Heroic Leap +armor",[132800]="Mortal Strike heal"},
-	{[0]="Current trait",[142512]="Tactician's chance bonus",[142310]="Mortal Strike&Execute cost",[145370]="Rage max up",[147108]="Whirlwind dmg",[133122]="Cleave+Whirlwind dmg",[135576]="Slam dmg",[133100]="Execute crit dmg",[143823]="Heroic Leap +armor",[132806]="Mortal Strike heal"}},
+	{[0]="Current trait",[134081]="Tactician's chance bonus",[140815]="Mortal Strike&Execute crit chance",[133075]="Rage max up",[132781]="Whirlwind dmg",[147101]="Cleave+Whirlwind dmg",[144522]="Slam dmg",[133763]="Execute crit chance",[147759]="Heroic Leap +armor",[133120]="Mortal Strike heal"},
+	{[0]="Current trait",[133127]="Tactician's chance bonus",[141523]="Mortal Strike&Execute crit chance",[147082]="Bladestorm dmg",[133020]="Rage max up",[132985]="Whirlwind dmg",[133008]="Cleave+Whirlwind dmg",[139260]="Slam dmg",[143524]="Execute crit chance",[141264]="Heroic Leap +armor",[132800]="Mortal Strike heal"},
+	{[0]="Current trait",[142512]="Tactician's chance bonus",[142310]="Mortal Strike&Execute crit chance",[145370]="Rage max up",[147108]="Whirlwind dmg",[133122]="Cleave+Whirlwind dmg",[135576]="Slam dmg",[133100]="Execute crit chance",[143823]="Heroic Leap +armor",[132806]="Mortal Strike heal"}},
 		--Fury (Fire, Storm, Iron)-
 	[128908] = {
 	{[0]="Current trait",[133107]="Battle cry crit",[132319]="Enrage dmg bonus",[133055]="Raging blow dmg",[132987]="Rampage dmg",[133010]="Furious Slash dmg",[147756]="Execute crit chance",[141522]="Charge rage bonus",[135571]="Enrage health bonus",[143701]="Bloodthirst heal"},
@@ -344,24 +344,24 @@ SimPermut.NetherlightData={
 		--Sub (Fel, Shadow, Fel)-
 	[128476] = {[858]="Cheap Shot refund",[854]="Eviscerate crit chance",[853]="Nightblade dmg",[855]="Shadowstrike dmg",[1585]="Backstab+Shadowstrike dmg",[857]="Shadow Blades duration",[856]="Shadow Technique generation",[852]="Backstab dmg",[859]="Dodge+immune fall",[860]="Dodge"},
 	-- Shaman
-		--Elem (Storm, Frost, Storm)
-	[128935] = {[300]="Lava Burst dmg",[303]="Lava Burst crit dmg",[144531]="Nature dmg",[133682]="Flame Shock dmg",[147112]="Elemental Fury bonus",[137421]="Earth Shock dmg",[304]="Chain Lightning dmg",[299]="EarthQuake dmg",[305]="Heal when low",[137468]="Healing Surge Heal"},
-		--Enh (Fire, Iron, Storm)
-	[128819] = {[132993]="Attack speed bonus",[133016]="Lava Lash dmg",[146932]="Rockbiter generation",[141514]="Stormstrike dmg",[147112]="Crashing Light dmg",[137365]="Windfury dmg",[144531]="Flametongue/Rockbiter/Frostband dmg",[137421]="Ghost wolf generation",[132808]="Astral Shift heal",[302]="Healing Surge heal"},
+		--Elem (Storm, Frost, Storm)-
+	[128935] = {[300]="Lava Burst dmg",[303]="Lava Burst crit dmg",[298]="Nature dmg",[301]="Flame Shock dmg",[1589]="Elemental Fury bonus",[306]="Earth Shock dmg",[304]="Chain Lightning dmg",[299]="EarthQuake dmg",[305]="Heal when low",[302]="Healing Surge Heal"},
+		--Enh (Fire, Iron, Storm)-
+	[128819] = {[910]="Attack speed bonus",[906]="Lava Lash dmg",[913]="Rockbiter generation",[1351]="Stormstrike dmg",[912]="Crashing Light dmg",[908]="Windfury dmg",[905]="Flametongue/Rockbiter/Frostband dmg",[907]="Ghost wolf generation",[909]="Astral Shift heal",[911]="Healing Surge heal"},
 		--Rest
 	[128911] = {},
 	-- Warlock
-		--Affli (Shadow, Blood, Shadow)
-	[128942] = {[136718]="Crit dmg",[133127]="Shadow dmg",[132985]="Unstable Affliction crit chance",[147082]="Dots crit chance",[133020]="Agony dmg",[133008]="Corruption dmg",[139260]="Drain life dmg",[143524]="Seed of Corruption dmg",[141264]="Soul Leech absorb",[132800]="Drain Life heal"},
-		--Demo (Shadow, Fire, Fel)
-	[128943] = {[147755]="Wild Imp's Firebolt dmg",[136687]="Doom dmg",[139267]="Shadow Bolt Crit chance",[132337]="Demonic Empowerment bonus",[137476]="Dreadstalkers crit chance",[133095]="Hand of Gul'dan",[147085]="Pet dmg",[147086]="Demonwrath dmg",[141255]="Unending Resolve CD",[144512]="Soul Link heal"},
-		--Destru (Fel, Fire, Fel)
-	[128941] = {[147755]="Immolate crit chance",[137476]="Immolate dmg",[147086]="Chaos Bolt crit dmg",[136687]="Incinerate cast time",[132337]="Incinerate dmg",[133095]="Chaos Bolt refund",[147085]="Conflagrate dmg",[139267]="Rain of Fire dmg",[141255]="Life Tap dmg reduc",[144512]="Drain Life proc"},
+		--Affli (Shadow, Blood, Shadow)-
+	[128942] = {[920]="Crit dmg",[921]="Shadow dmg",[918]="Unstable Affliction crit chance",[1601]="Dots crit chance",[915]="Agony dmg",[916]="Corruption dmg",[917]="Drain life dmg",[919]="Seed of Corruption dmg",[922]="Soul Leech absorb",[923]="Drain Life heal"},
+		--Demo (Shadow, Fire, Fel)-
+	[128943] = {[1176]="Wild Imp's Firebolt dmg",[1173]="Doom dmg",[1177]="Shadow Bolt Crit chance",[1171]="Demonic Empowerment bonus",[1174]="Dreadstalkers crit chance",[1175]="Hand of Gul'dan dmg",[1605]="Pet dmg",[1172]="Demonwrath dmg",[1179]="Unending Resolve CD",[1178]="Soul Link heal"},
+		--Destru (Fel, Fire, Fel)-
+	[128941] = {[809]="Immolate crit chance",[807]="Immolate dmg",[805]="Chaos Bolt crit dmg",[806]="Incinerate cast time",[804]="Incinerate dmg",[808]="Chaos Bolt refund",[1609]="Conflagrate dmg",[810]="Rain of Fire dmg",[812]="Life Tap dmg reduc",[811]="Drain Life proc"},
 	-- Warrior
-		--Arms (Iron, Blood, Shadow)
-	[128910] = {[133127]="Tactician's chance bonus",[141523]="Mortal Strike&Execute cost",[147082]="Bladestorm dmg",[133020]="Rage max up",[132985]="Whirlwind dmg",[133008]="Cleave+Whirlwind dmg",[139260]="Slam dmg",[143524]="Execute crit dmg",[141264]="Heroic Leap +armor",[132800]="Mortal Strike heal"},
-		--Fury (Fire, Storm, Iron)
-	[128908] = {[146932]="Battle cry crit",[137421]="Enrage dmg bonus",[137365]="Raging blow dmg",[132993]="Rampage dmg",[133016]="Furious Slash dmg",[144531]="Execute crit chance",[147112]="Raging Blow crit generation",[141514]="Charge rage bonus",[137468]="Enrage health bonus",[132808]="Bloodthirst heal"},
+		--Arms (Iron, Blood, Shadow)-
+	[128910] = {[1150]="Tactician's chance bonus",[1149]="Mortal Strike&Execute crit chance",[1613]="Bladestorm dmg",[1143]="Rage max up",[1146]="Whirlwind dmg",[1144]="Cleave+Whirlwind dmg",[1145]="Slam dmg",[1147]="Execute crit chance",[1148]="Heroic Leap +armor",[1151]="Mortal Strike heal"},
+		--Fury (Fire, Storm, Iron)-
+	[128908] = {[995]="Battle cry crit",[996]="Enrage dmg bonus",[990]="Raging blow dmg",[991]="Rampage dmg",[989]="Furious Slash dmg",[988]="Execute crit chance",[1617]="Raging Blow crit generation",[992]="Charge rage bonus",[993]="Enrage health bonus",[994]="Bloodthirst heal"},
 		--Prot
 	[128289] = {}
 }
