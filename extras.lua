@@ -302,24 +302,24 @@ SimPermut.NetherlightData={
 		--Restoration
 	[128306] = {},
 	-- Hunter
-		--BM (Storm, Arcane, Iron)
-	[128861] = {[141514]="Cobra Shot dmg",[132993]="Multi-Shot dmg",[146932]="Kill command bonus dmg",[144531]="Aspect of the wild duration",[147112]="Cobra Shot focus reduc",[133016]="Beast Cleave dmg",[137365]="Kill command dmg",[137421]="Bestial Wrath bonus dmg",[132808]="Dodge",[136471]="Aspect of the Turtle heal"},
-		--MM (Storm, Blood, Life)
-	[128826] = {[132303]="Aimed Shot crit Vulnerable",[144531]="Aimed Shot crit dmg",[147112]="Vulnerability effect",[133016]="Marked Shot dmg",[141514]="Marked Shot crit",[132993]="Multi Shot dmg",[137365]="Trueshot CD",[137421]="Bursting Shot CD",[132808]="Disengage dmg reduc",[137468]="Aspect of the Turtle heal"},
-		--Sv (Storm, Iron, Blood)
-	[128808] = {[144531]="Mongoose Bite dmg",[147112]="Mongoose Bite crit dmg",[137421]="Carve dmg",[132993]="Raptor Strike dmg",[133016]="Flanking Strike crit",[146932]="Explosive Trap dmg",[137365]="Lacerate dmg",[141514]="Pet's haste",[132808]="Exhilaration CD",[137468]="Raptor Strike heal"},
+		--BM (Storm, Arcane, Iron)-
+	[128861] = {[873]="Cobra Shot dmg",[872]="Multi-Shot dmg",[875]="Kill command bonus dmg",[868]="Aspect of the wild duration",[1517]="Cobra Shot focus reduc",[869]="Beast Cleave dmg",[870]="Kill command dmg",[878]="Bestial Wrath bonus dmg",[871]="Dodge",[874]="Aspect of the Turtle heal"},
+		--MM (Storm, Blood, Life)-
+	[128826] = {[319]="Aimed Shot crit Vulnerable",[312]="Aimed Shot crit dmg",[1521]="Vulnerability effectiveness",[313]="Marked Shot dmg",[318]="Marked Shot crit chance",[315]="Multi Shot dmg",[314]="Trueshot CD",[320]="Bursting Shot CD",[317]="Disengage dmg reduc",[316]="Aspect of the Turtle heal"},
+		--Sv (Storm, Iron, Blood)-
+	[128808] = {[1070]="Mongoose Bite dmg",[1525]="Mongoose Bite crit dmg",[1076]="Carve dmg",[1073]="Raptor Strike dmg",[1071]="Flanking Strike crit chance",[1075]="Explosive Trap dmg",[1072]="Lacerate dmg",[1074]="Pet's haste",[1078]="Exhilaration CD",[1077]="Raptor Strike heal"},
 	-- Mage
-		--Arcane (Arcane, Frost, Arcane)
-	[127857] = {[147076]="Arcane Missile proc",[142175]="Crit chance",[132305]="Arcane Blast dmg",[132995]="Arcane Missile dmg",[147079]="Arcane Missile crit chance",[133030]="Arcane Explosion dmg",[132984]="Arcane Power duration",[140813]="Arcane Barrage dmg",[141272]="Displacement CD",[137490]="Prismatic Barrier absorb"},
-		--Fire (Fire, Arcane, Fire)
-	[128820] = {[147076]="Ignite dmg",[142175]="Fire crit dmg",[142176]="Pyroblast dmg",[147079]="Combustion duration",[133030]="Fireball dmg",[132984]="Flamestrike dmg",[132305]="Fire Blast dmg",[140813]="Fire Ball cast time",[137490]="Blazing Barrier reduc",[141272]="Blink heal"},
-		--Frost (Frost, Arcane, Frost)
-	[128862] = {[142175]="Ice Lance crit dmg",[133030]="Icy veins CD",[132305]="Flurry dmg",[147079]="Ice Lance vs Frost dmg",[147076]="Brain Freeze proc",[140813]="Frostbolt dmg",[142176]="Blizzard crit chance",[132984]="Frozen Orb crit dmg",[141272]="Ice Barrier absorb",[137490]="Ice Lance dmg reduc"},
+		--Arcane (Arcane, Frost, Arcane)-
+	[127857] = {[81]="Arcane Missile proc",[75]="Crit chance",[74]="Arcane Blast dmg",[79]="Arcane Missile dmg",[1529]="Arcane Missile crit chance",[77]="Arcane Explosion dmg",[82]="Arcane Power duration",[72]="Arcane Barrage dmg",[83]="Displacement CD",[84]="Prismatic Barrier absorb"},
+		--Fire (Fire, Arcane, Fire)-
+	[128820] = {[755]="Ignite dmg",[752]="Fire crit dmg",[751]="Pyroblast dmg",[1533]="Combustion duration",[754]="Fireball dmg",[753]="Flamestrike dmg",[750]="Fire Blast dmg",[749]="Fire Ball cast time",[757]="Blazing Barrier reduc",[756]="Blink heal"},
+		--Frost (Frost, Arcane, Frost)-
+	[128862] = {[786]="Ice Lance crit dmg",[788]="Icy veins CD",[785]="Flurry dmg",[1537]="Ice Lance vs Frozen dmg",[789]="Brain Freeze proc",[784]="Frostbolt dmg",[790]="Blizzard crit chance",[787]="Frozen Orb crit dmg",[791]="Ice Barrier absorb",[792]="Ice Lance dmg reduc"},
 	-- Monk
 		--Brew
 	[128938] = {},
-		--WW (Storm, Iron, Storm)
-	[128937] = {[133016]="Rising Sun Kick dmg",[146932]="Fist of Fury dmg",[147112]="Storm Earth and Fire CD",[144531]="Max Energy up",[137365]="Tiger Palm dmg",[137421]="Blackout Kick no chi",[141514]="Spinning Crane Kick dmg",[132993]="Touch of Death CD",[137468]="Dodge up",[132808]="Transcendence heal"},
+		--WW (Storm, Iron, Storm)-
+	[128937] = {[820]="Rising Sun Kick dmg",[825]="Fist of Fury dmg",[1549]="Storm Earth and Fire CD",[800]="Max Energy up",[821]="Tiger Palm dmg",[1094]="Blackout Kick no chi",[824]="Spinning Crane Kick dmg",[822]="Touch of Death CD",[801]="Dodge up",[829]="Transcendence heal"},
 		--Mist
 	[128940] = {},
 	-- Paladin
@@ -327,8 +327,8 @@ SimPermut.NetherlightData={
 	[128823] = {},
 		--Prot
 	[128866] = {},
-		--Ret (Holy, Fire, Holy)
-	[120978] = {[136717]="Avenging Wrath duration",[140411]="Divine Storm dmg",[147097]="Blade of Justice dmg",[147098]="Holy Power for Blade of Justice dmg",[135572]="Templar's Verdict dmg",[147758]="Judgment dmg",[143695]="Crusader Strike crit",[137402]="Shield of Vengeance CD",[140042]="Blessing of Protection CD",[137548]="Flash of Light heal"},
+		--Ret (Holy, Fire, Holy)-
+	[120978] = {[53]="Avenging Wrath duration",[43]="Divine Storm dmg",[50]="Blade of Justice dmg",[1561]="Holy Power for Blade of Justice dmg",[51]="Templar's Verdict dmg",[41]="Judgment dmg",[42]="Crusader Strike crit",[47]="Shield of Vengeance CD",[52]="Blessing of Protection CD",[44]="Flash of Light heal"},
 	-- Priest
 		--Disc
 	[128868] = {},
@@ -337,12 +337,12 @@ SimPermut.NetherlightData={
 		--SP (Shadow, Blood, Shadow)-
 	[128827] ={[1573]="Shadowfiend duration",[777]="Vampiric Touch dmg",[773]="Shadow Word Pain dmg",[776]="Shadow dmg",[772]="Mind Blast dmg",[767]="Vampiric Touch Apparition",[774]="Shadow Word Death dmg",[778]="Mind Sear dmg",[771]="Dispersion CD",[775]="ShadowMend heal"},
 	-- Rogue
-		--Assa (Shadow, Iron, Blood)
-	[128870] = {[141523]="Vendetta CD",[143524]="Rupture dmg",[133020]="Envenom dmg",[147082]="Garrote dmg",[132985]="Mutilate crit chance",[133008]="Rupture crit chance",[133127]="Fan of Knives proc",[143691]="Poisons dmg",[137471]="Sprint CD",[141264]="Cloak of Shadows CDs"},
-		--Outlaw (Blood, Iron, Storm)
-	[128872] = {[139260]="Run through dmg",[143524]="Finishing moves cost",[141523]="Combat Potency generation",[147082]="Saber Slash crit dmg",[133008]="Blade Furry regeneration",[133127]="Adrenaline Rush CD",[132985]="Pistol Shot crit chance",[133020]="Between the Eyes dmg",[141264]="Main Gauche dmg",[132800]="Cloak of Shadows heal"},
-		--Sub (Fel, Shadow, Fel)
-	[128476] = {[139267]="Cheap Shot refund",[136687]="Eviscerate crit chance",[147086]="Nightblade dmg",[137476]="Shadowstrike dmg",[147085]="Backstab+Shadowstrike dmg",[147755]="Shadow Blades duration",[133117]="Shadow Technique generation",[132337]="Backstab dmg",[144512]="Dodge+immune fall",[141255]="Dodge"},
+		--Assa (Shadow, Iron, Blood)-
+	[128870] = {[330]="Vendetta CD",[328]="Rupture dmg",[323]="Envenom dmg",[1577]="Garrote dmg",[327]="Mutilate crit chance",[324]="Rupture crit chance",[331]="Fan of Knives proc",[325]="Poisons dmg",[329]="Sprint CD",[326]="Cloak of Shadows CDs"},
+		--Outlaw (Blood, Iron, Storm)-
+	[128872] = {[1061]="Run through dmg",[1064]="Finishing moves cost",[1065]="Combat Potency generation",[1581]="Saber Slash crit dmg",[1060]="Blade Furry regeneration",[1067]="Adrenaline Rush CD",[1063]="Pistol Shot crit chance",[1059]="Between the Eyes dmg",[1062]="Main Gauche dmg",[1066]="Cloak of Shadows heal"},
+		--Sub (Fel, Shadow, Fel)-
+	[128476] = {[858]="Cheap Shot refund",[854]="Eviscerate crit chance",[853]="Nightblade dmg",[855]="Shadowstrike dmg",[1585]="Backstab+Shadowstrike dmg",[857]="Shadow Blades duration",[856]="Shadow Technique generation",[852]="Backstab dmg",[859]="Dodge+immune fall",[860]="Dodge"},
 	-- Shaman
 		--Elem (Storm, Frost, Storm)
 	[128935] = {[300]="Lava Burst dmg",[303]="Lava Burst crit dmg",[144531]="Nature dmg",[133682]="Flame Shock dmg",[147112]="Elemental Fury bonus",[137421]="Earth Shock dmg",[304]="Chain Lightning dmg",[299]="EarthQuake dmg",[305]="Heal when low",[137468]="Healing Surge Heal"},
