@@ -2658,6 +2658,10 @@ function SimPermut:GetPermutationString(permuttable)
 						adString=" # Debug print : Not printed:No 2p T20\n"
 					elseif(not T204p and actualSetsT20==4) then
 						adString=" # Debug print : Not printed:No 4p T20\n"	
+					elseif(not T212p and actualSetsT21==2) then
+						adString=" # Debug print : Not printed:No 2p T21\n"
+					elseif(not T214p and actualSetsT21==4) then
+						adString=" # Debug print : Not printed:No 4p T21\n"	
 					end
 				end
 				returnString =  returnString .. adString..SimPermut:GetCopyName(copynumber,pool,nbitem,itemList,#permuttable,1) .. "\n".. currentString.."\n"
