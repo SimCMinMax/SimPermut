@@ -1,4 +1,9 @@
-v1.14.1 08/xx/2017
+v1.14.2 08/xx/2017
+[UI]Added an option for small UI
+[FIX]Added some debug text for T21
+
+
+v1.14.1 08/30/2017
 [UI]Netherlight Crucible generator
 [UI]Add T21 (only in the option frame)
 [Fix]Fixed a number of wrongly labelled relics

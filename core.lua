@@ -115,7 +115,8 @@ local defaultSettings={
 	replaceEnchantsBase	= false,
 	ilvl_RelicMin		= 780,
 	ilvl_RelicMax		= 999,
-	addedItemsTable		= {}
+	addedItemsTable		= {},
+	smallUI				= false
 }
 local actualSettings={}
 
@@ -229,8 +230,15 @@ function SimPermut:BuildFrame()
 		end
 	end)
 	mainframe:SetLayout("Flow")
-	mainframe:SetWidth(1300)
-	mainframe:SetHeight(810)
+	
+	if actualSettings.smallUI then
+		mainframe:SetWidth(1000)
+		mainframe:SetHeight(710)
+	else
+		mainframe:SetWidth(1300)
+		mainframe:SetHeight(810)
+	end
+	
 	
 	local frameDropdown = AceGUI:Create("Dropdown")
     frameDropdown:SetWidth(200)
@@ -285,7 +293,11 @@ function SimPermut:BuildGearFrame()
 	
 	local scrollcontainer1 = AceGUI:Create("SimpleGroup")
 	scrollcontainer1:SetRelativeWidth(0.5)
-	scrollcontainer1:SetHeight(600)
+	if actualSettings.smallUI then
+		scrollcontainer1:SetHeight(460)
+	else
+		scrollcontainer1:SetHeight(600)
+	end
 	scrollcontainer1:SetLayout("Fill")
 	mainGroup:AddChild(scrollcontainer1)
 	
@@ -295,7 +307,11 @@ function SimPermut:BuildGearFrame()
 	
 	local scrollcontainer2 = AceGUI:Create("SimpleGroup")
 	scrollcontainer2:SetRelativeWidth(0.5)
-	scrollcontainer2:SetHeight(600)
+	if actualSettings.smallUI then
+		scrollcontainer2:SetHeight(460)
+	else
+		scrollcontainer2:SetHeight(600)
+	end
 	scrollcontainer2:SetLayout("Fill")
 	mainGroup:AddChild(scrollcontainer2)
 	
@@ -1452,6 +1468,21 @@ function SimPermut:BuildOptionFrame()
     end)
 	container1:AddChild(checkBoxForceDefault)
 	
+	local labelspacer41= AceGUI:Create("Label")
+	labelspacer41:SetFullWidth(true)
+	labelspacer41:SetHeight(40)
+	container1:AddChild(labelspacer41)
+	
+	local checkBoxSmallUI = AceGUI:Create("CheckBox")
+	checkBoxSmallUI:SetWidth(400)
+	checkBoxSmallUI:SetLabel("Use Small UI")
+	checkBoxSmallUI:SetValue(actualSettings.smallUI)
+	checkBoxSmallUI:SetCallback("OnValueChanged", function (this, event, item)
+		SimPermutVars.smallUI=checkBoxSmallUI:GetValue()
+		PersoLib:MergeTables(defaultSettings,SimPermutVars,actualSettings)
+    end)
+	container1:AddChild(checkBoxSmallUI)
+	
 	
 	local labelspacerInterGrp1= AceGUI:Create("Label")
 	labelspacerInterGrp1:SetFullWidth(true)
@@ -1604,7 +1635,11 @@ function SimPermut:BuildResultFrame(autoSimcExportVisible)
 	
 	local scrollcontainer3 = AceGUI:Create("SimpleGroup")
 	scrollcontainer3:SetRelativeWidth(1)
-	scrollcontainer3:SetHeight(600)
+	if actualSettings.smallUI then
+		scrollcontainer3:SetHeight(560)
+	else
+		scrollcontainer3:SetHeight(600)
+	end
 	scrollcontainer3:SetLayout("Fill")
 	resultGroup:AddChild(scrollcontainer3)
 	
