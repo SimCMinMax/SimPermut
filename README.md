@@ -4,6 +4,8 @@
 
 This repository is for the addon SimPermut which make a string usable by SimulationCraft with all the different permutations for the items you have in your inventory. This makes comparing stuff easy.
 
+Also handle talent permutation, relic comparison, crucible comparison. 
+
 Latest updates also add talents permutations and Artifact generator, aswell as more control over the profiles created. 
 
 Don't hesitate to go on the [SimcMinMax](https://discordapp.com/invite/tFR2uvK) Discord in the #simpermut-autosimc Channel to ask about specific stuff.
@@ -45,17 +47,11 @@ See [AutoSimC on GitHub](https://github.com/SimCMinMax/AutoSimC)
 
 - Epic Gem management
 
-- Add a way to add simc parameters
+- Better crucible management
 
+- Fix Warforged TW items
 
-[- Artifact Path Permutation]
-
-[- Better way of detecting sets]
- 
-[-Faster algorithm for string generation]
-
-[-Better way of ordering relics]
-
+-[Rework code]
 
 ## Credits
 Kutikuti 
