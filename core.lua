@@ -1783,6 +1783,21 @@ end
 
 -- clic btn generate Relic
 function SimPermut:GenerateCrucible()
+	local permutString=""
+	local baseString=""
+	local finalString=""
+	local artifactID,artifactData = LAD:GetArtifactInfo()
+
+	PersoLib:debugPrint("--------------------",ad)
+	PersoLib:debugPrint("Generating crucible String...",ad)
+	baseString=SimPermut:GetBaseString()
+	permutString=SimPermut:GenerateCrucibleString()
+	crucibleString=crucibleString.."\n"..permutString
+	finalString=SimPermut:GetFinalString(baseString,crucibleString)
+	SimPermut:PrintPermut(finalString)
+	PersoLib:debugPrint("End of generation",ad)
+	PersoLib:debugPrint("--------------------",ad)
+end
 
 -- clic btn generate Talent recursion
 function SimPermut:GenerateTalentsRecursive(stacks,str)
@@ -1803,21 +1818,6 @@ function SimPermut:GenerateTalentsRecursive(stacks,str)
 			end
 		end
 	end
-end
-	local permutString=""
-	local baseString=""
-	local finalString=""
-	local artifactID,artifactData = LAD:GetArtifactInfo()
-
-	PersoLib:debugPrint("--------------------",ad)
-	PersoLib:debugPrint("Generating crucible String...",ad)
-	baseString=SimPermut:GetBaseString()
-	permutString=SimPermut:GenerateCrucibleString()
-	crucibleString=crucibleString.."\n"..permutString
-	finalString=SimPermut:GetFinalString(baseString,crucibleString)
-	SimPermut:PrintPermut(finalString)
-	PersoLib:debugPrint("End of generation",ad)
-	PersoLib:debugPrint("--------------------",ad)
 end
 
 -- Get the count of selected items
