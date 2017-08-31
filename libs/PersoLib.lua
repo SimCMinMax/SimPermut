@@ -368,3 +368,19 @@ function PersoLib:GetRealIlvl(itemLink)
 	
 	return ilvl
 end
+
+function PersoLib:LinkSplit(link)
+  local itemString = string.match(link, "item:([%-?%d:]+)")
+  local itemSplit = {}
+
+  -- Split data into a table
+  for _, v in ipairs({strsplit(":", itemString)}) do
+    if v == "" then
+      itemSplit[#itemSplit + 1] = 0
+    else
+      itemSplit[#itemSplit + 1] = tonumber(v)
+    end
+  end
+
+  return itemSplit
+end

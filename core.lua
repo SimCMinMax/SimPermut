@@ -116,7 +116,8 @@ local defaultSettings={
 	ilvl_RelicMin		= 780,
 	ilvl_RelicMax		= 999,
 	addedItemsTable		= {},
-	smallUI				= false
+	smallUI				= false,
+	simcCommands		= ""
 }
 local actualSettings={}
 
@@ -1079,7 +1080,6 @@ function SimPermut:BuildNetherlightFrame()
 	local  spellTexture, crucibleIcon
 	crucibleIcon=AceGUI:Create("Icon")
 	
-	
 	local labelspacer6= AceGUI:Create("Label")
 	labelspacer6:SetFullWidth(true)
 	cruciblecontainer:AddChild(labelspacer6)
@@ -1517,7 +1517,6 @@ function SimPermut:BuildOptionFrame()
     end)
 	container1:AddChild(checkBoxSmallUI)
 	
-	
 	local labelspacerInterGrp1= AceGUI:Create("Label")
 	labelspacerInterGrp1:SetFullWidth(true)
 	container1:AddChild(labelspacerInterGrp1)
@@ -1527,7 +1526,6 @@ function SimPermut:BuildOptionFrame()
 	local labelspacerInterGrp3= AceGUI:Create("Label")
 	labelspacerInterGrp3:SetFullWidth(true)
 	container1:AddChild(labelspacerInterGrp3)
-	
 	
 	local labeltitre2= AceGUI:Create("Heading")
 	labeltitre2:SetText("Default values")
@@ -1657,6 +1655,38 @@ function SimPermut:BuildOptionFrame()
 		PersoLib:MergeTables(defaultSettings,SimPermutVars,actualSettings)
     end)
 	container1:AddChild(dropdownSetsT21)
+	
+	local labelspacerInterGrp21= AceGUI:Create("Label")
+	labelspacerInterGrp21:SetFullWidth(true)
+	container1:AddChild(labelspacerInterGrp21)
+	local labelspacerInterGrp22= AceGUI:Create("Label")
+	labelspacerInterGrp22:SetFullWidth(true)
+	container1:AddChild(labelspacerInterGrp22)
+	local labelspacerInterGrp23= AceGUI:Create("Label")
+	labelspacerInterGrp23:SetFullWidth(true)
+	container1:AddChild(labelspacerInterGrp23)
+	
+	
+	local labeltitre3= AceGUI:Create("Heading")
+	labeltitre3:SetText("Simc parameters")
+	labeltitre3:SetFullWidth(true)
+	container1:AddChild(labeltitre3)
+	
+	local scrollcontainer3 = AceGUI:Create("SimpleGroup")
+	scrollcontainer3:SetRelativeWidth(1)
+	scrollcontainer3:SetHeight(200)
+	scrollcontainer3:SetLayout("Fill")
+	container1:AddChild(scrollcontainer3)
+	
+	local simcBox= AceGUI:Create("MultiLineEditBox")
+	simcBox:SetText(actualSettings.simcCommands)
+	simcBox:SetLabel("")
+	simcBox:SetRelativeWidth(1)
+	simcBox:SetCallback("OnEnterPressed", function (this, event, item)
+		SimPermutVars.simcCommands=simcBox:GetText()
+		PersoLib:MergeTables(defaultSettings,SimPermutVars,actualSettings)
+    end)
+	scrollcontainer3:AddChild(simcBox)
 	
 	mainframe:AddChild(mainGroup)
 end
@@ -2003,8 +2033,7 @@ function SimPermut:GetItemString(itemLink,itemType,base,forceilvl,forcegem)
 	--itemType 	: item slot
 	--base 		: true if item from equiped gear, false from inventory
 
-	local itemString = string.match(itemLink, "item:([%-?%d:]+)")
-	local itemSplit = {}
+	local itemSplit = PersoLib:LinkSplit(itemLink)
 	local simcItemOptions = {}	
 	local bonuspool={}
 	local enchantID=""
@@ -2012,14 +2041,6 @@ function SimPermut:GetItemString(itemLink,itemType,base,forceilvl,forcegem)
 		bonuspool[value]=0
 	end
 	
-	-- Split data into a table
-	for v in string.gmatch(itemString, "(%d*:?)") do
-		if v == ":" then
-		  itemSplit[#itemSplit + 1] = 0
-		else
-		  itemSplit[#itemSplit + 1] = string.gsub(v, ':', '')
-		end
-	end
 	
 	-- Item id
 	local itemId = tonumber(itemSplit[OFFSET_ITEM_ID])
@@ -2028,58 +2049,47 @@ function SimPermut:GetItemString(itemLink,itemType,base,forceilvl,forcegem)
 	-- Enchant
 	if base and not SimPermutVars.replaceEnchantsBase then 
 		if tonumber(itemSplit[OFFSET_ENCHANT_ID]) > 0 then
-			--simcItemOptions[#simcItemOptions + 1] = 'enchant_id=' .. itemSplit[OFFSET_ENCHANT_ID]
 			enchantID=itemSplit[OFFSET_ENCHANT_ID]
 		end
 	else
 		if itemType=="neck" then
 			if (actualForce or (base and SimPermutVars.replaceEnchantsBase)) and actualEnchantNeck~=0 then
-				--simcItemOptions[#simcItemOptions + 1] = 'enchant_id=' .. actualEnchantNeck
 				enchantID=actualEnchantNeck
 			else	
 				if actualEnchantNeck==0 or tonumber(itemSplit[OFFSET_ENCHANT_ID]) > 0 then
 					if tonumber(itemSplit[OFFSET_ENCHANT_ID]) > 0 then
-						--simcItemOptions[#simcItemOptions + 1] = 'enchant_id=' .. itemSplit[OFFSET_ENCHANT_ID]
 						enchantID=itemSplit[OFFSET_ENCHANT_ID]
 					end
 				else
-					--simcItemOptions[#simcItemOptions + 1] = 'enchant_id=' .. actualEnchantNeck
 					enchantID=actualEnchantNeck
 				end
 			end
 		elseif itemType=="back" then
 			if (actualForce or (base and SimPermutVars.replaceEnchantsBase))  and actualEnchantBack~=0 then
-				--simcItemOptions[#simcItemOptions + 1] = 'enchant_id=' .. actualEnchantBack
 				enchantID=actualEnchantBack
 			else
 				if actualEnchantBack==0 or tonumber(itemSplit[OFFSET_ENCHANT_ID]) > 0 then
 					if tonumber(itemSplit[OFFSET_ENCHANT_ID]) > 0 then
-						--simcItemOptions[#simcItemOptions + 1] = 'enchant_id=' .. itemSplit[OFFSET_ENCHANT_ID]
 						enchantID=itemSplit[OFFSET_ENCHANT_ID]
 					end
 				else
-					--simcItemOptions[#simcItemOptions + 1] = 'enchant_id=' .. actualEnchantBack
 					enchantID=actualEnchantBack
 				end
 			end
 		elseif string.match(itemType, 'finger*') then
 			if (actualForce or (base and SimPermutVars.replaceEnchantsBase))  and actualEnchantFinger~=0 then
-				--simcItemOptions[#simcItemOptions + 1] = 'enchant_id=' .. actualEnchantFinger
 				enchantID=actualEnchantFinger
 			else
 				if actualEnchantFinger==0 or tonumber(itemSplit[OFFSET_ENCHANT_ID]) > 0 then
 					if tonumber(itemSplit[OFFSET_ENCHANT_ID]) > 0 then
-						--simcItemOptions[#simcItemOptions + 1] = 'enchant_id=' .. itemSplit[OFFSET_ENCHANT_ID]
 						enchantID=itemSplit[OFFSET_ENCHANT_ID]
 					end
 				else
-					--simcItemOptions[#simcItemOptions + 1] = 'enchant_id=' .. actualEnchantFinger
 					enchantID=actualEnchantFinger
 				end
 			end
 		else
 			if tonumber(itemSplit[OFFSET_ENCHANT_ID]) > 0 then
-				--simcItemOptions[#simcItemOptions + 1] = 'enchant_id=' .. itemSplit[OFFSET_ENCHANT_ID]
 				enchantID=itemSplit[OFFSET_ENCHANT_ID]
 			end
 		end
@@ -2192,7 +2202,6 @@ function SimPermut:GetItemString(itemLink,itemType,base,forceilvl,forcegem)
 		else
 			if (actualForce or forcegem or (base and SimPermutVars.replaceEnchantsBase)) and actualGem~=0 then
 				if actualGem and actualGem~=0 and (hasSocket>0 or tonumber(itemSplit[OFFSET_GEM_ID_1]) ~= 0) then
-					-- simcItemOptions[#simcItemOptions + 1] = 'gem_id=' .. actualGem
 					gemstring='gem_id='
 					for i=1,hasSocket do
 						if i>1 then 
@@ -3006,8 +3015,12 @@ function SimPermut:GetBaseString(nocrucible)
 	if playerCrucible ~= "" then
 		SimPermutProfile = SimPermutProfile .. "crucible=".. playerCrucible .. '\n'
 	end
-	SimPermutProfile = SimPermutProfile .. '\n'
 
+	--add custome simc parameters
+	SimPermutProfile = SimPermutProfile .. actualSettings.simcCommands.. '\n'
+	
+	SimPermutProfile = SimPermutProfile .. '\n'
+	
 	-- Method that gets gear information
 	local items,itemsLinks,StatPool = SimPermut:GetItemStrings()
 
@@ -3123,29 +3136,49 @@ function SimPermut:GetArtifactString(nocrucible)
 	if artifactID and artifactTable[artifactID] then
 		local str = artifactTable[artifactID] .. ':0:0:0:0'
 		local cruciblestr = ""
+		local baseRanks = {}
+		local crucibleRanks = {}
 
 		local powers = ArtifactUI.GetPowers()
 		for i = 1, #powers do
-			local powerId, powerRank = SimPermut:GetPowerData(powers[i], false)
+			local powerId, powerRank, relicRank, crucibleRank = SimPermut:GetPowerData(powers[i], false)
+
 			if powerRank > 0 then
-				str = str .. ':' .. powerId .. ':' .. powerRank
+				baseRanks[#baseRanks + 1] = powerId
+				baseRanks[#baseRanks + 1] = powerRank
+			end
+
+			if crucibleRank > 0 then
+				crucibleRanks[#crucibleRanks + 1] = powerId
+				crucibleRanks[#crucibleRanks + 1] = crucibleRank
 			end
 		end
 
 		-- Grab 7.3 artifact trait information
 		for _, powerId in ipairs(NetherlightData[1]) do
-			local _, powerRank = SimPermut:GetPowerData(powerId, true)
-			if powerRank > 0 then
-				cruciblestr = cruciblestr .. ':' .. powerId .. ':' .. powerRank
+			local powerId, powerRank, relicRank, crucibleRank = SimPermut:GetPowerData(powerId, true)
+			if crucibleRank > 0 then
+			  crucibleRanks[#crucibleRanks + 1] = powerId
+			  crucibleRanks[#crucibleRanks + 1] = crucibleRank
 			end
 		end
 		for _, powerId in ipairs(NetherlightData[2]) do
-			local _, powerRank = SimPermut:GetPowerData(powerId, true)
-			if powerRank > 0 then
-				cruciblestr = cruciblestr .. ':' .. powerId .. ':' .. powerRank
+			local powerId, powerRank, relicRank, crucibleRank = SimPermut:GetPowerData(powerId, true)
+			if crucibleRank > 0 then
+			  crucibleRanks[#crucibleRanks + 1] = powerId
+			  crucibleRanks[#crucibleRanks + 1] = crucibleRank
 			end
 		end
-		--TODO : tier3 ?
+
+	    if #baseRanks > 0 then
+			str = str .. ':' .. table.concat(baseRanks, ':')
+	    end
+
+	    if #crucibleRanks > 0 and not nocrucible then
+			cruciblestr = cruciblestr .. '\n'
+			cruciblestr = cruciblestr .. 'crucible=' .. table.concat(crucibleRanks, ':')
+	    end
+		
 		Clear()
 		
 		return str,cruciblestr
@@ -3206,15 +3239,62 @@ end
 
 function SimPermut:GetPowerData(powerId, isCrucible)
   if not powerId then
-    return 0, 0
+    return 0, 0, 0
   end
 
   local powerInfo = ArtifactUI.GetPowerInfo(powerId)
   if powerInfo == nil then
-    return powerId, 0
+    return powerId, 0, 0
   end
 
-  return powerId, powerInfo.currentRank - (isCrucible and powerInfo.bonusRanks or 0)
+  local relicRanks = 0
+  local crucibleRanks = 0
+  local purchasedRanks = powerInfo.currentRank
+  -- A crucible (row 1 or 2)  trait
+  if isCrucible then
+    crucibleRanks = powerInfo.bonusRanks
+  else
+    relicRanks = powerInfo.bonusRanks
+    purchasedRanks = purchasedRanks - relicRanks
+	
+
+    for ridx = 1, ArtifactUI.GetNumRelicSlots() do
+      local link = select(4, ArtifactUI.GetRelicInfo(ridx))
+      if link ~= nil then
+        local relicData   = PersoLib:LinkSplit(link)
+        local baseLink    = select(2, GetItemInfo(relicData[1]))
+        local basePowers  = ArtifactUI.GetPowersAffectedByRelicItemLink(baseLink)
+        local relicPowers = ArtifactUI.GetPowersAffectedByRelic(ridx)
+
+        if type(basePowers) == 'number' then
+          basePowers = { basePowers }
+        end
+
+        if type(relicPowers) == 'number' then
+          relicPowers = { relicPowers }
+        end
+
+        -- For each power id that is not included in the base powers given for the relic, add one rank
+        -- to crucible ranks, and subtract one from bonus ranks
+        for rpidx=1, #relicPowers do
+          local found = false
+          for bpidx=1, #basePowers do
+            if relicPowers[rpidx] == basePowers[bpidx] then
+              found = true
+              break
+            end
+          end
+
+          if not found then
+            crucibleRanks = crucibleRanks + 1
+            relicRanks = relicRanks - 1
+          end
+        end
+      end
+    end
+  end
+
+  return powerId, purchasedRanks, relicRanks, crucibleRanks
 end
 
 function SimPermut:GenerateCrucibleString()
