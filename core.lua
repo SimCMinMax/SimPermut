@@ -91,6 +91,7 @@ local relicString=""
 local crucibleCopyCount=1
 local crucibleString=""
 local relicComparisonTypeValue=1
+local spacerTable={}
 
 
 -- Parameters
@@ -326,6 +327,7 @@ function SimPermut:BuildGearFrame()
 	local labelEnchantNeck= AceGUI:Create("Label")
 	labelEnchantNeck:SetText("Enchant Neck")
 	labelEnchantNeck:SetWidth(80)
+	mainGroup:AddChild(labelEnchantNeck)
 	
 	local dropdownEnchantNeck = AceGUI:Create("Dropdown")
 	dropdownEnchantNeck:SetWidth(130)
@@ -334,10 +336,12 @@ function SimPermut:BuildGearFrame()
 	dropdownEnchantNeck:SetCallback("OnValueChanged", function (this, event, item)
 		actualEnchantNeck=item
     end)
+	mainGroup:AddChild(dropdownEnchantNeck)
 		
 	local labelEnchantBack= AceGUI:Create("Label")
 	labelEnchantBack:SetText("     Enchant Back")
 	labelEnchantBack:SetWidth(95)
+	mainGroup:AddChild(labelEnchantBack)
 	
 	local dropdownEnchantBack = AceGUI:Create("Dropdown")
 	dropdownEnchantBack:SetWidth(110)
@@ -346,10 +350,12 @@ function SimPermut:BuildGearFrame()
 	dropdownEnchantBack:SetCallback("OnValueChanged", function (this, event, item)
 		actualEnchantBack=item
     end)
+	mainGroup:AddChild(dropdownEnchantBack)
 	
 	local labelEnchantFinger= AceGUI:Create("Label")
 	labelEnchantFinger:SetText("     Enchant Ring")
 	labelEnchantFinger:SetWidth(95)
+	mainGroup:AddChild(labelEnchantFinger)
 	
 	local dropdownEnchantFinger = AceGUI:Create("Dropdown")
 	dropdownEnchantFinger:SetWidth(110)
@@ -358,10 +364,12 @@ function SimPermut:BuildGearFrame()
 	dropdownEnchantFinger:SetCallback("OnValueChanged", function (this, event, item)
 		actualEnchantFinger=item
     end)
+	mainGroup:AddChild(dropdownEnchantFinger)
 	
 	local labelGem= AceGUI:Create("Label")
 	labelGem:SetText("     Gem")
 	labelGem:SetWidth(55)
+	mainGroup:AddChild(labelGem)
 	
 	local dropdownGem = AceGUI:Create("Dropdown")
 	dropdownGem:SetList(gemList)
@@ -370,6 +378,7 @@ function SimPermut:BuildGearFrame()
 	dropdownGem:SetCallback("OnValueChanged", function (this, event, item)
 		actualGem=item
     end)
+	mainGroup:AddChild(dropdownGem)
 	
 	checkBoxForce = AceGUI:Create("CheckBox")
 	checkBoxForce:SetWidth(210)
@@ -378,14 +387,14 @@ function SimPermut:BuildGearFrame()
 	checkBoxForce:SetCallback("OnValueChanged", function (this, event, item)
 		actualForce=checkBoxForce:GetValue()
     end)
-	
-	local labelSpacerFull= AceGUI:Create("Label")
-	labelSpacerFull:SetText("")
-	labelSpacerFull:SetWidth(15)
+	mainGroup:AddChild(checkBoxForce)
+
+	SimPermut:AddSpacer(mainGroup,false,15)
 	
 	local labelLeg= AceGUI:Create("Label")
 	labelLeg:SetText(" Legendaries")
 	labelLeg:SetWidth(80)
+	mainGroup:AddChild(labelLeg)
 	
 	editLegMin= AceGUI:Create("EditBox")
 	editLegMin:SetText("0")
@@ -398,6 +407,7 @@ function SimPermut:BuildGearFrame()
 			editLegMin:SetText(0)
 		end
     end)
+	mainGroup:AddChild(editLegMin)
 	
 	editLegMax= AceGUI:Create("EditBox")
 	editLegMax:SetText("2")
@@ -410,15 +420,14 @@ function SimPermut:BuildGearFrame()
 			editLegMax:SetText(0)
 		end
     end)
+	mainGroup:AddChild(editLegMax)
 	
-	local labelSpacer2= AceGUI:Create("Label")
-	labelSpacer2:SetText(" ")
-	labelSpacer2:SetWidth(89)
-	
+	SimPermut:AddSpacer(mainGroup,false,89)
 
 	local labelSetsT19= AceGUI:Create("Label")
 	labelSetsT19:SetText("T19 (min)")
 	labelSetsT19:SetWidth(76)
+	mainGroup:AddChild(labelSetsT19)
 	
 	local dropdownSetsT19 = AceGUI:Create("Dropdown")
 	dropdownSetsT19:SetList(SetsListT19)
@@ -427,11 +436,13 @@ function SimPermut:BuildGearFrame()
 	dropdownSetsT19:SetCallback("OnValueChanged", function (this, event, item)
 		actualSetsT19=item
     end)
-	
+	mainGroup:AddChild(dropdownSetsT19)
+
 	local labelSetsT20= AceGUI:Create("Label")
 	labelSetsT20:SetText("T20 (min)")
 	labelSetsT20:SetWidth(55)
-	
+	mainGroup:AddChild(labelSetsT20)
+
 	local dropdownSetsT20 = AceGUI:Create("Dropdown")
 	dropdownSetsT20:SetList(SetsListT20)
 	dropdownSetsT20:SetWidth(110)
@@ -439,11 +450,10 @@ function SimPermut:BuildGearFrame()
 	dropdownSetsT20:SetCallback("OnValueChanged", function (this, event, item)
 		actualSetsT20=item
     end)
+	mainGroup:AddChild(dropdownSetsT20)
 	
-	local labelSpacerline= AceGUI:Create("Label")
-	labelSpacerline:SetText(" ")
-	labelSpacerline:SetWidth(90)
-	
+	SimPermut:AddSpacer(mainGroup,false,90)
+
 	local labelreportTypeGear= AceGUI:Create("Label")
 	labelreportTypeGear:SetText("Report Type : Gear")
 	labelreportTypeGear:SetWidth(150)
@@ -455,6 +465,7 @@ function SimPermut:BuildGearFrame()
 	ReportDropdownGear:SetCallback("OnValueChanged", function (this, event, item)
 		actualSettings.report_typeGear=item
     end)
+	mainGroup:AddChild(ReportDropdownGear)
 
 	local buttonGenerate = AceGUI:Create("Button")
 	buttonGenerate:SetText("Generate")
@@ -462,44 +473,18 @@ function SimPermut:BuildGearFrame()
 	buttonGenerate:SetCallback("OnClick", function()
 		SimPermut:Generate()
 	end)
-	
+	mainGroup:AddChild(buttonGenerate)
+
 	labelCount= AceGUI:Create("Label")
 	labelCount:SetText(" ")
 	labelCount:SetWidth(255)
-	
-	mainGroup:AddChild(labelEnchantNeck)
-	mainGroup:AddChild(dropdownEnchantNeck)
-	mainGroup:AddChild(labelEnchantBack)
-	mainGroup:AddChild(dropdownEnchantBack)
-	mainGroup:AddChild(labelEnchantFinger)
-	mainGroup:AddChild(dropdownEnchantFinger)
-	mainGroup:AddChild(labelGem)
-	mainGroup:AddChild(dropdownGem)
-	
-	mainGroup:AddChild(checkBoxForce)
-	mainGroup:AddChild(labelSpacerFull)
-	mainGroup:AddChild(labelLeg)
-	mainGroup:AddChild(editLegMin)
-	mainGroup:AddChild(editLegMax)
-	mainGroup:AddChild(labelSpacer2)
-	mainGroup:AddChild(labelSetsT19)
-	mainGroup:AddChild(dropdownSetsT19)
-	mainGroup:AddChild(labelSetsT20)
-	mainGroup:AddChild(dropdownSetsT20)
-
-	mainGroup:AddChild(labelSpacerline)
-	mainGroup:AddChild(ReportDropdownGear)
-	
-	mainGroup:AddChild(buttonGenerate)
 	mainGroup:AddChild(labelCount)
-	
-	
+
 	mainframe:AddChild(mainGroup)
 end
 
 -- Field construction for talent Frame
 function SimPermut:BuildTalentFrame()
-	
 	mainGroup = AceGUI:Create("SimpleGroup")
     mainGroup:SetLayout("Flow")
     mainGroup:SetRelativeWidth(0.65)
@@ -560,7 +545,6 @@ function SimPermut:BuildTalentFrame()
 			tableTalentLabel[i][j]:SetText(name)
 			tableTalentLabel[i][j]:SetRelativeWidth(0.5)
 				
-			
 			if j==1 then
 				container1:AddChild(tableTalentcheckbox[i][j])
 				container1:AddChild(tableTalentIcon[i][j])
@@ -576,9 +560,8 @@ function SimPermut:BuildTalentFrame()
 			end
 		end
 	end
-	local labelSpacer=AceGUI:Create("Label")
-	labelSpacer:SetRelativeWidth(0.2)
-	mainGroup:AddChild(labelSpacer)
+
+	SimPermut:AddSpacer(mainGroup,false,0.2)
 	
 	local ReportDropdownTalents = AceGUI:Create("Dropdown")
     ReportDropdownTalents:SetWidth(160)
@@ -597,7 +580,6 @@ function SimPermut:BuildTalentFrame()
 		SimPermut:GenerateTalents()
 	end)
 	mainGroup:AddChild(buttonGenerate)
-	
 	
 	mainframe:AddChild(mainGroup)
 end
@@ -655,14 +637,8 @@ function SimPermut:BuildRelicFrame()
     end)
 	container1:AddChild(relictype)
 	
-	local labeltitre2= AceGUI:Create("Label")
-	labeltitre2:SetFullWidth(true)
-	container1:AddChild(labeltitre2)
-		
-	
-	local labelspacer1= AceGUI:Create("Label")
-	labelspacer1:SetWidth(80)
-	container1:AddChild(labelspacer1)
+	SimPermut:AddSpacer(container1,true)
+	SimPermut:AddSpacer(container1,false,80)
 	
 	local itemLink = GetInventoryItemLink('player', INVSLOT_MAINHAND)
     if not itemLink then
@@ -723,9 +699,8 @@ function SimPermut:BuildRelicFrame()
 	labelweaponName:SetWidth(400)
 	container1:AddChild(labelweaponName)
 	
-	local labelspacer2= AceGUI:Create("Label")
-	labelspacer2:SetFullWidth(true)
-	container1:AddChild(labelspacer2)	
+	SimPermut:AddSpacer(container1,true)
+	
 
 	if drawRelic1 then
 		local reliccontainer1 = AceGUI:Create("SimpleGroup")
@@ -733,18 +708,14 @@ function SimPermut:BuildRelicFrame()
 		reliccontainer1:SetLayout("Flow")
 		container1:AddChild(reliccontainer1)
 		
-		local labelspacer3= AceGUI:Create("Label")
-		labelspacer3:SetRelativeWidth(0.42)
-		reliccontainer1:AddChild(labelspacer3)
+		SimPermut:AddSpacer(reliccontainer1,false,0.42)
 		local relicinfo1= AceGUI:Create("Label")
 		relicinfo1:SetRelativeWidth(0.58)
 		relicinfo1:SetColor(1,.82,0)
 		relicinfo1:SetText(_G["RELIC_SLOT_TYPE_"..artifactData.relics[1].type:upper()])
 		reliccontainer1:AddChild(relicinfo1)
 		
-		local labelspacer31= AceGUI:Create("Label")
-		labelspacer31:SetRelativeWidth(0.4)
-		reliccontainer1:AddChild(labelspacer31)
+		SimPermut:AddSpacer(reliccontainer1,false,0.4)
 		_, _, _, itemLevel1, _, _, _, _, _, itemTexture1, _ = GetItemInfo(artifactData.relics[1].link)
 		local artifactRelicIcon1=AceGUI:Create("Icon")
 		if itemTexture then
@@ -752,7 +723,6 @@ function SimPermut:BuildRelicFrame()
 		end
 		artifactRelicIcon1:SetImageSize(35,35)
 		artifactRelicIcon1:SetRelativeWidth(0.2)
-		-- artifactRelicIcon1:SetWidth(60)
 		artifactRelicIcon1:SetCallback("OnEnter", function(widget)
 			GameTooltip:SetOwner(widget.frame, "ANCHOR_TOPRIGHT")
 			GameTooltip:SetHyperlink(artifactData.relics[1].link)
@@ -763,9 +733,7 @@ function SimPermut:BuildRelicFrame()
 		end)
 		reliccontainer1:AddChild(artifactRelicIcon1)
 		
-		local labelspacer6= AceGUI:Create("Label")
-		labelspacer6:SetFullWidth(true)
-		reliccontainer1:AddChild(labelspacer6)
+		SimPermut:AddSpacer(reliccontainer1,true)
 		local labelspacer7= AceGUI:Create("Label")
 		labelspacer7:SetRelativeWidth(0.1)
 		reliccontainer1:AddChild(labelspacer7)
@@ -777,13 +745,10 @@ function SimPermut:BuildRelicFrame()
 		reliccontainer1:AddChild(DropdownTrait1)
 		
 		if relicComparisonTypeValue==1 then
-			local labelspacer12= AceGUI:Create("Label")
-			labelspacer12:SetRelativeWidth(0.3)
-			reliccontainer1:AddChild(labelspacer12)
+			SimPermut:AddSpacer(reliccontainer1,false,0.3)
 			ilvlTrait1= AceGUI:Create("EditBox")
 			ilvlTrait1:SetRelativeWidth(0.4)
 			ilvlTrait1:SetMaxLetters(3)
-			-- ilvlTrait1:SetText(actualSettings.ilvl_RelicMin)
 			ilvlTrait1:SetText(itemLevel1)
 			ilvlTrait1:SetCallback("OnEnterPressed", function (this, event, item)
 				ilvlTrait1:SetText(string.match(item, '(%d+)'))
@@ -807,18 +772,14 @@ function SimPermut:BuildRelicFrame()
 		reliccontainer2:SetLayout("Flow")
 		container1:AddChild(reliccontainer2)
 	
-		local labelspacer4= AceGUI:Create("Label")
-		labelspacer4:SetRelativeWidth(0.42)
-		reliccontainer2:AddChild(labelspacer4)
+		SimPermut:AddSpacer(reliccontainer2,false,0.42)
 		local relicinfo2= AceGUI:Create("Label")
 		relicinfo2:SetRelativeWidth(0.58)
 		relicinfo2:SetColor(1,.82,0)
 		relicinfo2:SetText(_G["RELIC_SLOT_TYPE_"..artifactData.relics[2].type:upper()])
 		reliccontainer2:AddChild(relicinfo2)
 		
-		local labelspacer32= AceGUI:Create("Label")
-		labelspacer32:SetRelativeWidth(0.4)
-		reliccontainer2:AddChild(labelspacer32)
+		SimPermut:AddSpacer(reliccontainer2,false,0.4)
 		_, _, _, itemLevel2, _, _, _, _, _, itemTexture2, _ = GetItemInfo(artifactData.relics[2].link)
 		local artifactRelicIcon2=AceGUI:Create("Icon")
 		if itemTexture then
@@ -826,7 +787,6 @@ function SimPermut:BuildRelicFrame()
 		end
 		artifactRelicIcon2:SetImageSize(35,35)
 		artifactRelicIcon2:SetRelativeWidth(0.2)
-		-- artifactRelicIcon2:SetWidth(60)
 		artifactRelicIcon2:SetCallback("OnEnter", function(widget)
 			GameTooltip:SetOwner(widget.frame, "ANCHOR_TOPRIGHT")
 			GameTooltip:SetHyperlink(artifactData.relics[2].link)
@@ -837,12 +797,8 @@ function SimPermut:BuildRelicFrame()
 		end)
 		reliccontainer2:AddChild(artifactRelicIcon2)
 		
-		local labelspacer8= AceGUI:Create("Label")
-		labelspacer8:SetFullWidth(true)
-		reliccontainer2:AddChild(labelspacer8)
-		local labelspacer9= AceGUI:Create("Label")
-		labelspacer9:SetRelativeWidth(0.1)
-		reliccontainer2:AddChild(labelspacer9)
+		SimPermut:AddSpacer(reliccontainer2,true)
+		SimPermut:AddSpacer(reliccontainer2,false,0.1)
 		DropdownTrait2 = AceGUI:Create("Dropdown")
 		DropdownTrait2:SetRelativeWidth(0.8)
 		DropdownTrait2:SetList(ArtifactTableTraits[artifactID][2],ArtifactTableTraitsOrder[artifactID][2])
@@ -851,13 +807,10 @@ function SimPermut:BuildRelicFrame()
 		reliccontainer2:AddChild(DropdownTrait2)
 		
 		if relicComparisonTypeValue==1 then
-			local labelspacer13= AceGUI:Create("Label")
-			labelspacer13:SetRelativeWidth(0.3)
-			reliccontainer2:AddChild(labelspacer13)
+			SimPermut:AddSpacer(reliccontainer2,false,0.3)
 			ilvlTrait2= AceGUI:Create("EditBox")
 			ilvlTrait2:SetRelativeWidth(0.4)
 			ilvlTrait2:SetMaxLetters(3)
-			-- ilvlTrait2:SetText(actualSettings.ilvl_RelicMin)
 			ilvlTrait2:SetText(itemLevel2)
 			ilvlTrait2:SetCallback("OnEnterPressed", function (this, event, item)
 				ilvlTrait2:SetText(string.match(item, '(%d+)'))
@@ -881,18 +834,14 @@ function SimPermut:BuildRelicFrame()
 		reliccontainer3:SetLayout("Flow")
 		container1:AddChild(reliccontainer3)
 		
-		local labelspacer5= AceGUI:Create("Label")
-		labelspacer5:SetRelativeWidth(0.42)
-		reliccontainer3:AddChild(labelspacer5)
+		SimPermut:AddSpacer(reliccontainer3,false,0.42)
 		local relicinfo3= AceGUI:Create("Label")
 		relicinfo3:SetRelativeWidth(0.58)
 		relicinfo3:SetColor(1,.82,0)
 		relicinfo3:SetText(_G["RELIC_SLOT_TYPE_"..artifactData.relics[3].type:upper()])
 		reliccontainer3:AddChild(relicinfo3)
 		
-		local labelspacer33= AceGUI:Create("Label")
-		labelspacer33:SetRelativeWidth(0.4)
-		reliccontainer3:AddChild(labelspacer33)
+		SimPermut:AddSpacer(reliccontainer3,false,0.4)
 		_, _, _, itemLevel3, _, _, _, _, _, itemTexture3, _ = GetItemInfo(artifactData.relics[3].link)
 		local artifactRelicIcon3=AceGUI:Create("Icon")
 		if itemTexture then
@@ -900,7 +849,6 @@ function SimPermut:BuildRelicFrame()
 		end
 		artifactRelicIcon3:SetImageSize(35,35)
 		artifactRelicIcon3:SetRelativeWidth(0.2)
-		-- artifactRelicIcon3:SetWidth(60)
 		artifactRelicIcon3:SetCallback("OnEnter", function(widget)
 			GameTooltip:SetOwner(widget.frame, "ANCHOR_TOPRIGHT")
 			GameTooltip:SetHyperlink(artifactData.relics[3].link)
@@ -911,12 +859,8 @@ function SimPermut:BuildRelicFrame()
 		end)
 		reliccontainer3:AddChild(artifactRelicIcon3)
 		
-		local labelspacer10= AceGUI:Create("Label")
-		labelspacer10:SetFullWidth(true)
-		reliccontainer3:AddChild(labelspacer10)
-		local labelspacer11= AceGUI:Create("Label")
-		labelspacer11:SetRelativeWidth(0.1)
-		reliccontainer3:AddChild(labelspacer11)
+		SimPermut:AddSpacer(reliccontainer3,true)
+		SimPermut:AddSpacer(reliccontainer3,false,0.1)
 		DropdownTrait3 = AceGUI:Create("Dropdown")
 		DropdownTrait3:SetRelativeWidth(0.8)
 		DropdownTrait3:SetList(ArtifactTableTraits[artifactID][3],ArtifactTableTraitsOrder[artifactID][3])
@@ -926,13 +870,10 @@ function SimPermut:BuildRelicFrame()
 		
 		if relicComparisonTypeValue==1 then
 			if not artifactData.relics[3].isLocked then
-				local labelspacer14= AceGUI:Create("Label")
-				labelspacer14:SetRelativeWidth(0.3)
-				reliccontainer3:AddChild(labelspacer14)
+				SimPermut:AddSpacer(reliccontainer3,false,0.3)
 				ilvlTrait3= AceGUI:Create("EditBox")
 				ilvlTrait3:SetRelativeWidth(0.4)
 				ilvlTrait3:SetMaxLetters(3)
-				-- ilvlTrait3:SetText(actualSettings.ilvl_RelicMin)
 				ilvlTrait3:SetText(itemLevel3)
 				ilvlTrait3:SetCallback("OnEnterPressed", function (this, event, item)
 					ilvlTrait3:SetText(string.match(item, '(%d+)'))
@@ -951,9 +892,7 @@ function SimPermut:BuildRelicFrame()
 		end
 	end
 
-	local labelspacer15= AceGUI:Create("Label")
-	labelspacer15:SetRelativeWidth(0.3)
-	container1:AddChild(labelspacer15)
+	SimPermut:AddSpacer(container1,false,0.3)
 	local ReportDropdownRelics = AceGUI:Create("Dropdown")
     ReportDropdownRelics:SetWidth(160)
 	ReportDropdownRelics:SetList(ReportTypeRelics)
@@ -1006,9 +945,7 @@ function SimPermut:BuildNetherlightFrame()
 	labeltitre1:SetFullWidth(true)
 	container1:AddChild(labeltitre1)
 	
-	local labeltitre2= AceGUI:Create("Label")
-	labeltitre2:SetFullWidth(true)
-	container1:AddChild(labeltitre2)
+	SimPermut:AddSpacer(container1,true)
 		
 	local labelspacer1= AceGUI:Create("Label")
 	labelspacer1:SetWidth(80)
@@ -1053,9 +990,7 @@ function SimPermut:BuildNetherlightFrame()
 	labelweaponName:SetWidth(400)
 	container1:AddChild(labelweaponName)
 	
-	local labelspacer2= AceGUI:Create("Label")
-	labelspacer2:SetFullWidth(true)
-	container1:AddChild(labelspacer2)
+	SimPermut:AddSpacer(container1,true)
 	
 	local containerfiller = AceGUI:Create("SimpleGroup")
 	containerfiller:SetRelativeWidth(0.33)
@@ -1067,9 +1002,7 @@ function SimPermut:BuildNetherlightFrame()
 	cruciblecontainer:SetLayout("Flow")
 	container1:AddChild(cruciblecontainer)
 	
-	local labelspacer3= AceGUI:Create("Label")
-	labelspacer3:SetRelativeWidth(0.42)
-	cruciblecontainer:AddChild(labelspacer3)
+	SimPermut:AddSpacer(cruciblecontainer,false,0.42)
 	
 	local relicinfo1= AceGUI:Create("Label")
 	relicinfo1:SetRelativeWidth(0.58)
@@ -1077,15 +1010,11 @@ function SimPermut:BuildNetherlightFrame()
 	relicinfo1:SetText("Tier 2 trait")
 	cruciblecontainer:AddChild(relicinfo1)
 	
+	SimPermut:AddSpacer(cruciblecontainer,true)
+	SimPermut:AddSpacer(cruciblecontainer,false,0.1)
+
 	local  spellTexture, crucibleIcon
 	crucibleIcon=AceGUI:Create("Icon")
-	
-	local labelspacer6= AceGUI:Create("Label")
-	labelspacer6:SetFullWidth(true)
-	cruciblecontainer:AddChild(labelspacer6)
-	local labelspacer7= AceGUI:Create("Label")
-	labelspacer7:SetRelativeWidth(0.1)
-	cruciblecontainer:AddChild(labelspacer7)
 	DropdownCrucible1 = AceGUI:Create("Dropdown")
 	DropdownCrucible1:SetRelativeWidth(0.8)
 	DropdownCrucible1:SetList(NetherlightData[2])
@@ -1103,12 +1032,8 @@ function SimPermut:BuildNetherlightFrame()
     end)
 	cruciblecontainer:AddChild(DropdownCrucible1)
 	
-	local labelspacer131= AceGUI:Create("Label")
-	labelspacer131:SetFullWidth(true)
-	cruciblecontainer:AddChild(labelspacer131)
-	local labelspacer132= AceGUI:Create("Label")
-	labelspacer132:SetFullWidth(true)
-	cruciblecontainer:AddChild(labelspacer132)
+	SimPermut:AddSpacer(cruciblecontainer,true)
+	SimPermut:AddSpacer(cruciblecontainer,false,0.4)
 	
 	_, _, spellTexture = GetSpellInfo(NetherlightSpellID[DropdownCrucible1:GetValue()])
 	if spellTexture then
@@ -1124,14 +1049,10 @@ function SimPermut:BuildNetherlightFrame()
 	crucibleIcon:SetCallback("OnLeave", function(widget)
 		GameTooltip:Hide()
 	end)
-	container1:AddChild(crucibleIcon)
+	cruciblecontainer:AddChild(crucibleIcon)
 	
-	local labelspacer13= AceGUI:Create("Label")
-	labelspacer13:SetFullWidth(true)
-	cruciblecontainer:AddChild(labelspacer13)
-	local labelspacer14= AceGUI:Create("Label")
-	labelspacer14:SetRelativeWidth(0.42)
-	cruciblecontainer:AddChild(labelspacer14)
+	SimPermut:AddSpacer(cruciblecontainer,true)
+	SimPermut:AddSpacer(cruciblecontainer,false,0.42)
 	
 	local relicinfo11= AceGUI:Create("Label")
 	relicinfo11:SetRelativeWidth(0.58)
@@ -1139,12 +1060,8 @@ function SimPermut:BuildNetherlightFrame()
 	relicinfo11:SetText("Tier 3 relic trait")
 	cruciblecontainer:AddChild(relicinfo11)
 	
-	local labelspacer16= AceGUI:Create("Label")
-	labelspacer16:SetFullWidth(true)
-	cruciblecontainer:AddChild(labelspacer16)
-	local labelspacer17= AceGUI:Create("Label")
-	labelspacer17:SetRelativeWidth(0.1)
-	cruciblecontainer:AddChild(labelspacer17)
+	SimPermut:AddSpacer(cruciblecontainer,true)
+	SimPermut:AddSpacer(cruciblecontainer,false,0.1)
 	DropdownCrucible2 = AceGUI:Create("Dropdown")
 	DropdownCrucible2:SetRelativeWidth(0.8)
 	DropdownCrucible2:SetList(NetherlightData[3][artifactID])
@@ -1156,9 +1073,7 @@ function SimPermut:BuildNetherlightFrame()
 	DropdownCrucible2:SetValue(T3)
 	cruciblecontainer:AddChild(DropdownCrucible2)
 	
-	local labelspacer23= AceGUI:Create("Label")
-	labelspacer23:SetFullWidth(true)
-	cruciblecontainer:AddChild(labelspacer23)
+	SimPermut:AddSpacer(cruciblecontainer,true)
 	local buttonGenerate = AceGUI:Create("Button")
 	buttonGenerate:SetText("Generate")
 	buttonGenerate:SetFullWidth(true)
@@ -1240,12 +1155,9 @@ function SimPermut:BuildDungeonJournalFrame()
 	scroll2:SetLayout("Flow")
 	scrollcontainer2:AddChild(scroll2)
 	
-	
-	
 	local socketString=""
 	local ilvlString=""
 	for j=1,#listNames do
-		--if tableDropDown[j] then
 		tableTitres[j]=AceGUI:Create("Label")
 		tableTitres[j]:SetText(PersoLib:firstToUpper(listNames[j]))
 		tableTitres[j]:SetFullWidth(true)
@@ -1254,7 +1166,6 @@ function SimPermut:BuildDungeonJournalFrame()
 		else
 			scroll2:AddChild(tableTitres[j])
 		end
-		
 		
 		tableCheckBoxes[j]={}
 		tableLabel[j]={}
@@ -1338,10 +1249,6 @@ function SimPermut:BuildOptionFrame()
 	labeltitre1:SetFullWidth(true)
 	container1:AddChild(labeltitre1)
 	
-	local labelspacer1= AceGUI:Create("Label")
-	labelspacer1:SetFullWidth(true)
-	container1:AddChild(labelspacer1)
-	
 	local labelilvl= AceGUI:Create("Label")
 	labelilvl:SetText("Gear ilvl")
 	labelilvl:SetWidth(150)
@@ -1379,9 +1286,7 @@ function SimPermut:BuildOptionFrame()
     end)
 	container1:AddChild(ilvlMax)
 	
-	local labelspacer2= AceGUI:Create("Label")
-	labelspacer2:SetFullWidth(true)
-	container1:AddChild(labelspacer2)
+	SimPermut:AddSpacer(container1,true)
 	
 	local labelilvlrelic= AceGUI:Create("Label")
 	labelilvlrelic:SetText("Relics ilvl")
@@ -1420,9 +1325,7 @@ function SimPermut:BuildOptionFrame()
     end)
 	container1:AddChild(ilvlMaxRelic)
 	
-	local labelspacer2= AceGUI:Create("Label")
-	labelspacer2:SetFullWidth(true)
-	container1:AddChild(labelspacer2)
+	SimPermut:AddSpacer(container1,true)
 	
 	local labelreportTypeGear= AceGUI:Create("Label")
 	labelreportTypeGear:SetText("Report Type")
@@ -1472,10 +1375,7 @@ function SimPermut:BuildOptionFrame()
     end)
 	container1:AddChild(ReportDropdownCrucible)
 	
-	local labelspacer3= AceGUI:Create("Label")
-	labelspacer3:SetFullWidth(true)
-	labelspacer3:SetHeight(40)
-	container1:AddChild(labelspacer3)
+	SimPermut:AddSpacer(container1,true)
 	
 	local checkBoxgenerate = AceGUI:Create("CheckBox")
 	checkBoxgenerate:SetWidth(400)
@@ -1487,10 +1387,7 @@ function SimPermut:BuildOptionFrame()
     end)
 	container1:AddChild(checkBoxgenerate)
 	
-	local labelspacer4= AceGUI:Create("Label")
-	labelspacer4:SetFullWidth(true)
-	labelspacer4:SetHeight(40)
-	container1:AddChild(labelspacer4)
+	SimPermut:AddSpacer(container1,true)
 	
 	local checkBoxForceDefault = AceGUI:Create("CheckBox")
 	checkBoxForceDefault:SetWidth(400)
@@ -1502,10 +1399,7 @@ function SimPermut:BuildOptionFrame()
     end)
 	container1:AddChild(checkBoxForceDefault)
 	
-	local labelspacer41= AceGUI:Create("Label")
-	labelspacer41:SetFullWidth(true)
-	labelspacer41:SetHeight(40)
-	container1:AddChild(labelspacer41)
+	SimPermut:AddSpacer(container1,true)
 	
 	local checkBoxSmallUI = AceGUI:Create("CheckBox")
 	checkBoxSmallUI:SetWidth(400)
@@ -1592,10 +1486,7 @@ function SimPermut:BuildOptionFrame()
     end)
 	container1:AddChild(dropdownGem)
 	
-	local labelspacer5= AceGUI:Create("Label")
-	labelspacer5:SetFullWidth(true)
-	labelspacer5:SetHeight(40)
-	container1:AddChild(labelspacer5)
+	SimPermut:AddSpacer(container1,true)
 	
 	local checkBoxForce = AceGUI:Create("CheckBox")
 	checkBoxForce:SetWidth(250)
@@ -1606,10 +1497,7 @@ function SimPermut:BuildOptionFrame()
     end)
 	container1:AddChild(checkBoxForce)
 	
-	local labelSpacerFull= AceGUI:Create("Label")
-	labelSpacerFull:SetText("")
-	labelSpacerFull:SetWidth(180)
-	container1:AddChild(labelSpacerFull)
+	SimPermut:AddSpacer(container1,false,180)
 	
 	local labelSetsT19= AceGUI:Create("Label")
 	labelSetsT19:SetText("T19 (min)")
@@ -1656,16 +1544,9 @@ function SimPermut:BuildOptionFrame()
     end)
 	container1:AddChild(dropdownSetsT21)
 	
-	local labelspacerInterGrp21= AceGUI:Create("Label")
-	labelspacerInterGrp21:SetFullWidth(true)
-	container1:AddChild(labelspacerInterGrp21)
-	local labelspacerInterGrp22= AceGUI:Create("Label")
-	labelspacerInterGrp22:SetFullWidth(true)
-	container1:AddChild(labelspacerInterGrp22)
-	local labelspacerInterGrp23= AceGUI:Create("Label")
-	labelspacerInterGrp23:SetFullWidth(true)
-	container1:AddChild(labelspacerInterGrp23)
-	
+	SimPermut:AddSpacer(container1,true)
+	SimPermut:AddSpacer(container1,true)
+	SimPermut:AddSpacer(container1,true)
 	
 	local labeltitre3= AceGUI:Create("Heading")
 	labeltitre3:SetText("Simc parameters")
@@ -1715,9 +1596,7 @@ function SimPermut:BuildResultFrame(autoSimcExportVisible)
 	scrollcontainer3:AddChild(resultBox)
 	
 	if autoSimcExportVisible then
-		local labelSpacerResult= AceGUI:Create("Label")
-		labelSpacerResult:SetText(" ")
-		labelSpacerResult:SetRelativeWidth(0.7)
+		SimPermut:AddSpacer(resultGroup,false,0.7)
 		
 		local buttonGenerateRaw = AceGUI:Create("Button")
 		buttonGenerateRaw:SetText("AutoSimc Export")
@@ -1725,8 +1604,6 @@ function SimPermut:BuildResultFrame(autoSimcExportVisible)
 		buttonGenerateRaw:SetCallback("OnClick", function()
 			SimPermut:GenerateRaw()
 		end)
-		
-		resultGroup:AddChild(labelSpacerResult)
 		resultGroup:AddChild(buttonGenerateRaw)
 	end
 	
@@ -2022,6 +1899,23 @@ function SimPermut:PrintPermut(finalString)
 	resultBox:SetText(finalString)
 	resultBox:HighlightText()
 	resultBox:SetFocus()
+end
+
+function SimPermut:AddSpacer(targetFrame,full,width,height)
+	spacerTable[#spacerTable+1] = AceGUI:Create("Label")
+	if full then
+		spacerTable[#spacerTable]:SetFullWidth(true)
+	else
+		if width<=1 then
+			spacerTable[#spacerTable]:SetRelativeWidth(width)
+		else
+			spacerTable[#spacerTable]:SetWidth(width)
+		end
+	end
+	if height then
+		spacerTable[#spacerTable]:SetHeight(height)
+	end
+	targetFrame:AddChild(spacerTable[#spacerTable])
 end
 
 ----------------------------
