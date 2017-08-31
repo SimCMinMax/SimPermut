@@ -1,7 +1,7 @@
-v1.14.3 09/xx/2017
+v1.14.4 09/xx/2017
 [UI]added more crucible options
 
-v1.14.2 08/31/2017
+v1.14.3 08/31/2017
 [UI]Added an option for small UI (option panel)
 [UI]Added a way to add simc parameters (option panel)
 [Fix]Fix crucible stuff
