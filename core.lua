@@ -150,6 +150,7 @@ local ReportTypeRelics  = SimPermut.ReportTypeRelics
 local ReportTypeCrucible= SimPermut.ReportTypeCrucible
 local GetItemInfoName   = SimPermut.GetItemInfoName
 local NetherlightData	= SimPermut.NetherlightData
+local NetherlightSpellID= SimPermut.NetherlightSpellID
 
 SLASH_SIMPERMUTSLASH1 = "/SimPermut"
 SLASH_SIMPERMUTSLASHDEBUG1 = "/SimPermutDebug"
@@ -1075,6 +1076,10 @@ function SimPermut:BuildNetherlightFrame()
 	relicinfo1:SetText("Tier 2 trait")
 	cruciblecontainer:AddChild(relicinfo1)
 	
+	local  spellTexture, crucibleIcon
+	crucibleIcon=AceGUI:Create("Icon")
+	
+	
 	local labelspacer6= AceGUI:Create("Label")
 	labelspacer6:SetFullWidth(true)
 	cruciblecontainer:AddChild(labelspacer6)
@@ -1090,7 +1095,36 @@ function SimPermut:BuildNetherlightFrame()
 		T2 = math.min(k, T2)
 	end
 	DropdownCrucible1:SetValue(T2)
+	DropdownCrucible1:SetCallback("OnValueChanged", function (this, event, item)
+		_, _, spellTexture = GetSpellInfo(NetherlightSpellID[DropdownCrucible1:GetValue()])
+		if spellTexture then
+			crucibleIcon:SetImage(spellTexture)
+		end
+    end)
 	cruciblecontainer:AddChild(DropdownCrucible1)
+	
+	local labelspacer131= AceGUI:Create("Label")
+	labelspacer131:SetFullWidth(true)
+	cruciblecontainer:AddChild(labelspacer131)
+	local labelspacer132= AceGUI:Create("Label")
+	labelspacer132:SetFullWidth(true)
+	cruciblecontainer:AddChild(labelspacer132)
+	
+	_, _, spellTexture = GetSpellInfo(NetherlightSpellID[DropdownCrucible1:GetValue()])
+	if spellTexture then
+		crucibleIcon:SetImage(spellTexture)
+	end
+	crucibleIcon:SetImageSize(40,40)
+	crucibleIcon:SetWidth(60)
+	crucibleIcon:SetCallback("OnEnter", function(widget)
+		GameTooltip:SetOwner(widget.frame, "ANCHOR_TOPRIGHT")
+		GameTooltip:SetHyperlink("spell:"..NetherlightSpellID[DropdownCrucible1:GetValue()])
+		GameTooltip:Show()
+	end)			
+	crucibleIcon:SetCallback("OnLeave", function(widget)
+		GameTooltip:Hide()
+	end)
+	container1:AddChild(crucibleIcon)
 	
 	local labelspacer13= AceGUI:Create("Label")
 	labelspacer13:SetFullWidth(true)
