@@ -241,7 +241,6 @@ function SimPermut:BuildFrame()
 		mainframe:SetHeight(810)
 	end
 	
-	
 	local frameDropdown = AceGUI:Create("Dropdown")
     frameDropdown:SetWidth(200)
 	frameDropdown:SetList(FrameMenu)
@@ -1603,6 +1602,7 @@ function SimPermut:InitGearFrame()
 	tableCheckBoxes={}
 	tableLinkPermut={}
 	
+	--init with default parameters
 	actualEnchantNeck=actualSettings.enchant_neck
 	actualEnchantFinger=actualSettings.enchant_ring
 	actualEnchantBack=actualSettings.enchant_back
@@ -1630,7 +1630,6 @@ function SimPermut:BuildItemFrame()
 	local socketString=""
 	local ilvlString=""
 	for j=1,#listNames do
-		--if tableDropDown[j] then
 		tableTitres[j]=AceGUI:Create("Label")
 		tableTitres[j]:SetText(PersoLib:firstToUpper(listNames[j]))
 		tableTitres[j]:SetFullWidth(true)
@@ -1639,7 +1638,6 @@ function SimPermut:BuildItemFrame()
 		else
 			scroll2:AddChild(tableTitres[j])
 		end
-		
 		
 		tableCheckBoxes[j]={}
 		tableLabel[j]={}
@@ -1697,32 +1695,8 @@ function SimPermut:BuildItemFrame()
 			else
 				scroll2:AddChild(tableLabel[j][i])
 			end
-			
-			
-		end
-		--end
-	end
-
-	
-end
-
--- check if the item is selected
-function SimPermut:isEquiped(itemLink,slot)
-	local returnValue=false
-	if slot==11 then
-		if tableBaseLink[11]==itemLink or tableBaseLink[12]==itemLink then
-			returnValue=true
-		end
-	elseif slot==12 then
-		if tableBaseLink[13]==itemLink or tableBaseLink[14]==itemLink then
-			returnValue=true
-		end
-	else
-		if tableBaseLink[slot]==itemLink then
-			returnValue=true
 		end
 	end
-	return returnValue
 end
 
 -- clic btn generate
@@ -1807,13 +1781,15 @@ function SimPermut:GenerateRelic()
 	PersoLib:debugPrint("--------------------",ad)
 end
 
+-- clic btn generate Relic
+function SimPermut:GenerateCrucible()
+
 -- clic btn generate Talent recursion
 function SimPermut:GenerateTalentsRecursive(stacks,str)
 	local newstacks=stacks
 	local newstr=str
 	if newstacks > TALENTS_MAX_ROW then
 		tableTalentResults[#tableTalentResults+1]=newstr
-		-- print(tableTalentResults[#tableTalentResults])
 	else
 		if tableTalentcheckbox[newstacks][1]:GetValue()==false and tableTalentcheckbox[newstacks][2]:GetValue()==false and tableTalentcheckbox[newstacks][3]:GetValue()==false then
 			newstr=newstr.."0"
@@ -1828,9 +1804,6 @@ function SimPermut:GenerateTalentsRecursive(stacks,str)
 		end
 	end
 end
-
--- clic btn generate Relic
-function SimPermut:GenerateCrucible()
 	local permutString=""
 	local baseString=""
 	local finalString=""
@@ -1875,13 +1848,6 @@ end
 
 -- draw the frame and print the text
 function SimPermut:PrintPermut(finalString)
-	--SimcCopyFrame:Show()
-	--SimcCopyFrame:SetPoint("RIGHT")
-	--stringframeCreated=true
-	--SimcCopyFrameScroll:Show()
-	--SimcCopyFrameScrollText:Show()
-	--SimcCopyFrameScrollText:SetText(finalString)
-	--SimcCopyFrameScrollText:HighlightText()
 	resultBox:SetText(finalString)
 	resultBox:HighlightText()
 	resultBox:SetFocus()
@@ -2144,7 +2110,6 @@ function SimPermut:GetItemStrings()
 		slotId = GetInventorySlotInfo(PermutSlotNames[slotNum])
 		itemLink = GetInventoryItemLink('player', slotId) 
 
-		
 		-- if we don't have an item link, we don't care
 		if itemLink then
 			local _,_,itemRarity = GetItemInfo(itemLink)
@@ -3017,7 +2982,7 @@ function SimPermut:HasTier(stier,tableEquip)
     end
 end
 
---add item to the list
+-- add item to the list
 function SimPermut:AddItemLink(itemLink,itemilvl,socket)
 	
 	name, link, quality, iLevel, reqLevel, class, subclass, maxStack, equipSlot, texture, vendorPrice = GetItemInfo(itemLink)
@@ -3051,6 +3016,7 @@ function SimPermut:AddItemLink(itemLink,itemilvl,socket)
 	return false
 end
 
+-- Get data from artifact
 function SimPermut:GetPowerData(powerId, isCrucible)
   if not powerId then
     return 0, 0, 0
@@ -3111,6 +3077,7 @@ function SimPermut:GetPowerData(powerId, isCrucible)
   return powerId, purchasedRanks, relicRanks, crucibleRanks
 end
 
+-- Generate selected crucible traits
 function SimPermut:GenerateCrucibleString()
 	local str=""
 	local artifactID,artifactData = LAD:GetArtifactInfo() 
@@ -3124,4 +3091,23 @@ function SimPermut:GenerateCrucibleString()
 	str =  "\n" ..copynb .. "\n".. "crucible=" .. crucibleString.. '\n'
 	crucibleCopyCount=crucibleCopyCount+1
 	return str
+end
+
+-- check if the item is selected
+function SimPermut:isEquiped(itemLink,slot)
+	local returnValue=false
+	if slot==11 then
+		if tableBaseLink[11]==itemLink or tableBaseLink[12]==itemLink then
+			returnValue=true
+		end
+	elseif slot==12 then
+		if tableBaseLink[13]==itemLink or tableBaseLink[14]==itemLink then
+			returnValue=true
+		end
+	else
+		if tableBaseLink[slot]==itemLink then
+			returnValue=true
+		end
+	end
+	return returnValue
 end
