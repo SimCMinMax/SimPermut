@@ -160,7 +160,6 @@ SLASH_SIMPERMUTSLASHDEBUG1 = "/SimPermutDebug"
 -------------Test-----------------
 SLASH_SIMPERMUTSLASHTEST1 = "/Simtest"
 SlashCmdList["SIMPERMUTSLASHTEST"] = function (arg)
-
 end
 -------------Test-----------------
 
@@ -257,9 +256,7 @@ function SimPermut:BuildFrame()
     end)
 	mainframe:AddChild(frameDropdown)
 	
-	local labelSpacer=AceGUI:Create("Label")
-	labelSpacer:SetFullWidth(true)
-	mainframe:AddChild(labelSpacer)
+	SimPermut:AddSpacer(mainframe,true)
 	
 	if currentFrame==1 then --gear
 		currentFrame=1
@@ -734,9 +731,7 @@ function SimPermut:BuildRelicFrame()
 		reliccontainer1:AddChild(artifactRelicIcon1)
 		
 		SimPermut:AddSpacer(reliccontainer1,true)
-		local labelspacer7= AceGUI:Create("Label")
-		labelspacer7:SetRelativeWidth(0.1)
-		reliccontainer1:AddChild(labelspacer7)
+		SimPermut:AddSpacer(reliccontainer1,false,0.1)
 		DropdownTrait1 = AceGUI:Create("Dropdown")
 		DropdownTrait1:SetRelativeWidth(0.8)
 		DropdownTrait1:SetList(ArtifactTableTraits[artifactID][1],ArtifactTableTraitsOrder[artifactID][1])
@@ -946,10 +941,7 @@ function SimPermut:BuildNetherlightFrame()
 	container1:AddChild(labeltitre1)
 	
 	SimPermut:AddSpacer(container1,true)
-		
-	local labelspacer1= AceGUI:Create("Label")
-	labelspacer1:SetWidth(80)
-	container1:AddChild(labelspacer1)
+	SimPermut:AddSpacer(container1,false,80)
 	
 	local itemLink = GetInventoryItemLink('player', INVSLOT_MAINHAND)
     if not itemLink then
@@ -1411,15 +1403,9 @@ function SimPermut:BuildOptionFrame()
     end)
 	container1:AddChild(checkBoxSmallUI)
 	
-	local labelspacerInterGrp1= AceGUI:Create("Label")
-	labelspacerInterGrp1:SetFullWidth(true)
-	container1:AddChild(labelspacerInterGrp1)
-	local labelspacerInterGrp2= AceGUI:Create("Label")
-	labelspacerInterGrp2:SetFullWidth(true)
-	container1:AddChild(labelspacerInterGrp2)
-	local labelspacerInterGrp3= AceGUI:Create("Label")
-	labelspacerInterGrp3:SetFullWidth(true)
-	container1:AddChild(labelspacerInterGrp3)
+	SimPermut:AddSpacer(container1,true)
+	SimPermut:AddSpacer(container1,true)
+	SimPermut:AddSpacer(container1,true)
 	
 	local labeltitre2= AceGUI:Create("Heading")
 	labeltitre2:SetText("Default values")
@@ -1901,6 +1887,7 @@ function SimPermut:PrintPermut(finalString)
 	resultBox:SetFocus()
 end
 
+-- manage spacers
 function SimPermut:AddSpacer(targetFrame,full,width,height)
 	spacerTable[#spacerTable+1] = AceGUI:Create("Label")
 	if full then
@@ -1929,12 +1916,7 @@ function SimPermut:GetItemString(itemLink,itemType,base,forceilvl,forcegem)
 
 	local itemSplit = PersoLib:LinkSplit(itemLink)
 	local simcItemOptions = {}	
-	local bonuspool={}
 	local enchantID=""
-	for i, value in pairs(statsString) do 
-		bonuspool[value]=0
-	end
-	
 	
 	-- Item id
 	local itemId = tonumber(itemSplit[OFFSET_ITEM_ID])
@@ -1991,7 +1973,6 @@ function SimPermut:GetItemString(itemLink,itemType,base,forceilvl,forcegem)
 	
 	if enchantID and enchantID ~= "" then
 		simcItemOptions[#simcItemOptions + 1] = 'enchant_id=' .. enchantID
-		--bonuspool=SimPermut:StatAddBonus(bonuspool,"enchant",itemType,enchantID)
 	end
 
 	-- New style item suffix, old suffix style not supported
@@ -2147,7 +2128,7 @@ function SimPermut:GetItemString(itemLink,itemType,base,forceilvl,forcegem)
 		simcItemOptions[#simcItemOptions + 1]='ilevel='..forceilvl
 	end
 	
-	return simcItemOptions,bonuspool
+	return simcItemOptions
 end
 
 -- get all items equiped Strings
@@ -2156,14 +2137,8 @@ function SimPermut:GetItemStrings()
 	local itemsLinks = {}
 	local slotId,itemLink
 	local itemString = {}
-	local pool={}
-	-- local stats = {}
 	
 	equipedLegendaries = 0
-	for i, value in pairs(statsString) do 
-		pool[value]=0
-	end
-	
 
 	for slotNum=1, #PermutSlotNames do
 		slotId = GetInventorySlotInfo(PermutSlotNames[slotNum])
@@ -2180,19 +2155,10 @@ function SimPermut:GetItemStrings()
 			tableBaseString[slotNum]=table.concat(itemString, ',')
 			itemsLinks[slotNum]=itemLink
 			items[slotNum] = PermutSimcNames[slotNum] .. "=" .. table.concat(itemString, ',')
-
-			--stats
-			-- stats={}
-			-- stats = GetItemStats(itemLink)
-			-- for stat, value in pairs(statsString) do 
-				-- if stats[value] then
-					-- pool[value]=pool[value]+stats[value]
-				-- end
-			-- end
 		end
 	end
 
-	return items,itemsLinks,pool
+	return items,itemsLinks
 end
 
 -- get the list of items of a slot
@@ -2504,15 +2470,11 @@ end
 -- generates the string of all permutations
 function SimPermut:GetPermutationString(permuttable)
 	local returnString="\n"
-	
 	local copynumber=1
-	-- local stats
-	local pool={}
 	local itemString
 	local itemStringFinal
 	local itemString2
 	local itemStringFinal2
-	local bonuspool={}
 	local currentString
 	local nbLeg
 	local itemRarity
@@ -2538,11 +2500,6 @@ function SimPermut:GetPermutationString(permuttable)
 		SimPermut:ReorganizeEquip(permuttable[i])
 		result=SimPermut:CheckUsability(permuttable[i],tableBaseLink)
 		if result=="" or ad then
-		
-			for i, value in pairs(statsString) do 
-				pool[value]=0
-				bonuspool[value]=0
-			end
 			currentString=""
 			nbLeg=0
 			nbitem=0
@@ -2555,7 +2512,7 @@ function SimPermut:GetPermutationString(permuttable)
 					nbLeg=nbLeg+1
 				end
 				
-				itemString,bonuspool=SimPermut:GetItemString(permuttable[i][j][1],PermutSimcNames[j],false,permuttable[i][j][2],permuttable[i][j][3])
+				itemString=SimPermut:GetItemString(permuttable[i][j][1],PermutSimcNames[j],false,permuttable[i][j][2],permuttable[i][j][3])
 				itemStringFinal=table.concat(itemString, ',')
 				if (j>10) then
 					if (j==11 or j==13) then
@@ -2592,14 +2549,6 @@ function SimPermut:GetPermutationString(permuttable)
 					itemname = GetItemInfo(permuttable[i][j][1])
 					nbitem=nbitem+1
 					itemList=itemList..PersoLib:tokenize(itemname).."-"
-					--stats
-					-- stats={}
-					-- stats = GetItemStats(permuttable[i][j])
-					-- for stat, value in pairs(statsString) do 
-						-- if stats[value] then
-							-- pool[value]=pool[value]+stats[value]
-						-- end
-					-- end
 				else
 					PersoLib:debugPrint("Not printed: not drawn",ad)
 					notDrawn=notDrawn+1
@@ -2636,7 +2585,7 @@ function SimPermut:GetPermutationString(permuttable)
 						adString=" # Debug print : Not printed:No 4p T21\n"	
 					end
 				end
-				returnString =  returnString .. adString..SimPermut:GetCopyName(copynumber,pool,nbitem,itemList,#permuttable,1) .. "\n".. currentString.."\n"
+				returnString =  returnString .. adString..SimPermut:GetCopyName(copynumber,nbitem,itemList,#permuttable,1) .. "\n".. currentString.."\n"
 				copynumber=copynumber+1
 			
 			end
@@ -2666,7 +2615,7 @@ function SimPermut:GenerateTalentString()
 	local returnString=""
 	for i=1,#tableTalentResults do
 		if tableTalentResults[i]~=PersoLib:CreateSimcTalentString() then
-			copynb = SimPermut:GetCopyName(i,nil,nil,tableTalentResults[i],#tableTalentResults,2)
+			copynb = SimPermut:GetCopyName(i,nil,tableTalentResults[i],#tableTalentResults,2)
 			returnString =  returnString.."\n" ..copynb .. "\n".. "talents="..tableTalentResults[i].."\n"
 		end
 	end
@@ -2757,7 +2706,7 @@ function SimPermut:GenerateRelicString()
 				end
 			end
 			
-			local copynb = SimPermut:GetCopyName(relicCopyCount,nil,nil,CopyString,1,3)
+			local copynb = SimPermut:GetCopyName(relicCopyCount,nil,CopyString,1,3)
 			weaponString = SimPermut:OverrideWeapon(itemLink,relicid1,relicid2,relicid3,relicilvl1,relicilvl2,relicilvl3,weaponilvl)
 			returnString =  returnString.."\n" ..copynb .. "\n".. "main_hand=" .. weaponString.. '\n'
 			
@@ -2809,8 +2758,8 @@ function SimPermut:OverrideWeapon(itemLink,relic1,relic2,relic3,ilvlRelic1,ilvlR
 	return weaponString
 end
 
--- get copy's stat
-function SimPermut:GetCopyName(copynumber,pool,nbitem,List,nbitems,typeReport)
+-- get copy's name
+function SimPermut:GetCopyName(copynumber,nbitem,List,nbitems,typeReport)
 	local returnString="copy="
 	
 	if (typeReport==1 and actualSettings.report_typeGear==1 and List) or (typeReport==2 and actualSettings.report_typeTalents==1) or (typeReport==3 and actualSettings.report_typeRelics==1) or (typeReport==4 and actualSettings.report_typeCrucible==1) then
@@ -2831,34 +2780,8 @@ function SimPermut:GetCopyName(copynumber,pool,nbitem,List,nbitems,typeReport)
 		returnString=returnString.."copy"..maskedProfileID
 	end
 	
-	--for i, value in pairs(statsString) do 
-	--	if pool[value]~=0 then
-	--		returnString=returnString..statsStringCorres[statsString[i]]..pool[value].."_"
-	--	end
-	--end
-	--returnString=returnString:sub(1, -2)
-	
 	returnString=returnString..",Base"
 	return returnString
-end
-
--- add enchant or gem to the stat pool
-function SimPermut:StatAddBonus(bonuspool,bonusType,itemType,enchantID)
-	local bonusString,amount,stat
-	if bonusType=="enchant" then
-		if itemType=="back" then
-			bonusString=enchantCloak[enchantID]
-		elseif itemType=="finger" then
-			bonusString=enchantRing[enchantID]
-		end
-		local t = {}
-		for word in arg:gmatch("%w+") do table.insert(t, word) end
-		amount=t[1].sub(2)
-		stat=t[2]
-	elseif bonusType=="gem" then
-	
-	end
-	return bonuspool
 end
 
 -- generates the string for artifact, equiped gear and player info
@@ -2873,9 +2796,6 @@ function SimPermut:GetBaseString(nocrucible)
 	local bPermut=false
 	local slotId,itemLink
 	local itemString = {}
-	
-	local stats={}
-	local StatPool={}
 
 	local playerRace = PersoLib:getRace()
 	local playerTalents = PersoLib:CreateSimcTalentString()
@@ -2916,7 +2836,7 @@ function SimPermut:GetBaseString(nocrucible)
 	SimPermutProfile = SimPermutProfile .. '\n'
 	
 	-- Method that gets gear information
-	local items,itemsLinks,StatPool = SimPermut:GetItemStrings()
+	local items,itemsLinks = SimPermut:GetItemStrings()
 
 	SimPermutProfile = SimPermutProfile .. "name=Base \n"
 	-- output gear
@@ -2946,7 +2866,7 @@ function SimPermut:GetBaseString(nocrucible)
 		SimPermutProfile = SimPermutProfile .. "off_hand=" .. table.concat(itemString, ',').. '\n'
     end
 
-	return SimPermutProfile,itemsLinks,StatPool
+	return SimPermutProfile,itemsLinks
 end
 
 -- generates the string of base + permutations
@@ -3199,7 +3119,7 @@ function SimPermut:GenerateCrucibleString()
 	local T1,_=next(NetherlightData[1],nil)
 	
 	CopyString=NetherlightData[1][T1].."_"..NetherlightData[2][DropdownCrucible1:GetValue()].."_"..NetherlightData[3][artifactID][DropdownCrucible2:GetValue()]
-	local copynb = SimPermut:GetCopyName(crucibleCopyCount,nil,nil,CopyString,1,4)
+	local copynb = SimPermut:GetCopyName(crucibleCopyCount,nil,CopyString,1,4)
 	crucibleString = T1..":1:"..DropdownCrucible1:GetValue()..":1:"..DropdownCrucible2:GetValue()..":1"
 	str =  "\n" ..copynb .. "\n".. "crucible=" .. crucibleString.. '\n'
 	crucibleCopyCount=crucibleCopyCount+1
