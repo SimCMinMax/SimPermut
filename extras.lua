@@ -268,7 +268,7 @@ SimPermut.NetherlightData={
 },
 {
 	[1771]="Master of Shadows",
-	[1771]="Murderous Intent",
+	[1774]="Murderous Intent",
 	[1778]="Shadowbind",
 	[1779]="Chaotic Darkness",
 	[1780]="Torment the Weak",
@@ -498,6 +498,10 @@ SimPermut.FrameMenu={
 SimPermut.RelicComparisonType = {
   [1] = 'relic ilevel',
   [2] = 'weapon ilevel'
+}
+SimPermut.CrucibleType = {
+  [1] = 'One tree',
+  [2] = 'Full weapon'
 }
 
 SimPermut.ReportTypeGear = {
