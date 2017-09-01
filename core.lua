@@ -2501,7 +2501,7 @@ function SimPermut:GetItemListString()
 			local _,_,itemRarity = GetItemInfo(tableLinkPermut[i][j][1])
 			local itemid = tonumber(PersoLib:GetIDFromLink(tableLinkPermut[i][j][1]))
 			local itemString = SimPermut:GetItemString(tableLinkPermut[i][j][1],PermutSimcNames[i],false,tableLinkPermut[i][j][2],tableLinkPermut[i][j][3])
-			actualString = actualString .. ((itemid == HasTierSets["T20"][classID][i]) and "T20" or "").. ((itemid == HasTierSets["T19"][classID][i]) and "T19" or "").. ((itemRarity== 5) and "L" or "")..table.concat(itemString, ',').."|"
+			actualString = actualString .. ((itemid == HasTierSets["T21"][classID][i]) and "T21" or "")..((itemid == HasTierSets["T20"][classID][i]) and "T20" or "").. ((itemid == HasTierSets["T19"][classID][i]) and "T19" or "").. ((itemRarity== 5) and "L" or "")..table.concat(itemString, ',').."|"
 		end
 		actualString=actualString:sub(1, -2)
 		returnString = returnString..PermutSimcNames[i] .. "="..actualString.."\n"
