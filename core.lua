@@ -80,12 +80,6 @@ local tablePreCheck={}
 local DropdownTrait1
 local DropdownTrait2
 local DropdownTrait3
-local DropdownCrucible1
-local DropdownCrucible2
-local DropdownCrucibleleft1
-local DropdownCrucibleleft2
-local DropdownCrucibleright1
-local DropdownCrucibleright2
 local ilvlTrait1
 local ilvlTrait2
 local ilvlTrait3
@@ -97,6 +91,7 @@ local crucibleString=""
 local relicComparisonTypeValue=1
 local CrucibleTypeTypeValue=1
 local spacerTable={}
+local dropdownTableCrucible={}
 
 
 -- Parameters
@@ -916,6 +911,7 @@ end
 function SimPermut:BuildNetherlightFrame()
 	--init Artifact
 	SimPermut:GetArtifactString()
+	dropdownTableCrucible={}
 	
 	local artifactID,artifactData = LAD:GetArtifactInfo()
 	if not ArtifactTableTraitsOrder[artifactID] or #ArtifactTableTraitsOrder[artifactID][1] == 0 then
@@ -1037,23 +1033,23 @@ function SimPermut:BuildNetherlightFrame()
 
 		local  spellTextureleft, crucibleIconleft
 		crucibleIconleft=AceGUI:Create("Icon")
-		DropdownCrucibleleft1 = AceGUI:Create("Dropdown")
-		DropdownCrucibleleft1:SetRelativeWidth(0.8)
-		DropdownCrucibleleft1:SetList(NetherlightData[2])
-		DropdownCrucibleleft1:SetLabel("")
-		DropdownCrucibleleft1:SetValue(T2)
-		DropdownCrucibleleft1:SetCallback("OnValueChanged", function (this, event, item)
-			_, _, spellTextureleft = GetSpellInfo(NetherlightSpellID[DropdownCrucibleleft1:GetValue()])
+		dropdownTableCrucible[#dropdownTableCrucible+1] = AceGUI:Create("Dropdown")
+		dropdownTableCrucible[#dropdownTableCrucible]:SetRelativeWidth(0.8)
+		dropdownTableCrucible[#dropdownTableCrucible]:SetList(NetherlightData[2])
+		dropdownTableCrucible[#dropdownTableCrucible]:SetLabel("")
+		dropdownTableCrucible[#dropdownTableCrucible]:SetValue(T2)
+		dropdownTableCrucible[#dropdownTableCrucible]:SetCallback("OnValueChanged", function (this, event, item)
+			_, _, spellTextureleft = GetSpellInfo(NetherlightSpellID[dropdownTableCrucible[#dropdownTableCrucible]:GetValue()])
 			if spellTextureleft then
 				crucibleIconleft:SetImage(spellTextureleft)
 			end
 		end)
-		cruciblecontainerleft:AddChild(DropdownCrucibleleft1)
+		cruciblecontainerleft:AddChild(dropdownTableCrucible[#dropdownTableCrucible])
 		
 		SimPermut:AddSpacer(cruciblecontainerleft,true)
 		SimPermut:AddSpacer(cruciblecontainerleft,false,0.4)
 		
-		_, _, spellTextureleft = GetSpellInfo(NetherlightSpellID[DropdownCrucibleleft1:GetValue()])
+		_, _, spellTextureleft = GetSpellInfo(NetherlightSpellID[dropdownTableCrucible[#dropdownTableCrucible]:GetValue()])
 		if spellTextureleft then
 			crucibleIconleft:SetImage(spellTextureleft)
 		end
@@ -1061,7 +1057,7 @@ function SimPermut:BuildNetherlightFrame()
 		crucibleIconleft:SetWidth(60)
 		crucibleIconleft:SetCallback("OnEnter", function(widget)
 			GameTooltip:SetOwner(widget.frame, "ANCHOR_TOPRIGHT")
-			GameTooltip:SetHyperlink("spell:"..NetherlightSpellID[DropdownCrucibleleft1:GetValue()])
+			GameTooltip:SetHyperlink("spell:"..NetherlightSpellID[dropdownTableCrucible[#dropdownTableCrucible]:GetValue()])
 			GameTooltip:Show()
 		end)			
 		crucibleIconleft:SetCallback("OnLeave", function(widget)
@@ -1080,13 +1076,12 @@ function SimPermut:BuildNetherlightFrame()
 		
 		SimPermut:AddSpacer(cruciblecontainerleft,true)
 		SimPermut:AddSpacer(cruciblecontainerleft,false,0.1)
-		DropdownCrucibleleft2 = AceGUI:Create("Dropdown")
-		DropdownCrucibleleft2:SetRelativeWidth(0.8)
-		DropdownCrucibleleft2:SetList(NetherlightData[3][artifactID])
-		DropdownCrucibleleft2:SetLabel("")
-		
-		DropdownCrucibleleft2:SetValue(T3)
-		cruciblecontainerleft:AddChild(DropdownCrucibleleft2)
+		dropdownTableCrucible[#dropdownTableCrucible+1] = AceGUI:Create("Dropdown")
+		dropdownTableCrucible[#dropdownTableCrucible]:SetRelativeWidth(0.8)
+		dropdownTableCrucible[#dropdownTableCrucible]:SetList(NetherlightData[3][artifactID])
+		dropdownTableCrucible[#dropdownTableCrucible]:SetLabel("")
+		dropdownTableCrucible[#dropdownTableCrucible]:SetValue(T3)
+		cruciblecontainerleft:AddChild(dropdownTableCrucible[#dropdownTableCrucible])
 	else--spacer container
 		local containerfiller = AceGUI:Create("SimpleGroup")
 		containerfiller:SetRelativeWidth(0.33)
@@ -1122,23 +1117,23 @@ function SimPermut:BuildNetherlightFrame()
 
 	local  spellTexture, crucibleIcon
 	crucibleIcon=AceGUI:Create("Icon")
-	DropdownCrucible1 = AceGUI:Create("Dropdown")
-	DropdownCrucible1:SetRelativeWidth(0.8)
-	DropdownCrucible1:SetList(NetherlightData[2])
-	DropdownCrucible1:SetLabel("")
-	DropdownCrucible1:SetValue(T2)
-	DropdownCrucible1:SetCallback("OnValueChanged", function (this, event, item)
-		_, _, spellTexture = GetSpellInfo(NetherlightSpellID[DropdownCrucible1:GetValue()])
+	dropdownTableCrucible[#dropdownTableCrucible+1] = AceGUI:Create("Dropdown")
+	dropdownTableCrucible[#dropdownTableCrucible]:SetRelativeWidth(0.8)
+	dropdownTableCrucible[#dropdownTableCrucible]:SetList(NetherlightData[2])
+	dropdownTableCrucible[#dropdownTableCrucible]:SetLabel("")
+	dropdownTableCrucible[#dropdownTableCrucible]:SetValue(T2)
+	dropdownTableCrucible[#dropdownTableCrucible]:SetCallback("OnValueChanged", function (this, event, item)
+		_, _, spellTexture = GetSpellInfo(NetherlightSpellID[dropdownTableCrucible[#dropdownTableCrucible]:GetValue()])
 		if spellTexture then
 			crucibleIcon:SetImage(spellTexture)
 		end
     end)
-	cruciblecontainer:AddChild(DropdownCrucible1)
+	cruciblecontainer:AddChild(dropdownTableCrucible[#dropdownTableCrucible])
 	
 	SimPermut:AddSpacer(cruciblecontainer,true)
 	SimPermut:AddSpacer(cruciblecontainer,false,0.4)
 	
-	_, _, spellTexture = GetSpellInfo(NetherlightSpellID[DropdownCrucible1:GetValue()])
+	_, _, spellTexture = GetSpellInfo(NetherlightSpellID[dropdownTableCrucible[#dropdownTableCrucible]:GetValue()])
 	if spellTexture then
 		crucibleIcon:SetImage(spellTexture)
 	end
@@ -1146,7 +1141,7 @@ function SimPermut:BuildNetherlightFrame()
 	crucibleIcon:SetWidth(60)
 	crucibleIcon:SetCallback("OnEnter", function(widget)
 		GameTooltip:SetOwner(widget.frame, "ANCHOR_TOPRIGHT")
-		GameTooltip:SetHyperlink("spell:"..NetherlightSpellID[DropdownCrucible1:GetValue()])
+		GameTooltip:SetHyperlink("spell:"..NetherlightSpellID[dropdownTableCrucible[#dropdownTableCrucible]:GetValue()])
 		GameTooltip:Show()
 	end)			
 	crucibleIcon:SetCallback("OnLeave", function(widget)
@@ -1165,12 +1160,12 @@ function SimPermut:BuildNetherlightFrame()
 	
 	SimPermut:AddSpacer(cruciblecontainer,true)
 	SimPermut:AddSpacer(cruciblecontainer,false,0.1)
-	DropdownCrucible2 = AceGUI:Create("Dropdown")
-	DropdownCrucible2:SetRelativeWidth(0.8)
-	DropdownCrucible2:SetList(NetherlightData[3][artifactID])
-	DropdownCrucible2:SetLabel("")
-	DropdownCrucible2:SetValue(T3)
-	cruciblecontainer:AddChild(DropdownCrucible2)
+	dropdownTableCrucible[#dropdownTableCrucible+1] = AceGUI:Create("Dropdown")
+	dropdownTableCrucible[#dropdownTableCrucible]:SetRelativeWidth(0.8)
+	dropdownTableCrucible[#dropdownTableCrucible]:SetList(NetherlightData[3][artifactID])
+	dropdownTableCrucible[#dropdownTableCrucible]:SetLabel("")
+	dropdownTableCrucible[#dropdownTableCrucible]:SetValue(T3)
+	cruciblecontainer:AddChild(dropdownTableCrucible[#dropdownTableCrucible])
 	
 	if CrucibleTypeTypeValue==2 then
 		--add left panel
@@ -1199,23 +1194,23 @@ function SimPermut:BuildNetherlightFrame()
 
 		local  spellTextureright, crucibleIconright
 		crucibleIconright=AceGUI:Create("Icon")
-		DropdownCrucibleright1 = AceGUI:Create("Dropdown")
-		DropdownCrucibleright1:SetRelativeWidth(0.8)
-		DropdownCrucibleright1:SetList(NetherlightData[2])
-		DropdownCrucibleright1:SetLabel("")
-		DropdownCrucibleright1:SetValue(T2)
-		DropdownCrucibleright1:SetCallback("OnValueChanged", function (this, event, item)
-			_, _, spellTextureright = GetSpellInfo(NetherlightSpellID[DropdownCrucibleright1:GetValue()])
+		dropdownTableCrucible[#dropdownTableCrucible+1] = AceGUI:Create("Dropdown")
+		dropdownTableCrucible[#dropdownTableCrucible]:SetRelativeWidth(0.8)
+		dropdownTableCrucible[#dropdownTableCrucible]:SetList(NetherlightData[2])
+		dropdownTableCrucible[#dropdownTableCrucible]:SetLabel("")
+		dropdownTableCrucible[#dropdownTableCrucible]:SetValue(T2)
+		dropdownTableCrucible[#dropdownTableCrucible]:SetCallback("OnValueChanged", function (this, event, item)
+			_, _, spellTextureright = GetSpellInfo(NetherlightSpellID[dropdownTableCrucible[#dropdownTableCrucible]:GetValue()])
 			if spellTextureright then
 				crucibleIconright:SetImage(spellTextureright)
 			end
 		end)
-		cruciblecontainerright:AddChild(DropdownCrucibleright1)
+		cruciblecontainerright:AddChild(dropdownTableCrucible[#dropdownTableCrucible])
 		
 		SimPermut:AddSpacer(cruciblecontainerright,true)
 		SimPermut:AddSpacer(cruciblecontainerright,false,0.4)
 		
-		_, _, spellTextureright = GetSpellInfo(NetherlightSpellID[DropdownCrucibleright1:GetValue()])
+		_, _, spellTextureright = GetSpellInfo(NetherlightSpellID[dropdownTableCrucible[#dropdownTableCrucible]:GetValue()])
 		if spellTextureright then
 			crucibleIconright:SetImage(spellTextureright)
 		end
@@ -1223,7 +1218,7 @@ function SimPermut:BuildNetherlightFrame()
 		crucibleIconright:SetWidth(60)
 		crucibleIconright:SetCallback("OnEnter", function(widget)
 			GameTooltip:SetOwner(widget.frame, "ANCHOR_TOPRIGHT")
-			GameTooltip:SetHyperlink("spell:"..NetherlightSpellID[DropdownCrucibleright1:GetValue()])
+			GameTooltip:SetHyperlink("spell:"..NetherlightSpellID[dropdownTableCrucible[#dropdownTableCrucible]:GetValue()])
 			GameTooltip:Show()
 		end)			
 		crucibleIconright:SetCallback("OnLeave", function(widget)
@@ -1242,13 +1237,12 @@ function SimPermut:BuildNetherlightFrame()
 		
 		SimPermut:AddSpacer(cruciblecontainerright,true)
 		SimPermut:AddSpacer(cruciblecontainerright,false,0.1)
-		DropdownCrucibleright2 = AceGUI:Create("Dropdown")
-		DropdownCrucibleright2:SetRelativeWidth(0.8)
-		DropdownCrucibleright2:SetList(NetherlightData[3][artifactID])
-		DropdownCrucibleright2:SetLabel("")
-		
-		DropdownCrucibleright2:SetValue(T3)
-		cruciblecontainerright:AddChild(DropdownCrucibleright2)
+		dropdownTableCrucible[#dropdownTableCrucible+1] = AceGUI:Create("Dropdown")
+		dropdownTableCrucible[#dropdownTableCrucible]:SetRelativeWidth(0.8)
+		dropdownTableCrucible[#dropdownTableCrucible]:SetList(NetherlightData[3][artifactID])
+		dropdownTableCrucible[#dropdownTableCrucible]:SetLabel("")
+		dropdownTableCrucible[#dropdownTableCrucible]:SetValue(T3)
+		cruciblecontainerright:AddChild(dropdownTableCrucible[#dropdownTableCrucible])
 	else
 		local containerfillerright2 = AceGUI:Create("SimpleGroup")
 		containerfillerright2:SetRelativeWidth(0.33)
@@ -2891,36 +2885,25 @@ function SimPermut:GenerateCrucibleString()
 	local crucibleString
 	local T1,_=next(NetherlightData[1],nil)
 	
-	if CrucibleTypeTypeValue==1 then
-		CopyString=NetherlightData[1][T1].."_"..NetherlightData[2][DropdownCrucible1:GetValue()].."_"..NetherlightData[3][artifactID][DropdownCrucible2:GetValue()]
-		local copynb = SimPermut:GetCopyName(crucibleCopyCount,nil,CopyString,1,4)
-		crucibleString = T1..":1:"..DropdownCrucible1:GetValue()..":1:"..DropdownCrucible2:GetValue()..":1"
-		str =  "\n" ..copynb .. "\n".. "crucible=" .. crucibleString.. '\n'
-		
-	else
-		local tabletraits={}
-		if not tabletraits[DropdownCrucible1:GetValue()] then tabletraits[DropdownCrucible1:GetValue()]=0 end
-		tabletraits[DropdownCrucible1:GetValue()]=tabletraits[DropdownCrucible1:GetValue()]+1
-		if not tabletraits[DropdownCrucible2:GetValue()] then tabletraits[DropdownCrucible2:GetValue()]=0 end
-		tabletraits[DropdownCrucible2:GetValue()]=tabletraits[DropdownCrucible2:GetValue()]+1
-		if not tabletraits[DropdownCrucibleleft1:GetValue()] then tabletraits[DropdownCrucibleleft1:GetValue()]=0 end
-		tabletraits[DropdownCrucibleleft1:GetValue()]=tabletraits[DropdownCrucibleleft1:GetValue()]+1
-		if not tabletraits[DropdownCrucibleleft2:GetValue()] then tabletraits[DropdownCrucibleleft2:GetValue()]=0 end
-		tabletraits[DropdownCrucibleleft2:GetValue()]=tabletraits[DropdownCrucibleleft2:GetValue()]+1
-		if not tabletraits[DropdownCrucibleright1:GetValue()] then tabletraits[DropdownCrucibleright1:GetValue()]=0 end
-		tabletraits[DropdownCrucibleright1:GetValue()]=tabletraits[DropdownCrucibleright1:GetValue()]+1
-		if not tabletraits[DropdownCrucibleright2:GetValue()] then tabletraits[DropdownCrucibleright2:GetValue()]=0 end
-		tabletraits[DropdownCrucibleright2:GetValue()]=tabletraits[DropdownCrucibleright2:GetValue()]+1
-		
-		CopyString=NetherlightData[2][DropdownCrucible1:GetValue()].."_"..NetherlightData[3][artifactID][DropdownCrucible2:GetValue()]
-		crucibleString = T1..":3"
-		for k,v in pairs(tabletraits) do
-			crucibleString = crucibleString..":"..k..":"..v
-		end
-		local copynb = SimPermut:GetCopyName(crucibleCopyCount,nil,CopyString,1,4)
-		str =  "\n" ..copynb .. "\n".. "crucible=" .. crucibleString.. '\n'
-		
+	local tabletraits={}
+	for _,v in pairs(dropdownTableCrucible) do 
+		if not tabletraits[v:GetValue()] then tabletraits[v:GetValue()]=0 end
+		tabletraits[v:GetValue()]=tabletraits[v:GetValue()]+1
 	end
+	
+	crucibleString = T1..":3"
+	for k,v in pairs(tabletraits) do
+		crucibleString = crucibleString..":"..k..":"..v
+		if NetherlightData[2][k] then --crucible trait
+			CopyString = CopyString..NetherlightData[2][k].."-"..v.."_"
+		else --artifact trait
+			CopyString = CopyString..NetherlightData[3][artifactID][k].."-"..v.."_"
+		end
+	end
+	CopyString=CopyString:sub(1, -2)
+	local copynb = SimPermut:GetCopyName(crucibleCopyCount,nil,CopyString,1,4)
+	str =  "\n" ..copynb .. "\n".. "crucible=" .. crucibleString.. '\n'
+		
 	return str
 end
 
