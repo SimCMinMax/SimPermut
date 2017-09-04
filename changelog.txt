@@ -1,5 +1,7 @@
-v1.14.4 09/xx/2017
+v1.14.4 09/04/2017
 [UI]added more crucible options
+[UI]added 7.3 gems
+[Fix]added t21 to autosimc export
 
 v1.14.3 08/31/2017
 [UI]Added an option for small UI (option panel)
