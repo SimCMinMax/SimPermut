@@ -47,8 +47,6 @@ See [AutoSimC on GitHub](https://github.com/SimCMinMax/AutoSimC)
 
 - Epic Gem management
 
-- Better crucible management
-
 - Fix Warforged TW items
 
 -[Rework code]
