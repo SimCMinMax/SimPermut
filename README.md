@@ -45,8 +45,6 @@ See [AutoSimC on GitHub](https://github.com/SimCMinMax/AutoSimC)
 
 ## Known issues and developement plan
 
-- Epic Gem management
-
 - Fix Warforged TW items
 
 -[Rework code]
