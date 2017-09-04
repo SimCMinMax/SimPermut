@@ -2560,7 +2560,7 @@ end
 -- generates the init string from autosimc
 function SimPermut:GetAutoSimcString()
 	local autoSimcString=""
-	autoSimcString=autoSimcString .. "\r".."[Profile]".."\n".."\r"
+	autoSimcString=autoSimcString .. "[Profile]".."\n"
 	autoSimcString=autoSimcString .. "profilename="..UnitName('player').."\n"
 	autoSimcString=autoSimcString .. "profileid=1".."\n"
 	local _, playerClass = UnitClass('player')
@@ -2575,8 +2575,9 @@ function SimPermut:GetAutoSimcString()
 	if artStr~="" then
 		autoSimcString=autoSimcString .. "artifact="..SimPermut:GetArtifactString().."\n"
 	end
+	autoSimcString=autoSimcString .. actualSettings.simcCommands.. '\n'
 	autoSimcString=autoSimcString .. "other=".."\n"
-	autoSimcString=autoSimcString .. "[Gear]".."\n"
+	autoSimcString=autoSimcString .. "\n".."[Gear]"
 	
 	return autoSimcString
 end
