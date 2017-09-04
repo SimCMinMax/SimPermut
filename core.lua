@@ -92,6 +92,7 @@ local relicComparisonTypeValue=1
 local CrucibleTypeTypeValue=1
 local spacerTable={}
 local dropdownTableCrucible={}
+local epicGemUsed
 
 
 -- Parameters
@@ -108,6 +109,7 @@ local defaultSettings={
 	enchant_back		= 0,	
 	enchant_ring		= 0,		
 	gems				= 0,	
+	gemsEpic			= 0,
 	setsT19				= 0,
 	setsT20				= 0,
 	setsT21				= 0,
@@ -135,6 +137,7 @@ local artifactTable 	= SimPermut.ArtifactTable
 local ArtifactTableTraits = SimPermut.ArtifactTableTraits
 local ArtifactTableTraitsOrder = SimPermut.ArtifactTableTraitsOrder
 local gemList 			= SimPermut.gemList
+local gemListEpic 		= SimPermut.gemListEpic
 local SetsListT19		= SimPermut.SetsT19
 local SetsListT20		= SimPermut.SetsT20
 local SetsListT21		= SimPermut.SetsT21
@@ -1724,6 +1727,22 @@ function SimPermut:BuildOptionFrame()
 		PersoLib:MergeTables(defaultSettings,SimPermutVars,actualSettings)
     end)
 	container1:AddChild(dropdownSetsT21)
+	SimPermut:AddSpacer(container1,true)
+	
+	local labelepicGem= AceGUI:Create("Label")
+	labelepicGem:SetText("Use 1 Epic gem")
+	labelepicGem:SetWidth(90)
+	container1:AddChild(labelepicGem)
+	
+	local dropdownEpicGem = AceGUI:Create("Dropdown")
+	dropdownEpicGem:SetList(gemListEpic)
+	dropdownEpicGem:SetWidth(110)
+	dropdownEpicGem:SetValue(actualSettings.gemsEpic)
+	dropdownEpicGem:SetCallback("OnValueChanged", function (this, event, item)
+		SimPermutVars.gemsEpic=item
+		PersoLib:MergeTables(defaultSettings,SimPermutVars,actualSettings)
+    end)
+	container1:AddChild(dropdownEpicGem)
 	
 	SimPermut:AddSpacer(container1,true)
 	SimPermut:AddSpacer(container1,true)
@@ -2244,7 +2263,12 @@ function SimPermut:GetItemString(itemLink,itemType,base,forceilvl,forcegem)
 						if i>1 then 
 							gemstring=gemstring.."/"
 						end
-						gemstring=gemstring..actualGem
+						if actualSettings.gemsEpic>0 and not epicGemUsed then
+							gemstring=gemstring..actualSettings.gemsEpic
+							epicGemUsed=true
+						else
+							gemstring=gemstring..actualGem
+						end
 					end
 					simcItemOptions[#simcItemOptions + 1] = gemstring
 				end
@@ -2271,7 +2295,12 @@ function SimPermut:GetItemString(itemLink,itemType,base,forceilvl,forcegem)
 							if i>1 then 
 								gemstring=gemstring.."/"
 							end
+							if actualSettings.gemsEpic>0 and not epicGemUsed then
+							gemstring=gemstring..actualSettings.gemsEpic
+							epicGemUsed=true
+						else
 							gemstring=gemstring..actualGem
+						end
 						end
 						simcItemOptions[#simcItemOptions + 1] = gemstring
 					end
@@ -2299,6 +2328,7 @@ function SimPermut:GetItemStrings()
 	local itemsLinks = {}
 	local slotId,itemLink
 	local itemString = {}
+	epicGemUsed=false
 	
 	equipedLegendaries = 0
 
@@ -2654,10 +2684,12 @@ function SimPermut:GetPermutationString(permuttable)
 	actualLegMin=tonumber(editLegMin:GetText())
 	actualLegMax=tonumber(editLegMax:GetText())
 	
+	
 	for i=1,#permuttable do
 		T192p,T194p=SimPermut:HasTier("T19",permuttable[i])
 		T202p,T204p=SimPermut:HasTier("T20",permuttable[i])
 		T212p,T214p=SimPermut:HasTier("T21",permuttable[i])
+		epicGemUsed=false
 		SimPermut:ReorganizeEquip(permuttable[i])
 		result=SimPermut:CheckUsability(permuttable[i],tableBaseLink)
 		if result=="" or ad then
