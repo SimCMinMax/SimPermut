@@ -915,6 +915,7 @@ function SimPermut:BuildNetherlightFrame()
 	--init Artifact
 	SimPermut:GetArtifactString()
 	dropdownTableCrucible={}
+	local trait={}
 	
 	local artifactID,artifactData = LAD:GetArtifactInfo()
 	if not ArtifactTableTraitsOrder[artifactID] or #ArtifactTableTraitsOrder[artifactID][1] == 0 then
@@ -1041,8 +1042,10 @@ function SimPermut:BuildNetherlightFrame()
 		dropdownTableCrucible[#dropdownTableCrucible]:SetList(NetherlightData[2])
 		dropdownTableCrucible[#dropdownTableCrucible]:SetLabel("")
 		dropdownTableCrucible[#dropdownTableCrucible]:SetValue(T2)
+		trait[1]=T2
 		dropdownTableCrucible[#dropdownTableCrucible]:SetCallback("OnValueChanged", function (this, event, item)
-			_, _, spellTextureleft = GetSpellInfo(NetherlightSpellID[dropdownTableCrucible[#dropdownTableCrucible]:GetValue()])
+			trait[1]=item
+			_, _, spellTextureleft = GetSpellInfo(NetherlightSpellID[item])
 			if spellTextureleft then
 				crucibleIconleft:SetImage(spellTextureleft)
 			end
@@ -1052,7 +1055,7 @@ function SimPermut:BuildNetherlightFrame()
 		SimPermut:AddSpacer(cruciblecontainerleft,true)
 		SimPermut:AddSpacer(cruciblecontainerleft,false,0.4)
 		
-		_, _, spellTextureleft = GetSpellInfo(NetherlightSpellID[dropdownTableCrucible[#dropdownTableCrucible]:GetValue()])
+		_, _, spellTextureleft = GetSpellInfo(NetherlightSpellID[trait[1]])
 		if spellTextureleft then
 			crucibleIconleft:SetImage(spellTextureleft)
 		end
@@ -1060,7 +1063,7 @@ function SimPermut:BuildNetherlightFrame()
 		crucibleIconleft:SetWidth(60)
 		crucibleIconleft:SetCallback("OnEnter", function(widget)
 			GameTooltip:SetOwner(widget.frame, "ANCHOR_TOPRIGHT")
-			GameTooltip:SetHyperlink("spell:"..NetherlightSpellID[dropdownTableCrucible[#dropdownTableCrucible]:GetValue()])
+			GameTooltip:SetHyperlink("spell:"..NetherlightSpellID[trait[1]])
 			GameTooltip:Show()
 		end)			
 		crucibleIconleft:SetCallback("OnLeave", function(widget)
@@ -1125,8 +1128,10 @@ function SimPermut:BuildNetherlightFrame()
 	dropdownTableCrucible[#dropdownTableCrucible]:SetList(NetherlightData[2])
 	dropdownTableCrucible[#dropdownTableCrucible]:SetLabel("")
 	dropdownTableCrucible[#dropdownTableCrucible]:SetValue(T2)
+	trait[2]=T2
 	dropdownTableCrucible[#dropdownTableCrucible]:SetCallback("OnValueChanged", function (this, event, item)
-		_, _, spellTexture = GetSpellInfo(NetherlightSpellID[dropdownTableCrucible[#dropdownTableCrucible]:GetValue()])
+		trait[2]=item
+		_, _, spellTexture = GetSpellInfo(NetherlightSpellID[item])
 		if spellTexture then
 			crucibleIcon:SetImage(spellTexture)
 		end
@@ -1136,7 +1141,7 @@ function SimPermut:BuildNetherlightFrame()
 	SimPermut:AddSpacer(cruciblecontainer,true)
 	SimPermut:AddSpacer(cruciblecontainer,false,0.4)
 	
-	_, _, spellTexture = GetSpellInfo(NetherlightSpellID[dropdownTableCrucible[#dropdownTableCrucible]:GetValue()])
+	_, _, spellTexture = GetSpellInfo(NetherlightSpellID[trait[2]])
 	if spellTexture then
 		crucibleIcon:SetImage(spellTexture)
 	end
@@ -1144,7 +1149,7 @@ function SimPermut:BuildNetherlightFrame()
 	crucibleIcon:SetWidth(60)
 	crucibleIcon:SetCallback("OnEnter", function(widget)
 		GameTooltip:SetOwner(widget.frame, "ANCHOR_TOPRIGHT")
-		GameTooltip:SetHyperlink("spell:"..NetherlightSpellID[dropdownTableCrucible[#dropdownTableCrucible]:GetValue()])
+		GameTooltip:SetHyperlink("spell:"..NetherlightSpellID[trait[2]])
 		GameTooltip:Show()
 	end)			
 	crucibleIcon:SetCallback("OnLeave", function(widget)
@@ -1202,8 +1207,10 @@ function SimPermut:BuildNetherlightFrame()
 		dropdownTableCrucible[#dropdownTableCrucible]:SetList(NetherlightData[2])
 		dropdownTableCrucible[#dropdownTableCrucible]:SetLabel("")
 		dropdownTableCrucible[#dropdownTableCrucible]:SetValue(T2)
+		trait[3]=T2
 		dropdownTableCrucible[#dropdownTableCrucible]:SetCallback("OnValueChanged", function (this, event, item)
-			_, _, spellTextureright = GetSpellInfo(NetherlightSpellID[dropdownTableCrucible[#dropdownTableCrucible]:GetValue()])
+			trait[3]=item
+			_, _, spellTextureright = GetSpellInfo(NetherlightSpellID[item])
 			if spellTextureright then
 				crucibleIconright:SetImage(spellTextureright)
 			end
@@ -1213,7 +1220,7 @@ function SimPermut:BuildNetherlightFrame()
 		SimPermut:AddSpacer(cruciblecontainerright,true)
 		SimPermut:AddSpacer(cruciblecontainerright,false,0.4)
 		
-		_, _, spellTextureright = GetSpellInfo(NetherlightSpellID[dropdownTableCrucible[#dropdownTableCrucible]:GetValue()])
+		_, _, spellTextureright = GetSpellInfo(NetherlightSpellID[trait[3]])
 		if spellTextureright then
 			crucibleIconright:SetImage(spellTextureright)
 		end
@@ -1221,7 +1228,7 @@ function SimPermut:BuildNetherlightFrame()
 		crucibleIconright:SetWidth(60)
 		crucibleIconright:SetCallback("OnEnter", function(widget)
 			GameTooltip:SetOwner(widget.frame, "ANCHOR_TOPRIGHT")
-			GameTooltip:SetHyperlink("spell:"..NetherlightSpellID[dropdownTableCrucible[#dropdownTableCrucible]:GetValue()])
+			GameTooltip:SetHyperlink("spell:"..NetherlightSpellID[trait[3]])
 			GameTooltip:Show()
 		end)			
 		crucibleIconright:SetCallback("OnLeave", function(widget)

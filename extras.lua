@@ -369,7 +369,7 @@ SimPermut.NetherlightData={
 
 SimPermut.NetherlightSpellID={
 	[1771]=252091,
-	[1771]=252191,
+	[1774]=252191,
 	[1778]=252875,
 	[1779]=252888,
 	[1780]=252906,
