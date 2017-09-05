@@ -96,7 +96,7 @@ local epicGemUsed
 
 
 -- Parameters
-local ITEM_COUNT_THRESHOLD 		= 22
+local ITEM_COUNT_THRESHOLD 		= 25
 local COPY_THRESHOLD 			= 500
 local defaultSettings={
 	report_typeGear		= 2,
@@ -125,38 +125,7 @@ local defaultSettings={
 local actualSettings={}
 
 -- load stuff from extras.lua
-local slotNames     	= SimPermut.slotNames
-local simcSlotNames 	= SimPermut.simcSlotNames
-local listNames 		= SimPermut.listNames
-local specNames     	= SimPermut.SpecNames
-local profNames     	= SimPermut.ProfNames
-local PermutSimcNames   = SimPermut.PermutSimcNames
-local PermutSlotNames   = SimPermut.PermutSlotNames
-local regionString  	= SimPermut.RegionString
-local artifactTable 	= SimPermut.ArtifactTable
-local ArtifactTableTraits = SimPermut.ArtifactTableTraits
-local ArtifactTableTraitsOrder = SimPermut.ArtifactTableTraitsOrder
-local gemList 			= SimPermut.gemList
-local gemListEpic 		= SimPermut.gemListEpic
-local SetsListT19		= SimPermut.SetsT19
-local SetsListT20		= SimPermut.SetsT20
-local SetsListT21		= SimPermut.SetsT21
-local enchantRing 		= SimPermut.enchantRing
-local enchantCloak 		= SimPermut.enchantCloak
-local enchantNeck 		= SimPermut.enchantNeck
-local statsString		= SimPermut.statsString
-local statsStringCorres	= SimPermut.statsStringCorres
-local HasTierSets 		= SimPermut.HasTierSets
-local FrameMenu 		= SimPermut.FrameMenu
-local RelicComparisonType = SimPermut.RelicComparisonType
-local ReportTypeGear 	= SimPermut.ReportTypeGear
-local ReportTypeTalents = SimPermut.ReportTypeTalents
-local ReportTypeRelics  = SimPermut.ReportTypeRelics
-local ReportTypeCrucible= SimPermut.ReportTypeCrucible
-local GetItemInfoName   = SimPermut.GetItemInfoName
-local NetherlightData	= SimPermut.NetherlightData
-local NetherlightSpellID= SimPermut.NetherlightSpellID
-local CrucibleType		= SimPermut.CrucibleType
+local ExtraData			= SimPermut.ExtraData
 
 SLASH_SIMPERMUTSLASH1 = "/SimPermut"
 SLASH_SIMPERMUTSLASHDEBUG1 = "/SimPermutDebug"
@@ -169,7 +138,6 @@ end
 
 -- Command UI
 SlashCmdList["SIMPERMUTSLASH"] = function (arg)
-	
 	if mainframeCreated and mainframe:IsShown() then
 		mainframe:Hide()
 	else
@@ -180,8 +148,8 @@ SlashCmdList["SIMPERMUTSLASH"] = function (arg)
 		end
 	
 		--handle commandline
-		for i=1,#listNames do
-			if string.match(arg, listNames[i]) then
+		for i=1,#ExtraData.ListNames do
+			if string.match(arg, ExtraData.ListNames[i]) then
 				tablePreCheck[i]=true
 			else
 				tablePreCheck[i]=false
@@ -247,7 +215,7 @@ function SimPermut:BuildFrame()
 	
 	local frameDropdown = AceGUI:Create("Dropdown")
     frameDropdown:SetWidth(200)
-	frameDropdown:SetList(FrameMenu)
+	frameDropdown:SetList(ExtraData.FrameMenu)
 	frameDropdown:SetLabel("")
 	frameDropdown:SetValue(currentFrame)
 	frameDropdown:SetCallback("OnValueChanged", function (this, event, item)
@@ -331,7 +299,7 @@ function SimPermut:BuildGearFrame()
 	
 	local dropdownEnchantNeck = AceGUI:Create("Dropdown")
 	dropdownEnchantNeck:SetWidth(130)
-	dropdownEnchantNeck:SetList(enchantNeck)
+	dropdownEnchantNeck:SetList(ExtraData.enchantNeck)
 	dropdownEnchantNeck:SetValue(actualSettings.enchant_neck)
 	dropdownEnchantNeck:SetCallback("OnValueChanged", function (this, event, item)
 		actualEnchantNeck=item
@@ -345,7 +313,7 @@ function SimPermut:BuildGearFrame()
 	
 	local dropdownEnchantBack = AceGUI:Create("Dropdown")
 	dropdownEnchantBack:SetWidth(110)
-	dropdownEnchantBack:SetList(enchantCloak)
+	dropdownEnchantBack:SetList(ExtraData.enchantCloak)
 	dropdownEnchantBack:SetValue(actualSettings.enchant_back)
 	dropdownEnchantBack:SetCallback("OnValueChanged", function (this, event, item)
 		actualEnchantBack=item
@@ -359,7 +327,7 @@ function SimPermut:BuildGearFrame()
 	
 	local dropdownEnchantFinger = AceGUI:Create("Dropdown")
 	dropdownEnchantFinger:SetWidth(110)
-	dropdownEnchantFinger:SetList(enchantRing)
+	dropdownEnchantFinger:SetList(ExtraData.enchantRing)
 	dropdownEnchantFinger:SetValue(actualSettings.enchant_ring)
 	dropdownEnchantFinger:SetCallback("OnValueChanged", function (this, event, item)
 		actualEnchantFinger=item
@@ -372,7 +340,7 @@ function SimPermut:BuildGearFrame()
 	mainGroup:AddChild(labelGem)
 	
 	local dropdownGem = AceGUI:Create("Dropdown")
-	dropdownGem:SetList(gemList)
+	dropdownGem:SetList(ExtraData.gemList)
 	dropdownGem:SetWidth(110)
 	dropdownGem:SetValue(actualSettings.gems)
 	dropdownGem:SetCallback("OnValueChanged", function (this, event, item)
@@ -430,7 +398,7 @@ function SimPermut:BuildGearFrame()
 	mainGroup:AddChild(labelSetsT19)
 	
 	local dropdownSetsT19 = AceGUI:Create("Dropdown")
-	dropdownSetsT19:SetList(SetsListT19)
+	dropdownSetsT19:SetList(ExtraData.SetsListT19)
 	dropdownSetsT19:SetWidth(110)
 	dropdownSetsT19:SetValue(actualSettings.setsT19)
 	dropdownSetsT19:SetCallback("OnValueChanged", function (this, event, item)
@@ -444,7 +412,7 @@ function SimPermut:BuildGearFrame()
 	mainGroup:AddChild(labelSetsT20)
 
 	local dropdownSetsT20 = AceGUI:Create("Dropdown")
-	dropdownSetsT20:SetList(SetsListT20)
+	dropdownSetsT20:SetList(ExtraData.SetsListT20)
 	dropdownSetsT20:SetWidth(110)
 	dropdownSetsT20:SetValue(actualSettings.setsT20)
 	dropdownSetsT20:SetCallback("OnValueChanged", function (this, event, item)
@@ -459,7 +427,7 @@ function SimPermut:BuildGearFrame()
 	labelreportTypeGear:SetWidth(150)
 	local ReportDropdownGear = AceGUI:Create("Dropdown")
     ReportDropdownGear:SetWidth(160)
-	ReportDropdownGear:SetList(ReportTypeGear)
+	ReportDropdownGear:SetList(ExtraData.ReportTypeGear)
 	ReportDropdownGear:SetLabel("Report Type")
 	ReportDropdownGear:SetValue(actualSettings.report_typeGear)
 	ReportDropdownGear:SetCallback("OnValueChanged", function (this, event, item)
@@ -565,7 +533,7 @@ function SimPermut:BuildTalentFrame()
 	
 	local ReportDropdownTalents = AceGUI:Create("Dropdown")
     ReportDropdownTalents:SetWidth(160)
-	ReportDropdownTalents:SetList(ReportTypeTalents)
+	ReportDropdownTalents:SetList(ExtraData.ReportTypeTalents)
 	ReportDropdownTalents:SetLabel("Report Type")
 	ReportDropdownTalents:SetValue(actualSettings.report_typeTalents)
 	ReportDropdownTalents:SetCallback("OnValueChanged", function (this, event, item)
@@ -602,7 +570,7 @@ function SimPermut:BuildRelicFrame()
 	mainGroup:AddChild(container1)
 	
 	local artifactID,artifactData = LAD:GetArtifactInfo()
-	if not ArtifactTableTraitsOrder[artifactID] or #ArtifactTableTraitsOrder[artifactID][1] == 0 then
+	if not ExtraData.ArtifactTableTraitsOrder[artifactID] or #ExtraData.ArtifactTableTraitsOrder[artifactID][1] == 0 then
 		local labeltitre2= AceGUI:Create("Label")
 		labeltitre2:SetText("Class/Spec Not yet implemented")
 		labeltitre2:SetFullWidth(true)
@@ -625,7 +593,7 @@ function SimPermut:BuildRelicFrame()
 	
 	local relictype = AceGUI:Create("Dropdown")
 	relictype:SetWidth(150)
-	relictype:SetList(RelicComparisonType)
+	relictype:SetList(ExtraData.RelicComparisonType)
 	relictype:SetLabel("Relic comparison type")
 	relictype:SetValue(relicComparisonTypeValue)
 	relictype:SetCallback("OnValueChanged", function (this, event, item)
@@ -737,7 +705,7 @@ function SimPermut:BuildRelicFrame()
 		SimPermut:AddSpacer(reliccontainer1,false,0.1)
 		DropdownTrait1 = AceGUI:Create("Dropdown")
 		DropdownTrait1:SetRelativeWidth(0.8)
-		DropdownTrait1:SetList(ArtifactTableTraits[artifactID][1],ArtifactTableTraitsOrder[artifactID][1])
+		DropdownTrait1:SetList(ExtraData.ArtifactTableTraits[artifactID][1],ExtraData.ArtifactTableTraitsOrder[artifactID][1])
 		DropdownTrait1:SetLabel("")
 		DropdownTrait1:SetValue(0)
 		reliccontainer1:AddChild(DropdownTrait1)
@@ -799,7 +767,7 @@ function SimPermut:BuildRelicFrame()
 		SimPermut:AddSpacer(reliccontainer2,false,0.1)
 		DropdownTrait2 = AceGUI:Create("Dropdown")
 		DropdownTrait2:SetRelativeWidth(0.8)
-		DropdownTrait2:SetList(ArtifactTableTraits[artifactID][2],ArtifactTableTraitsOrder[artifactID][2])
+		DropdownTrait2:SetList(ExtraData.ArtifactTableTraits[artifactID][2],ExtraData.ArtifactTableTraitsOrder[artifactID][2])
 		DropdownTrait2:SetLabel("")
 		DropdownTrait2:SetValue(0)
 		reliccontainer2:AddChild(DropdownTrait2)
@@ -861,7 +829,7 @@ function SimPermut:BuildRelicFrame()
 		SimPermut:AddSpacer(reliccontainer3,false,0.1)
 		DropdownTrait3 = AceGUI:Create("Dropdown")
 		DropdownTrait3:SetRelativeWidth(0.8)
-		DropdownTrait3:SetList(ArtifactTableTraits[artifactID][3],ArtifactTableTraitsOrder[artifactID][3])
+		DropdownTrait3:SetList(ExtraData.ArtifactTableTraits[artifactID][3],ExtraData.ArtifactTableTraitsOrder[artifactID][3])
 		DropdownTrait3:SetLabel("")
 		DropdownTrait3:SetValue(0)
 		reliccontainer3:AddChild(DropdownTrait3)
@@ -893,7 +861,7 @@ function SimPermut:BuildRelicFrame()
 	SimPermut:AddSpacer(container1,false,0.3)
 	local ReportDropdownRelics = AceGUI:Create("Dropdown")
     ReportDropdownRelics:SetWidth(160)
-	ReportDropdownRelics:SetList(ReportTypeRelics)
+	ReportDropdownRelics:SetList(ExtraData.ReportTypeRelics)
 	ReportDropdownRelics:SetLabel("Report Type")
 	ReportDropdownRelics:SetValue(actualSettings.report_typeRelics)
 	ReportDropdownRelics:SetCallback("OnValueChanged", function (this, event, item)
@@ -918,7 +886,7 @@ function SimPermut:BuildNetherlightFrame()
 	local trait={}
 	
 	local artifactID,artifactData = LAD:GetArtifactInfo()
-	if not ArtifactTableTraitsOrder[artifactID] or #ArtifactTableTraitsOrder[artifactID][1] == 0 then
+	if not ExtraData.ArtifactTableTraitsOrder[artifactID] or #ExtraData.ArtifactTableTraitsOrder[artifactID][1] == 0 then
 		local labeltitre2= AceGUI:Create("Label")
 		labeltitre2:SetText("Class/Spec Not yet implemented")
 		labeltitre2:SetFullWidth(true)
@@ -927,11 +895,11 @@ function SimPermut:BuildNetherlightFrame()
 	end
 	
 	local T2 = math.huge
-	for k,v in pairs(NetherlightData[2])do
+	for k,v in pairs(ExtraData.NetherlightData[2])do
 		T2 = math.min(k, T2)
 	end
 	local T3 = math.huge
-	for k,v in pairs(NetherlightData[3][artifactID])do
+	for k,v in pairs(ExtraData.NetherlightData[3][artifactID])do
 		T3 = math.min(k, T3)
 	end
 	
@@ -954,7 +922,7 @@ function SimPermut:BuildNetherlightFrame()
 	
 	local crucibletypedropdown = AceGUI:Create("Dropdown")
 	crucibletypedropdown:SetWidth(150)
-	crucibletypedropdown:SetList(CrucibleType)
+	crucibletypedropdown:SetList(ExtraData.CrucibleType)
 	crucibletypedropdown:SetLabel("Comparison type")
 	crucibletypedropdown:SetValue(CrucibleTypeTypeValue)
 	crucibletypedropdown:SetCallback("OnValueChanged", function (this, event, item)
@@ -1039,13 +1007,13 @@ function SimPermut:BuildNetherlightFrame()
 		crucibleIconleft=AceGUI:Create("Icon")
 		dropdownTableCrucible[#dropdownTableCrucible+1] = AceGUI:Create("Dropdown")
 		dropdownTableCrucible[#dropdownTableCrucible]:SetRelativeWidth(0.8)
-		dropdownTableCrucible[#dropdownTableCrucible]:SetList(NetherlightData[2])
+		dropdownTableCrucible[#dropdownTableCrucible]:SetList(ExtraData.NetherlightData[2])
 		dropdownTableCrucible[#dropdownTableCrucible]:SetLabel("")
 		dropdownTableCrucible[#dropdownTableCrucible]:SetValue(T2)
 		trait[1]=T2
 		dropdownTableCrucible[#dropdownTableCrucible]:SetCallback("OnValueChanged", function (this, event, item)
 			trait[1]=item
-			_, _, spellTextureleft = GetSpellInfo(NetherlightSpellID[item])
+			_, _, spellTextureleft = GetSpellInfo(ExtraData.NetherlightSpellID[item])
 			if spellTextureleft then
 				crucibleIconleft:SetImage(spellTextureleft)
 			end
@@ -1055,7 +1023,7 @@ function SimPermut:BuildNetherlightFrame()
 		SimPermut:AddSpacer(cruciblecontainerleft,true)
 		SimPermut:AddSpacer(cruciblecontainerleft,false,0.4)
 		
-		_, _, spellTextureleft = GetSpellInfo(NetherlightSpellID[trait[1]])
+		_, _, spellTextureleft = GetSpellInfo(ExtraData.NetherlightSpellID[trait[1]])
 		if spellTextureleft then
 			crucibleIconleft:SetImage(spellTextureleft)
 		end
@@ -1063,7 +1031,7 @@ function SimPermut:BuildNetherlightFrame()
 		crucibleIconleft:SetWidth(60)
 		crucibleIconleft:SetCallback("OnEnter", function(widget)
 			GameTooltip:SetOwner(widget.frame, "ANCHOR_TOPRIGHT")
-			GameTooltip:SetHyperlink("spell:"..NetherlightSpellID[trait[1]])
+			GameTooltip:SetHyperlink("spell:"..ExtraData.NetherlightSpellID[trait[1]])
 			GameTooltip:Show()
 		end)			
 		crucibleIconleft:SetCallback("OnLeave", function(widget)
@@ -1084,7 +1052,7 @@ function SimPermut:BuildNetherlightFrame()
 		SimPermut:AddSpacer(cruciblecontainerleft,false,0.1)
 		dropdownTableCrucible[#dropdownTableCrucible+1] = AceGUI:Create("Dropdown")
 		dropdownTableCrucible[#dropdownTableCrucible]:SetRelativeWidth(0.8)
-		dropdownTableCrucible[#dropdownTableCrucible]:SetList(NetherlightData[3][artifactID])
+		dropdownTableCrucible[#dropdownTableCrucible]:SetList(ExtraData.NetherlightData[3][artifactID])
 		dropdownTableCrucible[#dropdownTableCrucible]:SetLabel("")
 		dropdownTableCrucible[#dropdownTableCrucible]:SetValue(T3)
 		cruciblecontainerleft:AddChild(dropdownTableCrucible[#dropdownTableCrucible])
@@ -1125,13 +1093,13 @@ function SimPermut:BuildNetherlightFrame()
 	crucibleIcon=AceGUI:Create("Icon")
 	dropdownTableCrucible[#dropdownTableCrucible+1] = AceGUI:Create("Dropdown")
 	dropdownTableCrucible[#dropdownTableCrucible]:SetRelativeWidth(0.8)
-	dropdownTableCrucible[#dropdownTableCrucible]:SetList(NetherlightData[2])
+	dropdownTableCrucible[#dropdownTableCrucible]:SetList(ExtraData.NetherlightData[2])
 	dropdownTableCrucible[#dropdownTableCrucible]:SetLabel("")
 	dropdownTableCrucible[#dropdownTableCrucible]:SetValue(T2)
 	trait[2]=T2
 	dropdownTableCrucible[#dropdownTableCrucible]:SetCallback("OnValueChanged", function (this, event, item)
 		trait[2]=item
-		_, _, spellTexture = GetSpellInfo(NetherlightSpellID[item])
+		_, _, spellTexture = GetSpellInfo(ExtraData.NetherlightSpellID[item])
 		if spellTexture then
 			crucibleIcon:SetImage(spellTexture)
 		end
@@ -1141,7 +1109,7 @@ function SimPermut:BuildNetherlightFrame()
 	SimPermut:AddSpacer(cruciblecontainer,true)
 	SimPermut:AddSpacer(cruciblecontainer,false,0.4)
 	
-	_, _, spellTexture = GetSpellInfo(NetherlightSpellID[trait[2]])
+	_, _, spellTexture = GetSpellInfo(ExtraData.NetherlightSpellID[trait[2]])
 	if spellTexture then
 		crucibleIcon:SetImage(spellTexture)
 	end
@@ -1149,7 +1117,7 @@ function SimPermut:BuildNetherlightFrame()
 	crucibleIcon:SetWidth(60)
 	crucibleIcon:SetCallback("OnEnter", function(widget)
 		GameTooltip:SetOwner(widget.frame, "ANCHOR_TOPRIGHT")
-		GameTooltip:SetHyperlink("spell:"..NetherlightSpellID[trait[2]])
+		GameTooltip:SetHyperlink("spell:"..ExtraData.NetherlightSpellID[trait[2]])
 		GameTooltip:Show()
 	end)			
 	crucibleIcon:SetCallback("OnLeave", function(widget)
@@ -1170,7 +1138,7 @@ function SimPermut:BuildNetherlightFrame()
 	SimPermut:AddSpacer(cruciblecontainer,false,0.1)
 	dropdownTableCrucible[#dropdownTableCrucible+1] = AceGUI:Create("Dropdown")
 	dropdownTableCrucible[#dropdownTableCrucible]:SetRelativeWidth(0.8)
-	dropdownTableCrucible[#dropdownTableCrucible]:SetList(NetherlightData[3][artifactID])
+	dropdownTableCrucible[#dropdownTableCrucible]:SetList(ExtraData.NetherlightData[3][artifactID])
 	dropdownTableCrucible[#dropdownTableCrucible]:SetLabel("")
 	dropdownTableCrucible[#dropdownTableCrucible]:SetValue(T3)
 	cruciblecontainer:AddChild(dropdownTableCrucible[#dropdownTableCrucible])
@@ -1204,13 +1172,13 @@ function SimPermut:BuildNetherlightFrame()
 		crucibleIconright=AceGUI:Create("Icon")
 		dropdownTableCrucible[#dropdownTableCrucible+1] = AceGUI:Create("Dropdown")
 		dropdownTableCrucible[#dropdownTableCrucible]:SetRelativeWidth(0.8)
-		dropdownTableCrucible[#dropdownTableCrucible]:SetList(NetherlightData[2])
+		dropdownTableCrucible[#dropdownTableCrucible]:SetList(ExtraData.NetherlightData[2])
 		dropdownTableCrucible[#dropdownTableCrucible]:SetLabel("")
 		dropdownTableCrucible[#dropdownTableCrucible]:SetValue(T2)
 		trait[3]=T2
 		dropdownTableCrucible[#dropdownTableCrucible]:SetCallback("OnValueChanged", function (this, event, item)
 			trait[3]=item
-			_, _, spellTextureright = GetSpellInfo(NetherlightSpellID[item])
+			_, _, spellTextureright = GetSpellInfo(ExtraData.NetherlightSpellID[item])
 			if spellTextureright then
 				crucibleIconright:SetImage(spellTextureright)
 			end
@@ -1220,7 +1188,7 @@ function SimPermut:BuildNetherlightFrame()
 		SimPermut:AddSpacer(cruciblecontainerright,true)
 		SimPermut:AddSpacer(cruciblecontainerright,false,0.4)
 		
-		_, _, spellTextureright = GetSpellInfo(NetherlightSpellID[trait[3]])
+		_, _, spellTextureright = GetSpellInfo(ExtraData.NetherlightSpellID[trait[3]])
 		if spellTextureright then
 			crucibleIconright:SetImage(spellTextureright)
 		end
@@ -1228,7 +1196,7 @@ function SimPermut:BuildNetherlightFrame()
 		crucibleIconright:SetWidth(60)
 		crucibleIconright:SetCallback("OnEnter", function(widget)
 			GameTooltip:SetOwner(widget.frame, "ANCHOR_TOPRIGHT")
-			GameTooltip:SetHyperlink("spell:"..NetherlightSpellID[trait[3]])
+			GameTooltip:SetHyperlink("spell:"..ExtraData.NetherlightSpellID[trait[3]])
 			GameTooltip:Show()
 		end)			
 		crucibleIconright:SetCallback("OnLeave", function(widget)
@@ -1249,7 +1217,7 @@ function SimPermut:BuildNetherlightFrame()
 		SimPermut:AddSpacer(cruciblecontainerright,false,0.1)
 		dropdownTableCrucible[#dropdownTableCrucible+1] = AceGUI:Create("Dropdown")
 		dropdownTableCrucible[#dropdownTableCrucible]:SetRelativeWidth(0.8)
-		dropdownTableCrucible[#dropdownTableCrucible]:SetList(NetherlightData[3][artifactID])
+		dropdownTableCrucible[#dropdownTableCrucible]:SetList(ExtraData.NetherlightData[3][artifactID])
 		dropdownTableCrucible[#dropdownTableCrucible]:SetLabel("")
 		dropdownTableCrucible[#dropdownTableCrucible]:SetValue(T3)
 		cruciblecontainerright:AddChild(dropdownTableCrucible[#dropdownTableCrucible])
@@ -1263,7 +1231,7 @@ function SimPermut:BuildNetherlightFrame()
 	SimPermut:AddSpacer(container1,false,0.3)
 	local ReportDropdownCruciblegen = AceGUI:Create("Dropdown")
     ReportDropdownCruciblegen:SetWidth(160)
-	ReportDropdownCruciblegen:SetList(ReportTypeCrucible)
+	ReportDropdownCruciblegen:SetList(ExtraData.ReportTypeCrucible)
 	ReportDropdownCruciblegen:SetLabel("Report Type")
 	ReportDropdownCruciblegen:SetValue(actualSettings.report_typeCrucible)
 	ReportDropdownCruciblegen:SetCallback("OnValueChanged", function (this, event, item)
@@ -1354,9 +1322,9 @@ function SimPermut:BuildDungeonJournalFrame()
 	
 	local socketString=""
 	local ilvlString=""
-	for j=1,#listNames do
+	for j=1,#ExtraData.ListNames do
 		tableTitres[j]=AceGUI:Create("Label")
-		tableTitres[j]:SetText(PersoLib:firstToUpper(listNames[j]))
+		tableTitres[j]:SetText(PersoLib:firstToUpper(ExtraData.ListNames[j]))
 		tableTitres[j]:SetFullWidth(true)
 		if(j<7) then
 			scroll1:AddChild(tableTitres[j])
@@ -1415,7 +1383,7 @@ function SimPermut:BuildDungeonJournalFrame()
 	buttonAdd:SetText("Delete Selected")
 	buttonAdd:SetRelativeWidth(0.3)
 	buttonAdd:SetCallback("OnClick", function(this, event, item)
-		for j=1,#listNames do
+		for j=1,#ExtraData.ListNames do
 			if SimPermutVars.addedItemsTable and SimPermutVars.addedItemsTable[j] then
 				for i,_ in pairs(SimPermutVars.addedItemsTable[j]) do
 					if tableCheckBoxes[j][i]:GetValue() then
@@ -1530,7 +1498,7 @@ function SimPermut:BuildOptionFrame()
 	container1:AddChild(labelreportTypeGear)
 	local ReportDropdownGear = AceGUI:Create("Dropdown")
     ReportDropdownGear:SetWidth(160)
-	ReportDropdownGear:SetList(ReportTypeGear)
+	ReportDropdownGear:SetList(ExtraData.ReportTypeGear)
 	ReportDropdownGear:SetLabel("Gear")
 	ReportDropdownGear:SetValue(actualSettings.report_typeGear)
 	ReportDropdownGear:SetCallback("OnValueChanged", function (this, event, item)
@@ -1541,7 +1509,7 @@ function SimPermut:BuildOptionFrame()
 
 	local ReportDropdownTalents = AceGUI:Create("Dropdown")
     ReportDropdownTalents:SetWidth(160)
-	ReportDropdownTalents:SetList(ReportTypeTalents)
+	ReportDropdownTalents:SetList(ExtraData.ReportTypeTalents)
 	ReportDropdownTalents:SetLabel("Talents")
 	ReportDropdownTalents:SetValue(actualSettings.report_typeTalents)
 	ReportDropdownTalents:SetCallback("OnValueChanged", function (this, event, item)
@@ -1552,7 +1520,7 @@ function SimPermut:BuildOptionFrame()
 
 	local ReportDropdownRelics = AceGUI:Create("Dropdown")
     ReportDropdownRelics:SetWidth(160)
-	ReportDropdownRelics:SetList(ReportTypeRelics)
+	ReportDropdownRelics:SetList(ExtraData.ReportTypeRelics)
 	ReportDropdownRelics:SetLabel("Artifact")
 	ReportDropdownRelics:SetValue(actualSettings.report_typeRelics)
 	ReportDropdownRelics:SetCallback("OnValueChanged", function (this, event, item)
@@ -1563,7 +1531,7 @@ function SimPermut:BuildOptionFrame()
 	
 	local ReportDropdownCrucible = AceGUI:Create("Dropdown")
     ReportDropdownCrucible:SetWidth(160)
-	ReportDropdownCrucible:SetList(ReportTypeCrucible)
+	ReportDropdownCrucible:SetList(ExtraData.ReportTypeCrucible)
 	ReportDropdownCrucible:SetLabel("Crucible")
 	ReportDropdownCrucible:SetValue(actualSettings.report_typeCrucible)
 	ReportDropdownCrucible:SetCallback("OnValueChanged", function (this, event, item)
@@ -1624,7 +1592,7 @@ function SimPermut:BuildOptionFrame()
 	
 	local dropdownEnchantNeck = AceGUI:Create("Dropdown")
 	dropdownEnchantNeck:SetWidth(130)
-	dropdownEnchantNeck:SetList(enchantNeck)
+	dropdownEnchantNeck:SetList(ExtraData.enchantNeck)
 	dropdownEnchantNeck:SetValue(actualSettings.enchant_neck)
 	dropdownEnchantNeck:SetCallback("OnValueChanged", function (this, event, item)
 		SimPermutVars.enchant_neck=item
@@ -1639,7 +1607,7 @@ function SimPermut:BuildOptionFrame()
 	
 	local dropdownEnchantBack = AceGUI:Create("Dropdown")
 	dropdownEnchantBack:SetWidth(110)
-	dropdownEnchantBack:SetList(enchantCloak)
+	dropdownEnchantBack:SetList(ExtraData.enchantCloak)
 	dropdownEnchantBack:SetValue(actualSettings.enchant_back)
 	dropdownEnchantBack:SetCallback("OnValueChanged", function (this, event, item)
 		SimPermutVars.enchant_back=item
@@ -1654,7 +1622,7 @@ function SimPermut:BuildOptionFrame()
 	
 	local dropdownEnchantFinger = AceGUI:Create("Dropdown")
 	dropdownEnchantFinger:SetWidth(110)
-	dropdownEnchantFinger:SetList(enchantRing)
+	dropdownEnchantFinger:SetList(ExtraData.enchantRing)
 	dropdownEnchantFinger:SetValue(actualSettings.enchant_ring)
 	dropdownEnchantFinger:SetCallback("OnValueChanged", function (this, event, item)
 		SimPermutVars.enchant_ring=item
@@ -1668,7 +1636,7 @@ function SimPermut:BuildOptionFrame()
 	container1:AddChild(labelGem)
 	
 	local dropdownGem = AceGUI:Create("Dropdown")
-	dropdownGem:SetList(gemList)
+	dropdownGem:SetList(ExtraData.gemList)
 	dropdownGem:SetWidth(110)
 	dropdownGem:SetValue(actualSettings.gems)
 	dropdownGem:SetCallback("OnValueChanged", function (this, event, item)
@@ -1696,7 +1664,7 @@ function SimPermut:BuildOptionFrame()
 	container1:AddChild(labelSetsT19)
 	
 	local dropdownSetsT19 = AceGUI:Create("Dropdown")
-	dropdownSetsT19:SetList(SetsListT19)
+	dropdownSetsT19:SetList(ExtraData.SetsListT19)
 	dropdownSetsT19:SetWidth(110)
 	dropdownSetsT19:SetValue(actualSettings.setsT19)
 	dropdownSetsT19:SetCallback("OnValueChanged", function (this, event, item)
@@ -1711,7 +1679,7 @@ function SimPermut:BuildOptionFrame()
 	container1:AddChild(labelSetsT20)
 	
 	local dropdownSetsT20 = AceGUI:Create("Dropdown")
-	dropdownSetsT20:SetList(SetsListT20)
+	dropdownSetsT20:SetList(ExtraData.SetsListT20)
 	dropdownSetsT20:SetWidth(110)
 	dropdownSetsT20:SetValue(actualSettings.setsT20)
 	dropdownSetsT20:SetCallback("OnValueChanged", function (this, event, item)
@@ -1726,7 +1694,7 @@ function SimPermut:BuildOptionFrame()
 	container1:AddChild(labelSetsT21)
 	
 	local dropdownSetsT21 = AceGUI:Create("Dropdown")
-	dropdownSetsT21:SetList(SetsListT21)
+	dropdownSetsT21:SetList(ExtraData.SetsListT21)
 	dropdownSetsT21:SetWidth(110)
 	dropdownSetsT21:SetValue(actualSettings.setsT21)
 	dropdownSetsT21:SetCallback("OnValueChanged", function (this, event, item)
@@ -1742,7 +1710,7 @@ function SimPermut:BuildOptionFrame()
 	container1:AddChild(labelepicGem)
 	
 	local dropdownEpicGem = AceGUI:Create("Dropdown")
-	dropdownEpicGem:SetList(gemListEpic)
+	dropdownEpicGem:SetList(ExtraData.gemListEpic)
 	dropdownEpicGem:SetWidth(110)
 	dropdownEpicGem:SetValue(actualSettings.gemsEpic)
 	dropdownEpicGem:SetCallback("OnValueChanged", function (this, event, item)
@@ -1851,9 +1819,9 @@ end
 function SimPermut:BuildItemFrame()
 	local socketString=""
 	local ilvlString=""
-	for j=1,#listNames do
+	for j=1,#ExtraData.ListNames do
 		tableTitres[j]=AceGUI:Create("Label")
-		tableTitres[j]:SetText(PersoLib:firstToUpper(listNames[j]))
+		tableTitres[j]:SetText(PersoLib:firstToUpper(ExtraData.ListNames[j]))
 		tableTitres[j]:SetFullWidth(true)
 		if(j<7) then
 			scroll1:AddChild(tableTitres[j])
@@ -1909,7 +1877,7 @@ function SimPermut:BuildItemFrame()
 			tableLabel[j][i]:SetCallback("OnLeave", function() GameTooltip:Hide()  end)
 			
 			if (j>=11 and ad) then
-				PersoLib:debugPrint(listNames[j]..i.." : "..PersoLib:GetIDFromLink(tableListItems[j][i][1]),ad)
+				PersoLib:debugPrint(ExtraData.ListNames[j]..i.." : "..PersoLib:GetIDFromLink(tableListItems[j][i][1]),ad)
 			end
 			
 			if(j<7) then
@@ -2046,7 +2014,7 @@ end
 function SimPermut:GetSelectedCount()
 	selecteditems = 0
 	tableNumberSelected={}
-	for i=1,#listNames do
+	for i=1,#ExtraData.ListNames do
 		tableNumberSelected[i]=0
 		for j=1,#tableListItems[i] do
 			if tableCheckBoxes[i][j]:GetValue() then
@@ -2339,8 +2307,8 @@ function SimPermut:GetItemStrings()
 	
 	equipedLegendaries = 0
 
-	for slotNum=1, #PermutSlotNames do
-		slotId = GetInventorySlotInfo(PermutSlotNames[slotNum])
+	for slotNum=1, #ExtraData.PermutSlotNames do
+		slotId = GetInventorySlotInfo(ExtraData.PermutSlotNames[slotNum])
 		itemLink = GetInventoryItemLink('player', slotId) 
 
 		-- if we don't have an item link, we don't care
@@ -2349,10 +2317,10 @@ function SimPermut:GetItemStrings()
 			if itemRarity==5 then
 				equipedLegendaries= equipedLegendaries+1
 			end
-			itemString=SimPermut:GetItemString(itemLink,PermutSimcNames[slotNum],true)
+			itemString=SimPermut:GetItemString(itemLink,ExtraData.PermutSimcNames[slotNum],true)
 			tableBaseString[slotNum]=table.concat(itemString, ',')
 			itemsLinks[slotNum]=itemLink
-			items[slotNum] = PermutSimcNames[slotNum] .. "=" .. table.concat(itemString, ',')
+			items[slotNum] = ExtraData.PermutSimcNames[slotNum] .. "=" .. table.concat(itemString, ',')
 		end
 	end
 
@@ -2406,8 +2374,8 @@ function SimPermut:GetListItem(strItem,itemLine)
 		slotID=15
 		realSlot=13
 	end
-	blizzardname=SimPermut.slotNames[slotID]
-	simcname=simcSlotNames[slotID]
+	blizzardname=ExtraData.SlotNames[slotID]
+	simcname=ExtraData.SimcSlotNames[slotID]
 	local id, _, _ = GetInventorySlotInfo(blizzardname)
 	GetInventoryItemsForSlot(id, equippableItems)
 	for locationBitstring, itemID in pairs(equippableItems) do
@@ -2438,9 +2406,9 @@ end
 
 -- get the list of items of all selected items from dropdown
 function SimPermut:GetListItems()
-	for i=1,#listNames do
+	for i=1,#ExtraData.ListNames do
 		tableListItems[i]={}
-		tableListItems[i]=SimPermut:GetListItem(listNames[i],i)
+		tableListItems[i]=SimPermut:GetListItem(ExtraData.ListNames[i],i)
 		
 		--added items
 		if SimPermutVars.addedItemsTable and SimPermutVars.addedItemsTable[i] then
@@ -2455,7 +2423,7 @@ end
 function SimPermut:GetTableLink()
 	local returnvalue=true
 	local slotid
-	for i=1,#listNames do
+	for i=1,#ExtraData.ListNames do
 		tableLinkPermut[i]={}
 		if tableListItems[i] and #tableListItems[i]>0 then
 			for j=1,#tableListItems[i] do
@@ -2472,7 +2440,7 @@ function SimPermut:GetTableLink()
 			else
 				slotid=i
 			end
-			tableLinkPermut[i][1]={GetInventoryItemLink('player', GetInventorySlotInfo(slotNames[slotid])),nil,nil}
+			tableLinkPermut[i][1]={GetInventoryItemLink('player', GetInventorySlotInfo(ExtraData.SlotNames[slotid])),nil,nil}
 		end
 			
 	end
@@ -2480,9 +2448,9 @@ function SimPermut:GetTableLink()
 	--manage fingers and trinkets
 	if #tableLinkPermut[12]==0 then --if no trinket chosen, we take the equiped ones
 		tableLinkPermut[13]={}
-		tableLinkPermut[13][1]={GetInventoryItemLink('player', GetInventorySlotInfo(slotNames[15])),nil,nil}
+		tableLinkPermut[13][1]={GetInventoryItemLink('player', GetInventorySlotInfo(ExtraData.SlotNames[15])),nil,nil}
 		tableLinkPermut[14]={}
-		tableLinkPermut[14][1]={GetInventoryItemLink('player', GetInventorySlotInfo(slotNames[16])),nil,nil}
+		tableLinkPermut[14][1]={GetInventoryItemLink('player', GetInventorySlotInfo(ExtraData.SlotNames[16])),nil,nil}
 	else --else we copy the selected ones on the second slot and reposition the slot in the good position
 		if #tableLinkPermut[12]==1 then
 			errorMessage="Can't permut with only one trinket"
@@ -2501,8 +2469,8 @@ function SimPermut:GetTableLink()
 	end
 	
 	if #tableLinkPermut[11]==0 then --if no finger chosen, we take the equiped ones
-		tableLinkPermut[11][1]={GetInventoryItemLink('player', GetInventorySlotInfo(slotNames[13])),nil,nil}
-		tableLinkPermut[12][1]={GetInventoryItemLink('player', GetInventorySlotInfo(slotNames[14])),nil,nil}
+		tableLinkPermut[11][1]={GetInventoryItemLink('player', GetInventorySlotInfo(ExtraData.SlotNames[13])),nil,nil}
+		tableLinkPermut[12][1]={GetInventoryItemLink('player', GetInventorySlotInfo(ExtraData.SlotNames[14])),nil,nil}
 	else --else we copy the selected ones on the second slot
 		if #tableLinkPermut[11]==1 then
 			errorMessage="Can't permut with only one ring"
@@ -2531,11 +2499,11 @@ function SimPermut:GetItemListString()
 		for j=1,#tableLinkPermut[i] do
 			local _,_,itemRarity = GetItemInfo(tableLinkPermut[i][j][1])
 			local itemid = tonumber(PersoLib:GetIDFromLink(tableLinkPermut[i][j][1]))
-			local itemString = SimPermut:GetItemString(tableLinkPermut[i][j][1],PermutSimcNames[i],false,tableLinkPermut[i][j][2],tableLinkPermut[i][j][3])
-			actualString = actualString .. ((itemid == HasTierSets["T21"][classID][i]) and "T21" or "")..((itemid == HasTierSets["T20"][classID][i]) and "T20" or "").. ((itemid == HasTierSets["T19"][classID][i]) and "T19" or "").. ((itemRarity== 5) and "L" or "")..table.concat(itemString, ',').."|"
+			local itemString = SimPermut:GetItemString(tableLinkPermut[i][j][1],ExtraData.PermutSimcNames[i],false,tableLinkPermut[i][j][2],tableLinkPermut[i][j][3])
+			actualString = actualString .. ((itemid == ExtraData.HasTierSets["T21"][classID][i]) and "T21" or "")..((itemid == ExtraData.HasTierSets["T20"][classID][i]) and "T20" or "").. ((itemid == ExtraData.HasTierSets["T19"][classID][i]) and "T19" or "").. ((itemRarity== 5) and "L" or "")..table.concat(itemString, ',').."|"
 		end
 		actualString=actualString:sub(1, -2)
-		returnString = returnString..PermutSimcNames[i] .. "="..actualString.."\n"
+		returnString = returnString..ExtraData.PermutSimcNames[i] .. "="..actualString.."\n"
 		
 	end
 	
@@ -2574,7 +2542,7 @@ function SimPermut:GetAutoSimcString()
 	autoSimcString=autoSimcString .. "class="..PersoLib:tokenize(playerClass) .."\n"
 	autoSimcString=autoSimcString .. "race="..PersoLib:tokenize(PersoLib:getRace()).."\n"
 	autoSimcString=autoSimcString .. "level="..UnitLevel('player').."\n"
-	autoSimcString=autoSimcString .. "spec="..PersoLib:tokenize(specNames[ PersoLib:getSpecID() ]).."\n"
+	autoSimcString=autoSimcString .. "spec="..PersoLib:tokenize(ExtraData.SpecNames[ PersoLib:getSpecID() ]).."\n"
 	autoSimcString=autoSimcString .. "role="..PersoLib:translateRole(PersoLib:getSpecID()).."\n"
 	autoSimcString=autoSimcString .. "position=back".."\n"
 	autoSimcString=autoSimcString .. "talents="..PersoLib:CreateSimcTalentString().."\n"
@@ -2713,11 +2681,11 @@ function SimPermut:GetPermutationString(permuttable)
 					nbLeg=nbLeg+1
 				end
 				
-				itemString=SimPermut:GetItemString(permuttable[i][j][1],PermutSimcNames[j],false,permuttable[i][j][2],permuttable[i][j][3])
+				itemString=SimPermut:GetItemString(permuttable[i][j][1],ExtraData.PermutSimcNames[j],false,permuttable[i][j][2],permuttable[i][j][3])
 				itemStringFinal=table.concat(itemString, ',')
 				if (j>10) then
 					if (j==11 or j==13) then
-						itemString2 =SimPermut:GetItemString(permuttable[i][j+1][1],PermutSimcNames[j+1],false,permuttable[i][j][2],permuttable[i][j][3])
+						itemString2 =SimPermut:GetItemString(permuttable[i][j+1][1],ExtraData.PermutSimcNames[j+1],false,permuttable[i][j][2],permuttable[i][j][3])
 						itemStringFinal2 = table.concat(itemString2, ',')
 						if(itemStringFinal==tableBaseString[j] or (itemStringFinal==tableBaseString[j+1] and itemStringFinal2==tableBaseString[j]))then
 							draw=false
@@ -2725,7 +2693,7 @@ function SimPermut:GetPermutationString(permuttable)
 							draw=true
 						end
 					else
-						itemString2 =SimPermut:GetItemString(permuttable[i][j-1][1],PermutSimcNames[j-1],false,permuttable[i][j][2],permuttable[i][j][3])
+						itemString2 =SimPermut:GetItemString(permuttable[i][j-1][1],ExtraData.PermutSimcNames[j-1],false,permuttable[i][j][2],permuttable[i][j][3])
 						itemStringFinal2 = table.concat(itemString2, ',')
 						if(itemStringFinal==tableBaseString[j] or (itemStringFinal==tableBaseString[j-1] and itemStringFinal2==tableBaseString[j]))then
 							draw=false
@@ -2746,7 +2714,7 @@ function SimPermut:GetPermutationString(permuttable)
 					if not ad then
 						okDrawn=okDrawn+1
 					end
-					currentString = currentString.. adString ..PermutSimcNames[j] .. "=" .. table.concat(itemString, ',').."\n"
+					currentString = currentString.. adString ..ExtraData.PermutSimcNames[j] .. "=" .. table.concat(itemString, ',').."\n"
 					itemname = GetItemInfo(permuttable[i][j][1])
 					nbitem=nbitem+1
 					itemList=itemList..PersoLib:tokenize(itemname).."-"
@@ -2884,7 +2852,7 @@ function SimPermut:GenerateRelicString()
 			if DropdownTrait1:GetValue()==0 then
 				CopyString=CopyString.."Current".."_"
 			else
-				CopyString=CopyString..ArtifactTableTraits[artifactID][1][relicid1].."_"
+				CopyString=CopyString..ExtraData.ArtifactTableTraits[artifactID][1][relicid1].."_"
 			end
 			
 			if relicComparisonTypeValue==1 and tonumber(relicilvl2)~=itemLevel2 then
@@ -2893,7 +2861,7 @@ function SimPermut:GenerateRelicString()
 			if DropdownTrait2:GetValue()==0 then
 				CopyString=CopyString.."Current".."_"
 			else
-				CopyString=CopyString..ArtifactTableTraits[artifactID][2][relicid2].."_"
+				CopyString=CopyString..ExtraData.ArtifactTableTraits[artifactID][2][relicid2].."_"
 			end
 			
 			if not artifactData.relics[3].isLocked then
@@ -2903,7 +2871,7 @@ function SimPermut:GenerateRelicString()
 				if DropdownTrait3:GetValue()==0 then
 					CopyString=CopyString.."Current"
 				else
-					CopyString=CopyString..ArtifactTableTraits[artifactID][3][relicid3]
+					CopyString=CopyString..ExtraData.ArtifactTableTraits[artifactID][3][relicid3]
 				end
 			end
 			
@@ -2923,7 +2891,7 @@ function SimPermut:GenerateCrucibleString()
 	local artifactID,artifactData = LAD:GetArtifactInfo() 
 	local CopyString=""
 	local crucibleString
-	local T1,_=next(NetherlightData[1],nil)
+	local T1,_=next(ExtraData.NetherlightData[1],nil)
 	
 	local tabletraits={}
 	for _,v in pairs(dropdownTableCrucible) do 
@@ -2934,10 +2902,10 @@ function SimPermut:GenerateCrucibleString()
 	crucibleString = T1..":3"
 	for k,v in pairs(tabletraits) do
 		crucibleString = crucibleString..":"..k..":"..v
-		if NetherlightData[2][k] then --crucible trait
-			CopyString = CopyString..NetherlightData[2][k].."-"..v.."_"
+		if ExtraData.NetherlightData[2][k] then --crucible trait
+			CopyString = CopyString..ExtraData.NetherlightData[2][k].."-"..v.."_"
 		else --artifact trait
-			CopyString = CopyString..NetherlightData[3][artifactID][k].."-"..v.."_"
+			CopyString = CopyString..ExtraData.NetherlightData[3][artifactID][k].."-"..v.."_"
 		end
 	end
 	CopyString=CopyString:sub(1, -2)
@@ -3023,7 +2991,7 @@ function SimPermut:GetBaseString(nocrucible)
 	_, playerClass,classID = UnitClass('player')
 	local playerLevel = UnitLevel('player')
 	local playerRealm = GetRealmName()
-	local playerRegion = regionString[GetCurrentRegion()]
+	local playerRegion = ExtraData.RegionString[GetCurrentRegion()]
 	local bPermut=false
 	local slotId,itemLink
 	local itemString = {}
@@ -3031,7 +2999,7 @@ function SimPermut:GetBaseString(nocrucible)
 	local playerRace = PersoLib:getRace()
 	local playerTalents = PersoLib:CreateSimcTalentString()
 	local playerArtifact,playerCrucible = SimPermut:GetArtifactString(nocrucible)
-	local playerSpec = specNames[ PersoLib:getSpecID() ]
+	local playerSpec = ExtraData.SpecNames[ PersoLib:getSpecID() ]
 
 	-- Construct SimC-compatible strings from the basic information
 	local player = ""
@@ -3071,7 +3039,7 @@ function SimPermut:GetBaseString(nocrucible)
 
 	SimPermutProfile = SimPermutProfile .. "name=Base \n"
 	-- output gear
-	for slotNum=1, #PermutSlotNames do
+	for slotNum=1, #ExtraData.PermutSlotNames do
 		if items[slotNum] then
 			SimPermutProfile = SimPermutProfile .. items[slotNum] .. '\n'
 		end
@@ -3178,8 +3146,8 @@ end
 function SimPermut:GetArtifactString(nocrucible)
 	
 	SocketInventoryItem(INVSLOT_MAINHAND)
-	if artifactID and artifactTable[artifactID] then
-		local str = artifactTable[artifactID] .. ':0:0:0:0'
+	if artifactID and ExtraData.ArtifactTable[artifactID] then
+		local str = ExtraData.ArtifactTable[artifactID] .. ':0:0:0:0'
 		local cruciblestr = ""
 		local baseRanks = {}
 		local crucibleRanks = {}
@@ -3200,14 +3168,14 @@ function SimPermut:GetArtifactString(nocrucible)
 		end
 
 		-- Grab 7.3 artifact trait information
-		for _, powerId in ipairs(NetherlightData[1]) do
+		for _, powerId in ipairs(ExtraData.NetherlightData[1]) do
 			local powerId, powerRank, relicRank, crucibleRank = SimPermut:GetPowerData(powerId, true)
 			if crucibleRank > 0 then
 			  crucibleRanks[#crucibleRanks + 1] = powerId
 			  crucibleRanks[#crucibleRanks + 1] = crucibleRank
 			end
 		end
-		for _, powerId in ipairs(NetherlightData[2]) do
+		for _, powerId in ipairs(ExtraData.NetherlightData[2]) do
 			local powerId, powerRank, relicRank, crucibleRank = SimPermut:GetPowerData(powerId, true)
 			if crucibleRank > 0 then
 			  crucibleRanks[#crucibleRanks + 1] = powerId
@@ -3233,16 +3201,16 @@ end
 
 -- check for Tier Sets
 function SimPermut:HasTier(stier,tableEquip)
-	if HasTierSets[stier][classID] then
+	if ExtraData.HasTierSets[stier][classID] then
       local Count = 0;
       local Item;
-      for Slot, ItemID in pairs(HasTierSets[stier][classID]) do
+      for Slot, ItemID in pairs(ExtraData.HasTierSets[stier][classID]) do
         Item = tonumber(PersoLib:GetIDFromLink(tableEquip[Slot][1]));
         if Item and Item == ItemID then
           Count = Count + 1;
         end
       end
-      return HasTierSets[stier][0](Count);
+      return ExtraData.HasTierSets[stier][0](Count);
     else
       return false;
     end
@@ -3253,20 +3221,20 @@ function SimPermut:AddItemLink(itemLink,itemilvl,socket)
 	
 	name, link, quality, iLevel, reqLevel, class, subclass, maxStack, equipSlot, texture, vendorPrice = GetItemInfo(itemLink)
 	if link then
-		if GetItemInfoName[equipSlot] then
+		if ExtraData.GetItemInfoName[equipSlot] then
 			local _,_,itemRarity = GetItemInfo(itemLink)
 			if not SimPermutVars.addedItemsTable then 
 				SimPermutVars.addedItemsTable={}
 			end
-			if not SimPermutVars.addedItemsTable[GetItemInfoName[equipSlot]] then 
-				SimPermutVars.addedItemsTable[GetItemInfoName[equipSlot]]={}
+			if not SimPermutVars.addedItemsTable[ExtraData.GetItemInfoName[equipSlot]] then 
+				SimPermutVars.addedItemsTable[ExtraData.GetItemInfoName[equipSlot]]={}
 			end
 			if itemRarity==5 or (itemilvl and tonumber(itemilvl) and string.len(""..tonumber(itemilvl))>0) then
 				local addedilvl=nil
 				if itemilvl and tonumber(itemilvl) and string.len(""..tonumber(itemilvl))>0 then
 					addedilvl=tonumber(itemilvl)
 				end
-				table.insert(SimPermutVars.addedItemsTable[GetItemInfoName[equipSlot]],{itemLink,addedilvl,socket})
+				table.insert(SimPermutVars.addedItemsTable[ExtraData.GetItemInfoName[equipSlot]],{itemLink,addedilvl,socket})
 				PersoLib:MergeTables(defaultSettings,SimPermutVars,actualSettings)
 				return true
 			else
