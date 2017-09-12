@@ -60,7 +60,57 @@ SimPermut.ExtraData={
 	  [72] = 'Fury',
 	  [73] = 'Protection'
 	},
-
+	RoleTable={
+		-- Death Knight
+		[250] = 'tank',
+		[251] = 'attack',
+		[252] = 'attack',
+		-- Demon Hunter
+		[577] = 'attack',
+		[581] = 'tank',
+		-- Druid
+		[102] = 'spell',
+		[103] = 'attack',
+		[104] = 'tank',
+		[105] = 'heal',
+		-- Hunter
+		[253] = 'attack',
+		[254] = 'attack',
+		[255] = 'attack',
+		-- Mage
+		[62] = 'spell',
+		[63] = 'spell',
+		[64] = 'spell',
+		-- Monk
+		[268] = 'tank',
+		[269] = 'attack',
+		[270] = 'hybrid',
+		-- Paladin
+		[65] = 'heal',
+		[66] = 'tank',
+		[70] = 'attack',
+		-- Priest
+		[256] = 'spell',
+		[257] = 'heal',
+		[258] = 'spell',
+		-- Rogue
+		[259] = 'attack',
+		[260] = 'attack',
+		[261] = 'attack',
+		-- Shaman
+		[262] = 'spell',
+		[263] = 'attack',
+		[264] = 'heal',
+		-- Warlock
+		[265] = 'spell',
+		[266] = 'spell',
+		[267] = 'spell',
+		-- Warrior
+		[71] = 'attack',
+		[72] = 'attack',
+		[73] = 'attack'
+	},
+	
 	-- Artifact Data
 	ArtifactTable = {
 	-- Death Knight

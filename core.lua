@@ -4,100 +4,105 @@ SimPermut = LibStub("AceAddon-3.0"):NewAddon(SimPermut, "SimPermut", "AceConsole
 
 SimPermutVars={}
 
-local OFFSET_ITEM_ID 	= 1
-local OFFSET_ENCHANT_ID = 2
-local OFFSET_GEM_ID_1 	= 3
-local OFFSET_GEM_ID_2 	= 4
-local OFFSET_GEM_ID_3 	= 5
-local OFFSET_GEM_ID_4 	= 6
-local OFFSET_SUFFIX_ID 	= 7
-local OFFSET_FLAGS 		= 11
-local OFFSET_BONUS_ID 	= 13
-local TALENTS_MAX_COLUMN= 3
-local TALENTS_MAX_ROW	= 7
-local RELIC_MIN_ILVL	= 780
-local RELIC_MAX_ILVL	= 999
-
 -- Libs
 local ArtifactUI          	= _G.C_ArtifactUI
 local Clear                 = ArtifactUI.Clear
-local HasArtifactEquipped 	= _G.HasArtifactEquipped
 local SocketInventoryItem 	= _G.SocketInventoryItem
-local Timer               	= _G.C_Timer
 local AceGUI 			  	= LibStub("AceGUI-3.0")
 local LAD					= LibStub("LibArtifactData-1.0")
 local PersoLib			  	= LibStub("PersoLib")
 
---UI
+-- Data
+local ExtraData			= SimPermut.ExtraData
+
+-- UI
+local UIParameters={
+	--Consts
+	OFFSET_ITEM_ID 		= 1,
+	OFFSET_ENCHANT_ID 	= 2,
+	OFFSET_GEM_ID_1 	= 3,
+	OFFSET_GEM_ID_2 	= 4,
+	OFFSET_GEM_ID_3 	= 5,
+	OFFSET_GEM_ID_4 	= 6,
+	OFFSET_SUFFIX_ID 	= 7,
+	OFFSET_FLAGS 		= 11,
+	OFFSET_BONUS_ID 	= 13,
+	TALENTS_MAX_COLUMN	= 3,
+	TALENTS_MAX_ROW		= 7,
+	RELIC_MIN_ILVL		= 780,
+	RELIC_MAX_ILVL		= 999,
+	ITEM_COUNT_THRESHOLD = 25,
+	COPY_THRESHOLD 		= 500,
+	
+	mainframeCreated=false,
+	classID,
+	artifactID,
+	artifactData,
+	selecteditems=0,
+	labelCount,
+	errorMessage="",
+	currentFrame=1,
+	relicComparisonTypeValue=1,
+	CrucibleTypeTypeValue=1,
+	relicCopyCount=1,
+	relicString="",
+	crucibleCopyCount=1,
+	crucibleString="",
+	
+	actualEnchantNeck=0,
+	actualEnchantFinger=0,
+	actualEnchantBack=0,
+	actualGem=0,
+	actualForce=false,
+	actualLegMin=0,
+	actualLegMax=0,
+	actualSetsT19=0,
+	actualSetsT20=0,
+	actualSetsT21=0,
+	equipedLegendaries=0,
+	epicGemUsed,
+	fingerInf = false,
+	trinketInf = false,
+	ad=false
+}
+local UIElements={
+	mainframe,
+	scroll1,
+	scroll2,
+	scroll3,
+	checkBoxForce,
+	resultBox,
+	mainGroup,
+	resultGroup,
+	tableListItems={},
+	tableTitres={},
+	tableLabel={},
+	tableCheckBoxes={},
+	spacerTable={},
+	dropdownTableCrucible={},
+	tableTalentLabel={},
+	tableTalentIcon={},
+	tableTalentcheckbox={},
+	tableTalentSpells={},
+	tableTalentResults={},
+	tablePreCheck={},
+	tableNumberSelected={},
+	DropdownTrait1,
+	DropdownTrait2,
+	DropdownTrait3,
+	ilvlTrait1,
+	ilvlTrait2,
+	ilvlTrait3,
+	ilvlWeapon,
+	editLegMin,
+	editLegMax,
+	tableLinkPermut={},
+	tableBaseLink={},
+	tableBaseString={}
+}
+
+-- Config
 local variablesLoaded=false
-local mainframe 
-local mainframeCreated=false
-local stringframeCreated=false
-local scroll1
-local scroll2
-local scroll3
-local checkBoxForce
-local actualEnchantNeck=0
-local actualEnchantFinger=0
-local actualEnchantBack=0
-local actualGem=0
-local actualForce=false
-local editLegMin=0
-local editLegMax=0
-local actualLegMin=0
-local actualLegMax=0
-local actualSetsT19=0
-local actualSetsT20=0
-local actualSetsT21=0
-local tableListItems={}
-local tableTitres={}
-local tableLabel={}
-local tableCheckBoxes={}
-local tableLinkPermut={}
-local tableBaseLink={}
-local tableBaseString={}
-local tableNumberSelected={}
-local labelCount
-local selecteditems=0
-local errorMessage=""
-local artifactData={}
-local artifactID
-local resultBox
-local fingerInf = false
-local trinketInf = false
-local classID=0
-local equipedLegendaries=0
-local ad=false
-local tableTalentLabel={}
-local tableTalentIcon={}
-local tableTalentcheckbox={}
-local tableTalentSpells={}
-local tableTalentResults={}
-local currentFrame=1
-local mainGroup
-local resultGroup
-local tablePreCheck={}
-local DropdownTrait1
-local DropdownTrait2
-local DropdownTrait3
-local ilvlTrait1
-local ilvlTrait2
-local ilvlTrait3
-local ilvlWeapon
-local relicCopyCount=1
-local relicString=""
-local crucibleCopyCount=1
-local crucibleString=""
-local relicComparisonTypeValue=1
-local CrucibleTypeTypeValue=1
-local spacerTable={}
-local dropdownTableCrucible={}
-local epicGemUsed
-
-
--- Parameters
-local ITEM_COUNT_THRESHOLD 		= 25
-local COPY_THRESHOLD 			= 500
 local defaultSettings={
 	report_typeGear		= 2,
 	report_typeTalents	= 2,
@@ -124,9 +129,6 @@ local defaultSettings={
 }
 local actualSettings={}
 
--- load stuff from extras.lua
-local ExtraData			= SimPermut.ExtraData
-
 SLASH_SIMPERMUTSLASH1 = "/SimPermut"
 SLASH_SIMPERMUTSLASHDEBUG1 = "/SimPermutDebug"
 
@@ -138,8 +140,8 @@ end
 
 -- Command UI
 SlashCmdList["SIMPERMUTSLASH"] = function (arg)
-	if mainframeCreated and mainframe:IsShown() then
-		mainframe:Hide()
+	if UIParameters.mainframeCreated and UIElements.mainframe:IsShown() then
+		UIElements.mainframe:Hide()
 	else
 		if not variablesLoaded then
 			if not SimPermutVars then SimPermutVars = {} end
@@ -150,34 +152,29 @@ SlashCmdList["SIMPERMUTSLASH"] = function (arg)
 		--handle commandline
 		for i=1,#ExtraData.ListNames do
 			if string.match(arg, ExtraData.ListNames[i]) then
-				tablePreCheck[i]=true
+				UIElements.tablePreCheck[i]=true
 			else
-				tablePreCheck[i]=false
+				UIElements.tablePreCheck[i]=false
 			end
 		end
 		SimPermut:BuildFrame()
-		mainframeCreated=true
+		UIParameters.mainframeCreated=true
 	end
 end
 
 SlashCmdList["SIMPERMUTSLASHDEBUG"] = function (arg)
-	if ad then
-		ad = false
+	if UIParameters.ad then
+		UIParameters.ad = false
 		print("SimpPermut:Desactivated debug")
 	else
-		ad = true
+		UIParameters.ad = true
 		print("SimpPermut:Activated debug")
 	end
 end
 
 function SimPermut:OnInitialize()
 	SlashCmdList["SimPermut"] = handler;
-end
-
-function SimPermut:OnEnable()
-end
-
-function SimPermut:OnDisable()
+	PersoLib:Init(ExtraData)
 end
 
 ----------------------------
@@ -186,81 +183,78 @@ end
 -- Main Frame construction
 function SimPermut:BuildFrame()
 	--Init Vars
-	artifactID,artifactData = LAD:GetArtifactInfo() 
+	UIParameters.artifactID,UIParameters.artifactData = LAD:GetArtifactInfo() 
 	
-	if mainframe and mainframe:IsVisible() then
-		mainframe:Release()
+	if UIElements.mainframe and UIElements.mainframe:IsVisible() then
+		UIElements.mainframe:Release()
 	end
 	
-	mainframe = AceGUI:Create("Frame")
-	mainframe:SetTitle("SimPermut")
-	mainframe:SetPoint("CENTER")
-	mainframe:SetCallback("OnClose", function(widget) 
-		if mainframe:IsVisible() then
+	UIElements.mainframe = AceGUI:Create("Frame")
+	UIElements.mainframe:SetTitle("SimPermut")
+	UIElements.mainframe:SetPoint("CENTER")
+	UIElements.mainframe:SetCallback("OnClose", function(widget) 
+		if UIElements.mainframe:IsVisible() then
 			widget:Release()
 		end
-		if stringframeCreated and SimcCopyFrame:IsShown() then
-			SimcCopyFrame:Hide()
-		end
 	end)
-	mainframe:SetLayout("Flow")
+	UIElements.mainframe:SetLayout("Flow")
 	
 	if actualSettings.smallUI then
-		mainframe:SetWidth(1000)
-		mainframe:SetHeight(710)
+		UIElements.mainframe:SetWidth(1000)
+		UIElements.mainframe:SetHeight(710)
 	else
-		mainframe:SetWidth(1300)
-		mainframe:SetHeight(810)
+		UIElements.mainframe:SetWidth(1300)
+		UIElements.mainframe:SetHeight(810)
 	end
 	
 	local frameDropdown = AceGUI:Create("Dropdown")
     frameDropdown:SetWidth(200)
 	frameDropdown:SetList(ExtraData.FrameMenu)
 	frameDropdown:SetLabel("")
-	frameDropdown:SetValue(currentFrame)
+	frameDropdown:SetValue(UIParameters.currentFrame)
 	frameDropdown:SetCallback("OnValueChanged", function (this, event, item)
-		currentFrame=item
-		if mainframe:IsVisible() then
-			mainframe:Release()
+		UIParameters.currentFrame=item
+		if UIElements.mainframe:IsVisible() then
+			UIElements.mainframe:Release()
 		end
 		SimPermut:BuildFrame()
     end)
-	mainframe:AddChild(frameDropdown)
+	UIElements.mainframe:AddChild(frameDropdown)
 	
-	SimPermut:AddSpacer(mainframe,true)
+	SimPermut:AddSpacer(UIElements.mainframe,true)
 	
-	if currentFrame==1 then --gear
-		currentFrame=1
+	if UIParameters.currentFrame==1 then --gear
+		UIParameters.currentFrame=1
 		SimPermut:BuildGearFrame()
 		SimPermut:BuildResultFrame(true)
 		SimPermut:InitGearFrame()
-	elseif currentFrame==2 then --talents
-		currentFrame=2
+	elseif UIParameters.currentFrame==2 then --talents
+		UIParameters.currentFrame=2
 		SimPermut:BuildTalentFrame()
 		SimPermut:BuildResultFrame(false)
 		SimPermut:GenerateTalents()
-	elseif currentFrame==3 then --relics
-		currentFrame=3
+	elseif UIParameters.currentFrame==3 then --relics
+		UIParameters.currentFrame=3
 		SimPermut:BuildRelicFrame()
 		SimPermut:BuildResultFrame(false)
-	elseif currentFrame==4 then --NetherLight crucible
-		currentFrame=4
+	elseif UIParameters.currentFrame==4 then --NetherLight crucible
+		UIParameters.currentFrame=4
 		SimPermut:BuildNetherlightFrame()
 		SimPermut:BuildResultFrame(false)
-	elseif currentFrame==5 then --add items
-		currentFrame=5
+	elseif UIParameters.currentFrame==5 then --add items
+		UIParameters.currentFrame=5
 		SimPermut:BuildDungeonJournalFrame()
-	elseif currentFrame==6 then --options
-		currentFrame=6
+	elseif UIParameters.currentFrame==6 then --options
+		UIParameters.currentFrame=6
 		SimPermut:BuildOptionFrame()
 	end
 end
 
 -- Field construction for gear Frame
 function SimPermut:BuildGearFrame()
-	mainGroup = AceGUI:Create("SimpleGroup")
-    mainGroup:SetLayout("Flow")
-    mainGroup:SetRelativeWidth(0.65)
+	UIElements.mainGroup = AceGUI:Create("SimpleGroup")
+    UIElements.mainGroup:SetLayout("Flow")
+    UIElements.mainGroup:SetRelativeWidth(0.65)
 	
 	local scrollcontainer1 = AceGUI:Create("SimpleGroup")
 	scrollcontainer1:SetRelativeWidth(0.5)
@@ -270,11 +264,11 @@ function SimPermut:BuildGearFrame()
 		scrollcontainer1:SetHeight(600)
 	end
 	scrollcontainer1:SetLayout("Fill")
-	mainGroup:AddChild(scrollcontainer1)
+	UIElements.mainGroup:AddChild(scrollcontainer1)
 	
-	scroll1 = AceGUI:Create("ScrollFrame")
-	scroll1:SetLayout("Flow")
-	scrollcontainer1:AddChild(scroll1)
+	UIElements.scroll1 = AceGUI:Create("ScrollFrame")
+	UIElements.scroll1:SetLayout("Flow")
+	scrollcontainer1:AddChild(UIElements.scroll1)
 	
 	local scrollcontainer2 = AceGUI:Create("SimpleGroup")
 	scrollcontainer2:SetRelativeWidth(0.5)
@@ -284,143 +278,143 @@ function SimPermut:BuildGearFrame()
 		scrollcontainer2:SetHeight(600)
 	end
 	scrollcontainer2:SetLayout("Fill")
-	mainGroup:AddChild(scrollcontainer2)
+	UIElements.mainGroup:AddChild(scrollcontainer2)
 	
-	scroll2 = AceGUI:Create("ScrollFrame")
-	scroll2:SetLayout("Flow")
-	scrollcontainer2:AddChild(scroll2)
+	UIElements.scroll2 = AceGUI:Create("ScrollFrame")
+	UIElements.scroll2:SetLayout("Flow")
+	scrollcontainer2:AddChild(UIElements.scroll2)
 
 	
 	------ Items + param
 	local labelEnchantNeck= AceGUI:Create("Label")
 	labelEnchantNeck:SetText("Enchant Neck")
 	labelEnchantNeck:SetWidth(80)
-	mainGroup:AddChild(labelEnchantNeck)
+	UIElements.mainGroup:AddChild(labelEnchantNeck)
 	
 	local dropdownEnchantNeck = AceGUI:Create("Dropdown")
 	dropdownEnchantNeck:SetWidth(130)
 	dropdownEnchantNeck:SetList(ExtraData.enchantNeck)
 	dropdownEnchantNeck:SetValue(actualSettings.enchant_neck)
 	dropdownEnchantNeck:SetCallback("OnValueChanged", function (this, event, item)
-		actualEnchantNeck=item
+		UIParameters.actualEnchantNeck=item
     end)
-	mainGroup:AddChild(dropdownEnchantNeck)
+	UIElements.mainGroup:AddChild(dropdownEnchantNeck)
 		
 	local labelEnchantBack= AceGUI:Create("Label")
 	labelEnchantBack:SetText("     Enchant Back")
 	labelEnchantBack:SetWidth(95)
-	mainGroup:AddChild(labelEnchantBack)
+	UIElements.mainGroup:AddChild(labelEnchantBack)
 	
 	local dropdownEnchantBack = AceGUI:Create("Dropdown")
 	dropdownEnchantBack:SetWidth(110)
 	dropdownEnchantBack:SetList(ExtraData.enchantCloak)
 	dropdownEnchantBack:SetValue(actualSettings.enchant_back)
 	dropdownEnchantBack:SetCallback("OnValueChanged", function (this, event, item)
-		actualEnchantBack=item
+		UIParameters.actualEnchantBack=item
     end)
-	mainGroup:AddChild(dropdownEnchantBack)
+	UIElements.mainGroup:AddChild(dropdownEnchantBack)
 	
 	local labelEnchantFinger= AceGUI:Create("Label")
 	labelEnchantFinger:SetText("     Enchant Ring")
 	labelEnchantFinger:SetWidth(95)
-	mainGroup:AddChild(labelEnchantFinger)
+	UIElements.mainGroup:AddChild(labelEnchantFinger)
 	
 	local dropdownEnchantFinger = AceGUI:Create("Dropdown")
 	dropdownEnchantFinger:SetWidth(110)
 	dropdownEnchantFinger:SetList(ExtraData.enchantRing)
 	dropdownEnchantFinger:SetValue(actualSettings.enchant_ring)
 	dropdownEnchantFinger:SetCallback("OnValueChanged", function (this, event, item)
-		actualEnchantFinger=item
+		UIParameters.actualEnchantFinger=item
     end)
-	mainGroup:AddChild(dropdownEnchantFinger)
+	UIElements.mainGroup:AddChild(dropdownEnchantFinger)
 	
 	local labelGem= AceGUI:Create("Label")
 	labelGem:SetText("     Gem")
 	labelGem:SetWidth(55)
-	mainGroup:AddChild(labelGem)
+	UIElements.mainGroup:AddChild(labelGem)
 	
 	local dropdownGem = AceGUI:Create("Dropdown")
 	dropdownGem:SetList(ExtraData.gemList)
 	dropdownGem:SetWidth(110)
 	dropdownGem:SetValue(actualSettings.gems)
 	dropdownGem:SetCallback("OnValueChanged", function (this, event, item)
-		actualGem=item
+		UIParameters.actualGem=item
     end)
-	mainGroup:AddChild(dropdownGem)
+	UIElements.mainGroup:AddChild(dropdownGem)
 	
-	checkBoxForce = AceGUI:Create("CheckBox")
-	checkBoxForce:SetWidth(210)
-	checkBoxForce:SetLabel("Replace current enchant/gems")
-	checkBoxForce:SetValue(actualSettings.replaceEnchants)
-	checkBoxForce:SetCallback("OnValueChanged", function (this, event, item)
-		actualForce=checkBoxForce:GetValue()
+	UIElements.checkBoxForce = AceGUI:Create("CheckBox")
+	UIElements.checkBoxForce:SetWidth(210)
+	UIElements.checkBoxForce:SetLabel("Replace current enchant/gems")
+	UIElements.checkBoxForce:SetValue(actualSettings.replaceEnchants)
+	UIElements.checkBoxForce:SetCallback("OnValueChanged", function (this, event, item)
+		UIParameters.actualForce=UIElements.checkBoxForce:GetValue()
     end)
-	mainGroup:AddChild(checkBoxForce)
+	UIElements.mainGroup:AddChild(UIElements.checkBoxForce)
 
-	SimPermut:AddSpacer(mainGroup,false,15)
+	SimPermut:AddSpacer(UIElements.mainGroup,false,15)
 	
 	local labelLeg= AceGUI:Create("Label")
 	labelLeg:SetText(" Legendaries")
 	labelLeg:SetWidth(80)
-	mainGroup:AddChild(labelLeg)
+	UIElements.mainGroup:AddChild(labelLeg)
 	
-	editLegMin= AceGUI:Create("EditBox")
-	editLegMin:SetText("0")
-	editLegMin:SetWidth(20)
-	editLegMin:DisableButton(true)
-	editLegMin:SetMaxLetters(1)
-	editLegMin:SetCallback("OnTextChanged", function (this, event, item)
-		editLegMin:SetText(string.match(item, '%d'))
-		if editLegMin:GetText()=="" then
-			editLegMin:SetText(0)
+	UIElements.editLegMin= AceGUI:Create("EditBox")
+	UIElements.editLegMin:SetText("0")
+	UIElements.editLegMin:SetWidth(20)
+	UIElements.editLegMin:DisableButton(true)
+	UIElements.editLegMin:SetMaxLetters(1)
+	UIElements.editLegMin:SetCallback("OnTextChanged", function (this, event, item)
+		UIElements.editLegMin:SetText(string.match(item, '%d'))
+		if UIElements.editLegMin:GetText()=="" then
+			UIElements.editLegMin:SetText(0)
 		end
     end)
-	mainGroup:AddChild(editLegMin)
+	UIElements.mainGroup:AddChild(UIElements.editLegMin)
 	
-	editLegMax= AceGUI:Create("EditBox")
-	editLegMax:SetText("2")
-	editLegMax:SetWidth(20)
-	editLegMax:DisableButton(true)
-	editLegMax:SetMaxLetters(1)
-	editLegMax:SetCallback("OnTextChanged", function (this, event, item)
-		editLegMax:SetText(string.match(item, '%d'))
-		if editLegMax:GetText()=="" then
-			editLegMax:SetText(0)
+	UIElements.editLegMax= AceGUI:Create("EditBox")
+	UIElements.editLegMax:SetText("2")
+	UIElements.editLegMax:SetWidth(20)
+	UIElements.editLegMax:DisableButton(true)
+	UIElements.editLegMax:SetMaxLetters(1)
+	UIElements.editLegMax:SetCallback("OnTextChanged", function (this, event, item)
+		UIElements.editLegMax:SetText(string.match(item, '%d'))
+		if UIElements.editLegMax:GetText()=="" then
+			UIElements.editLegMax:SetText(0)
 		end
     end)
-	mainGroup:AddChild(editLegMax)
+	UIElements.mainGroup:AddChild(UIElements.editLegMax)
 	
-	SimPermut:AddSpacer(mainGroup,false,89)
+	SimPermut:AddSpacer(UIElements.mainGroup,false,89)
 
 	local labelSetsT19= AceGUI:Create("Label")
 	labelSetsT19:SetText("T19 (min)")
 	labelSetsT19:SetWidth(76)
-	mainGroup:AddChild(labelSetsT19)
+	UIElements.mainGroup:AddChild(labelSetsT19)
 	
 	local dropdownSetsT19 = AceGUI:Create("Dropdown")
 	dropdownSetsT19:SetList(ExtraData.SetsListT19)
 	dropdownSetsT19:SetWidth(110)
 	dropdownSetsT19:SetValue(actualSettings.setsT19)
 	dropdownSetsT19:SetCallback("OnValueChanged", function (this, event, item)
-		actualSetsT19=item
+		UIParameters.actualSetsT19=item
     end)
-	mainGroup:AddChild(dropdownSetsT19)
+	UIElements.mainGroup:AddChild(dropdownSetsT19)
 
 	local labelSetsT20= AceGUI:Create("Label")
 	labelSetsT20:SetText("T20 (min)")
 	labelSetsT20:SetWidth(55)
-	mainGroup:AddChild(labelSetsT20)
+	UIElements.mainGroup:AddChild(labelSetsT20)
 
 	local dropdownSetsT20 = AceGUI:Create("Dropdown")
 	dropdownSetsT20:SetList(ExtraData.SetsListT20)
 	dropdownSetsT20:SetWidth(110)
 	dropdownSetsT20:SetValue(actualSettings.setsT20)
 	dropdownSetsT20:SetCallback("OnValueChanged", function (this, event, item)
-		actualSetsT20=item
+		UIParameters.actualSetsT20=item
     end)
-	mainGroup:AddChild(dropdownSetsT20)
+	UIElements.mainGroup:AddChild(dropdownSetsT20)
 	
-	SimPermut:AddSpacer(mainGroup,false,90)
+	SimPermut:AddSpacer(UIElements.mainGroup,false,90)
 
 	local labelreportTypeGear= AceGUI:Create("Label")
 	labelreportTypeGear:SetText("Report Type : Gear")
@@ -433,7 +427,7 @@ function SimPermut:BuildGearFrame()
 	ReportDropdownGear:SetCallback("OnValueChanged", function (this, event, item)
 		actualSettings.report_typeGear=item
     end)
-	mainGroup:AddChild(ReportDropdownGear)
+	UIElements.mainGroup:AddChild(ReportDropdownGear)
 
 	local buttonGenerate = AceGUI:Create("Button")
 	buttonGenerate:SetText("Generate")
@@ -441,95 +435,95 @@ function SimPermut:BuildGearFrame()
 	buttonGenerate:SetCallback("OnClick", function()
 		SimPermut:Generate()
 	end)
-	mainGroup:AddChild(buttonGenerate)
+	UIElements.mainGroup:AddChild(buttonGenerate)
 
-	labelCount= AceGUI:Create("Label")
-	labelCount:SetText(" ")
-	labelCount:SetWidth(255)
-	mainGroup:AddChild(labelCount)
+	UIParameters.labelCount= AceGUI:Create("Label")
+	UIParameters.labelCount:SetText(" ")
+	UIParameters.labelCount:SetWidth(255)
+	UIElements.mainGroup:AddChild(UIParameters.labelCount)
 
-	mainframe:AddChild(mainGroup)
+	UIElements.mainframe:AddChild(UIElements.mainGroup)
 end
 
 -- Field construction for talent Frame
 function SimPermut:BuildTalentFrame()
-	mainGroup = AceGUI:Create("SimpleGroup")
-    mainGroup:SetLayout("Flow")
-    mainGroup:SetRelativeWidth(0.65)
+	UIElements.mainGroup = AceGUI:Create("SimpleGroup")
+    UIElements.mainGroup:SetLayout("Flow")
+    UIElements.mainGroup:SetRelativeWidth(0.65)
 	
 	local labeltitre1= AceGUI:Create("Heading")
 	labeltitre1:SetText("Talent Permutation")
 	labeltitre1:SetFullWidth(true)
-	mainGroup:AddChild(labeltitre1)
+	UIElements.mainGroup:AddChild(labeltitre1)
 	
 	local container1 = AceGUI:Create("SimpleGroup")
 	container1:SetRelativeWidth(0.3)
 	container1:SetHeight(600)
 	container1:SetLayout("Flow")
-	mainGroup:AddChild(container1)
+	UIElements.mainGroup:AddChild(container1)
 	
 	local container2 = AceGUI:Create("SimpleGroup")
 	container2:SetRelativeWidth(0.3)
 	container2:SetHeight(600)
 	container2:SetLayout("Flow")
-	mainGroup:AddChild(container2)
+	UIElements.mainGroup:AddChild(container2)
 	
 	local container3 = AceGUI:Create("SimpleGroup")
 	container3:SetRelativeWidth(0.3)
 	container3:SetHeight(600)
 	container3:SetLayout("Flow")
-	mainGroup:AddChild(container3)
+	UIElements.mainGroup:AddChild(container3)
 	
-	for i=1,TALENTS_MAX_ROW do
-		tableTalentcheckbox[i]={}
-		tableTalentIcon[i]={}
-		tableTalentLabel[i]={}
-		tableTalentSpells[i]={}
-		for j=1,TALENTS_MAX_COLUMN do
+	for i=1,UIParameters.TALENTS_MAX_ROW do
+		UIElements.tableTalentcheckbox[i]={}
+		UIElements.tableTalentIcon[i]={}
+		UIElements.tableTalentLabel[i]={}
+		UIElements.tableTalentSpells[i]={}
+		for j=1,UIParameters.TALENTS_MAX_COLUMN do
 			local talentID, name, texture, selected, available, spellid=GetTalentInfo(i,j,GetActiveSpecGroup())
-			tableTalentSpells[i][j]=spellid
-			tableTalentcheckbox[i][j]=AceGUI:Create("CheckBox")
-			tableTalentcheckbox[i][j]:SetLabel("")
-			tableTalentcheckbox[i][j]:SetRelativeWidth(0.2)
+			UIElements.tableTalentSpells[i][j]=spellid
+			UIElements.tableTalentcheckbox[i][j]=AceGUI:Create("CheckBox")
+			UIElements.tableTalentcheckbox[i][j]:SetLabel("")
+			UIElements.tableTalentcheckbox[i][j]:SetRelativeWidth(0.2)
 			if selected then
-				tableTalentcheckbox[i][j]:SetValue(true)
+				UIElements.tableTalentcheckbox[i][j]:SetValue(true)
 			end
 			
 			local _, _, Talenticon = GetSpellInfo(spellid)
-			tableTalentIcon[i][j]=AceGUI:Create("Icon")
-			tableTalentIcon[i][j]:SetImage(Talenticon)
-			tableTalentIcon[i][j]:SetImageSize(40,40)
-			tableTalentIcon[i][j]:SetRelativeWidth(0.3)
-			tableTalentIcon[i][j]:SetCallback("OnEnter", function(widget)
+			UIElements.tableTalentIcon[i][j]=AceGUI:Create("Icon")
+			UIElements.tableTalentIcon[i][j]:SetImage(Talenticon)
+			UIElements.tableTalentIcon[i][j]:SetImageSize(40,40)
+			UIElements.tableTalentIcon[i][j]:SetRelativeWidth(0.3)
+			UIElements.tableTalentIcon[i][j]:SetCallback("OnEnter", function(widget)
 				GameTooltip:SetOwner(widget.frame, "ANCHOR_TOPRIGHT")
-				GameTooltip:SetSpellByID(tableTalentSpells[i][j])
+				GameTooltip:SetSpellByID(UIElements.tableTalentSpells[i][j])
 				GameTooltip:Show()
 			end)			
-			tableTalentIcon[i][j]:SetCallback("OnLeave", function(widget)
+			UIElements.tableTalentIcon[i][j]:SetCallback("OnLeave", function(widget)
 				GameTooltip:Hide()
 			end)
 			
-			tableTalentLabel[i][j]=AceGUI:Create("Label")
-			tableTalentLabel[i][j]:SetText(name)
-			tableTalentLabel[i][j]:SetRelativeWidth(0.5)
+			UIElements.tableTalentLabel[i][j]=AceGUI:Create("Label")
+			UIElements.tableTalentLabel[i][j]:SetText(name)
+			UIElements.tableTalentLabel[i][j]:SetRelativeWidth(0.5)
 				
 			if j==1 then
-				container1:AddChild(tableTalentcheckbox[i][j])
-				container1:AddChild(tableTalentIcon[i][j])
-				container1:AddChild(tableTalentLabel[i][j])
+				container1:AddChild(UIElements.tableTalentcheckbox[i][j])
+				container1:AddChild(UIElements.tableTalentIcon[i][j])
+				container1:AddChild(UIElements.tableTalentLabel[i][j])
 			elseif j==2 then
-				container2:AddChild(tableTalentcheckbox[i][j])
-				container2:AddChild(tableTalentIcon[i][j])
-				container2:AddChild(tableTalentLabel[i][j])
+				container2:AddChild(UIElements.tableTalentcheckbox[i][j])
+				container2:AddChild(UIElements.tableTalentIcon[i][j])
+				container2:AddChild(UIElements.tableTalentLabel[i][j])
 			else
-				container3:AddChild(tableTalentcheckbox[i][j])
-				container3:AddChild(tableTalentIcon[i][j])
-				container3:AddChild(tableTalentLabel[i][j])
+				container3:AddChild(UIElements.tableTalentcheckbox[i][j])
+				container3:AddChild(UIElements.tableTalentIcon[i][j])
+				container3:AddChild(UIElements.tableTalentLabel[i][j])
 			end
 		end
 	end
 
-	SimPermut:AddSpacer(mainGroup,false,0.2)
+	SimPermut:AddSpacer(UIElements.mainGroup,false,0.2)
 	
 	local ReportDropdownTalents = AceGUI:Create("Dropdown")
     ReportDropdownTalents:SetWidth(160)
@@ -539,7 +533,7 @@ function SimPermut:BuildTalentFrame()
 	ReportDropdownTalents:SetCallback("OnValueChanged", function (this, event, item)
 		actualSettings.report_typeTalents=item
     end)
-	mainGroup:AddChild(ReportDropdownTalents)
+	UIElements.mainGroup:AddChild(ReportDropdownTalents)
 	
 	local buttonGenerate = AceGUI:Create("Button")
 	buttonGenerate:SetText("Generate")
@@ -547,9 +541,9 @@ function SimPermut:BuildTalentFrame()
 	buttonGenerate:SetCallback("OnClick", function()
 		SimPermut:GenerateTalents()
 	end)
-	mainGroup:AddChild(buttonGenerate)
+	UIElements.mainGroup:AddChild(buttonGenerate)
 	
-	mainframe:AddChild(mainGroup)
+	UIElements.mainframe:AddChild(UIElements.mainGroup)
 end
 
 -- Field construction for Relic Frame
@@ -557,20 +551,19 @@ function SimPermut:BuildRelicFrame()
 	--init Artifact
 	SimPermut:GetArtifactString()
 
-	mainGroup = AceGUI:Create("SimpleGroup")
-    mainGroup:SetLayout("Fill")
-	mainGroup:SetHeight(600)
-    mainGroup:SetRelativeWidth(0.65)
-	mainframe:AddChild(mainGroup)
+	UIElements.mainGroup = AceGUI:Create("SimpleGroup")
+    UIElements.mainGroup:SetLayout("Fill")
+	UIElements.mainGroup:SetHeight(600)
+    UIElements.mainGroup:SetRelativeWidth(0.65)
+	UIElements.mainframe:AddChild(UIElements.mainGroup)
 	
 	local container1 = AceGUI:Create("SimpleGroup")
 	container1:SetFullWidth(true)
 	container1:SetHeight(600)
 	container1:SetLayout("Flow")
-	mainGroup:AddChild(container1)
+	UIElements.mainGroup:AddChild(container1)
 	
-	local artifactID,artifactData = LAD:GetArtifactInfo()
-	if not ExtraData.ArtifactTableTraitsOrder[artifactID] or #ExtraData.ArtifactTableTraitsOrder[artifactID][1] == 0 then
+	if not ExtraData.ArtifactTableTraitsOrder[UIParameters.artifactID] or #ExtraData.ArtifactTableTraitsOrder[UIParameters.artifactID][1] == 0 then
 		local labeltitre2= AceGUI:Create("Label")
 		labeltitre2:SetText("Class/Spec Not yet implemented")
 		labeltitre2:SetFullWidth(true)
@@ -581,9 +574,9 @@ function SimPermut:BuildRelicFrame()
 	local drawRelic1=false
 	local drawRelic2=false
 	local drawRelic3=false
-	if artifactData.relics[1].type then drawRelic1=true end
-	if artifactData.relics[2].type then drawRelic2=true end
-	if artifactData.relics[3].type then drawRelic3=true end
+	if UIParameters.artifactData.relics[1].type then drawRelic1=true end
+	if UIParameters.artifactData.relics[2].type then drawRelic2=true end
+	if UIParameters.artifactData.relics[3].type then drawRelic3=true end
 	
 	
 	local labeltitre1= AceGUI:Create("Heading")
@@ -595,11 +588,11 @@ function SimPermut:BuildRelicFrame()
 	relictype:SetWidth(150)
 	relictype:SetList(ExtraData.RelicComparisonType)
 	relictype:SetLabel("Relic comparison type")
-	relictype:SetValue(relicComparisonTypeValue)
+	relictype:SetValue(UIParameters.relicComparisonTypeValue)
 	relictype:SetCallback("OnValueChanged", function (this, event, item)
-		relicComparisonTypeValue=item
-		if mainframe:IsVisible() then
-			mainframe:Release()
+		UIParameters.relicComparisonTypeValue=item
+		if UIElements.mainframe:IsVisible() then
+			UIElements.mainframe:Release()
 		end
 		SimPermut:BuildFrame()
     end)
@@ -635,30 +628,30 @@ function SimPermut:BuildRelicFrame()
 	end)
 	container1:AddChild(artifactIcon)
 	
-	if relicComparisonTypeValue==1 then
+	if UIParameters.relicComparisonTypeValue==1 then
 		local labelweaponLvl= AceGUI:Create("Label")
 		labelweaponLvl:SetText(itemLevel)
 		labelweaponLvl:SetFont("Fonts\\FRIZQT__.ttf", 14, "OUTLINE, MONOCHROME")
 		labelweaponLvl:SetWidth(50)
 		container1:AddChild(labelweaponLvl)
 	else
-		ilvlWeapon= AceGUI:Create("EditBox")
-		ilvlWeapon:SetWidth(70)
-		ilvlWeapon:SetMaxLetters(3)
-		ilvlWeapon:SetText(itemLevel)
-		ilvlWeapon:SetCallback("OnEnterPressed", function (this, event, item)
-			ilvlWeapon:SetText(string.match(item, '(%d+)'))
-			if ilvlWeapon:GetText()~=nil and ilvlWeapon:GetText()~=""  then
-				if tonumber(ilvlWeapon:GetText())<actualSettings.ilvl_RelicMin then
-					ilvlWeapon:SetText(actualSettings.ilvl_RelicMin)
-				elseif tonumber(ilvlWeapon:GetText())>actualSettings.ilvl_RelicMax then
-					ilvlWeapon:SetText(actualSettings.ilvl_RelicMax)
+		UIElements.ilvlWeapon= AceGUI:Create("EditBox")
+		UIElements.ilvlWeapon:SetWidth(70)
+		UIElements.ilvlWeapon:SetMaxLetters(3)
+		UIElements.ilvlWeapon:SetText(itemLevel)
+		UIElements.ilvlWeapon:SetCallback("OnEnterPressed", function (this, event, item)
+			UIElements.ilvlWeapon:SetText(string.match(item, '(%d+)'))
+			if UIElements.ilvlWeapon:GetText()~=nil and UIElements.ilvlWeapon:GetText()~=""  then
+				if tonumber(UIElements.ilvlWeapon:GetText())<actualSettings.ilvl_RelicMin then
+					UIElements.ilvlWeapon:SetText(actualSettings.ilvl_RelicMin)
+				elseif tonumber(UIElements.ilvlWeapon:GetText())>actualSettings.ilvl_RelicMax then
+					UIElements.ilvlWeapon:SetText(actualSettings.ilvl_RelicMax)
 				end
 			else
-				ilvlWeapon:SetText(actualSettings.ilvl_RelicMin)
+				UIElements.ilvlWeapon:SetText(actualSettings.ilvl_RelicMin)
 			end
 		end)
-		container1:AddChild(ilvlWeapon)
+		container1:AddChild(UIElements.ilvlWeapon)
 	end
 	
 	local labelweaponName= AceGUI:Create("Label")
@@ -680,11 +673,11 @@ function SimPermut:BuildRelicFrame()
 		local relicinfo1= AceGUI:Create("Label")
 		relicinfo1:SetRelativeWidth(0.58)
 		relicinfo1:SetColor(1,.82,0)
-		relicinfo1:SetText(_G["RELIC_SLOT_TYPE_"..artifactData.relics[1].type:upper()])
+		relicinfo1:SetText(_G["RELIC_SLOT_TYPE_"..UIParameters.artifactData.relics[1].type:upper()])
 		reliccontainer1:AddChild(relicinfo1)
 		
 		SimPermut:AddSpacer(reliccontainer1,false,0.4)
-		_, _, _, itemLevel1, _, _, _, _, _, itemTexture1, _ = GetItemInfo(artifactData.relics[1].link)
+		_, _, _, itemLevel1, _, _, _, _, _, itemTexture1, _ = GetItemInfo(UIParameters.artifactData.relics[1].link)
 		local artifactRelicIcon1=AceGUI:Create("Icon")
 		if itemTexture then
 			artifactRelicIcon1:SetImage(itemTexture1)
@@ -693,7 +686,7 @@ function SimPermut:BuildRelicFrame()
 		artifactRelicIcon1:SetRelativeWidth(0.2)
 		artifactRelicIcon1:SetCallback("OnEnter", function(widget)
 			GameTooltip:SetOwner(widget.frame, "ANCHOR_TOPRIGHT")
-			GameTooltip:SetHyperlink(artifactData.relics[1].link)
+			GameTooltip:SetHyperlink(UIParameters.artifactData.relics[1].link)
 			GameTooltip:Show()
 		end)			
 		artifactRelicIcon1:SetCallback("OnLeave", function(widget)
@@ -703,32 +696,32 @@ function SimPermut:BuildRelicFrame()
 		
 		SimPermut:AddSpacer(reliccontainer1,true)
 		SimPermut:AddSpacer(reliccontainer1,false,0.1)
-		DropdownTrait1 = AceGUI:Create("Dropdown")
-		DropdownTrait1:SetRelativeWidth(0.8)
-		DropdownTrait1:SetList(ExtraData.ArtifactTableTraits[artifactID][1],ExtraData.ArtifactTableTraitsOrder[artifactID][1])
-		DropdownTrait1:SetLabel("")
-		DropdownTrait1:SetValue(0)
-		reliccontainer1:AddChild(DropdownTrait1)
+		UIElements.DropdownTrait1 = AceGUI:Create("Dropdown")
+		UIElements.DropdownTrait1:SetRelativeWidth(0.8)
+		UIElements.DropdownTrait1:SetList(ExtraData.ArtifactTableTraits[UIParameters.artifactID][1],ExtraData.ArtifactTableTraitsOrder[UIParameters.artifactID][1])
+		UIElements.DropdownTrait1:SetLabel("")
+		UIElements.DropdownTrait1:SetValue(0)
+		reliccontainer1:AddChild(UIElements.DropdownTrait1)
 		
-		if relicComparisonTypeValue==1 then
+		if UIParameters.relicComparisonTypeValue==1 then
 			SimPermut:AddSpacer(reliccontainer1,false,0.3)
-			ilvlTrait1= AceGUI:Create("EditBox")
-			ilvlTrait1:SetRelativeWidth(0.4)
-			ilvlTrait1:SetMaxLetters(3)
-			ilvlTrait1:SetText(itemLevel1)
-			ilvlTrait1:SetCallback("OnEnterPressed", function (this, event, item)
-				ilvlTrait1:SetText(string.match(item, '(%d+)'))
-				if ilvlTrait1:GetText()~=nil and ilvlTrait1:GetText()~=""  then
-					if tonumber(ilvlTrait1:GetText())<actualSettings.ilvl_RelicMin then
-						ilvlTrait1:SetText(actualSettings.ilvl_RelicMin)
-					elseif tonumber(ilvlTrait1:GetText())>actualSettings.ilvl_RelicMax then
-						ilvlTrait1:SetText(actualSettings.ilvl_RelicMax)
+			UIElements.ilvlTrait1= AceGUI:Create("EditBox")
+			UIElements.ilvlTrait1:SetRelativeWidth(0.4)
+			UIElements.ilvlTrait1:SetMaxLetters(3)
+			UIElements.ilvlTrait1:SetText(itemLevel1)
+			UIElements.ilvlTrait1:SetCallback("OnEnterPressed", function (this, event, item)
+				UIElements.ilvlTrait1:SetText(string.match(item, '(%d+)'))
+				if UIElements.ilvlTrait1:GetText()~=nil and UIElements.ilvlTrait1:GetText()~=""  then
+					if tonumber(UIElements.ilvlTrait1:GetText())<actualSettings.ilvl_RelicMin then
+						UIElements.ilvlTrait1:SetText(actualSettings.ilvl_RelicMin)
+					elseif tonumber(UIElements.ilvlTrait1:GetText())>actualSettings.ilvl_RelicMax then
+						UIElements.ilvlTrait1:SetText(actualSettings.ilvl_RelicMax)
 					end
 				else
-					ilvlTrait1:SetText(actualSettings.ilvl_RelicMin)
+					UIElements.ilvlTrait1:SetText(actualSettings.ilvl_RelicMin)
 				end
 			end)
-			reliccontainer1:AddChild(ilvlTrait1)
+			reliccontainer1:AddChild(UIElements.ilvlTrait1)
 		end
 	end
 	
@@ -742,11 +735,11 @@ function SimPermut:BuildRelicFrame()
 		local relicinfo2= AceGUI:Create("Label")
 		relicinfo2:SetRelativeWidth(0.58)
 		relicinfo2:SetColor(1,.82,0)
-		relicinfo2:SetText(_G["RELIC_SLOT_TYPE_"..artifactData.relics[2].type:upper()])
+		relicinfo2:SetText(_G["RELIC_SLOT_TYPE_"..UIParameters.artifactData.relics[2].type:upper()])
 		reliccontainer2:AddChild(relicinfo2)
 		
 		SimPermut:AddSpacer(reliccontainer2,false,0.4)
-		_, _, _, itemLevel2, _, _, _, _, _, itemTexture2, _ = GetItemInfo(artifactData.relics[2].link)
+		_, _, _, itemLevel2, _, _, _, _, _, itemTexture2, _ = GetItemInfo(UIParameters.artifactData.relics[2].link)
 		local artifactRelicIcon2=AceGUI:Create("Icon")
 		if itemTexture then
 			artifactRelicIcon2:SetImage(itemTexture2)
@@ -755,7 +748,7 @@ function SimPermut:BuildRelicFrame()
 		artifactRelicIcon2:SetRelativeWidth(0.2)
 		artifactRelicIcon2:SetCallback("OnEnter", function(widget)
 			GameTooltip:SetOwner(widget.frame, "ANCHOR_TOPRIGHT")
-			GameTooltip:SetHyperlink(artifactData.relics[2].link)
+			GameTooltip:SetHyperlink(UIParameters.artifactData.relics[2].link)
 			GameTooltip:Show()
 		end)			
 		artifactRelicIcon2:SetCallback("OnLeave", function(widget)
@@ -765,32 +758,32 @@ function SimPermut:BuildRelicFrame()
 		
 		SimPermut:AddSpacer(reliccontainer2,true)
 		SimPermut:AddSpacer(reliccontainer2,false,0.1)
-		DropdownTrait2 = AceGUI:Create("Dropdown")
-		DropdownTrait2:SetRelativeWidth(0.8)
-		DropdownTrait2:SetList(ExtraData.ArtifactTableTraits[artifactID][2],ExtraData.ArtifactTableTraitsOrder[artifactID][2])
-		DropdownTrait2:SetLabel("")
-		DropdownTrait2:SetValue(0)
-		reliccontainer2:AddChild(DropdownTrait2)
+		UIElements.DropdownTrait2 = AceGUI:Create("Dropdown")
+		UIElements.DropdownTrait2:SetRelativeWidth(0.8)
+		UIElements.DropdownTrait2:SetList(ExtraData.ArtifactTableTraits[UIParameters.artifactID][2],ExtraData.ArtifactTableTraitsOrder[UIParameters.artifactID][2])
+		UIElements.DropdownTrait2:SetLabel("")
+		UIElements.DropdownTrait2:SetValue(0)
+		reliccontainer2:AddChild(UIElements.DropdownTrait2)
 		
-		if relicComparisonTypeValue==1 then
+		if UIParameters.relicComparisonTypeValue==1 then
 			SimPermut:AddSpacer(reliccontainer2,false,0.3)
-			ilvlTrait2= AceGUI:Create("EditBox")
-			ilvlTrait2:SetRelativeWidth(0.4)
-			ilvlTrait2:SetMaxLetters(3)
-			ilvlTrait2:SetText(itemLevel2)
-			ilvlTrait2:SetCallback("OnEnterPressed", function (this, event, item)
-				ilvlTrait2:SetText(string.match(item, '(%d+)'))
-				if ilvlTrait2:GetText()~=nil and ilvlTrait2:GetText()~="" then
-					if tonumber(ilvlTrait2:GetText())<actualSettings.ilvl_RelicMin then
-						ilvlTrait2:SetText(actualSettings.ilvl_RelicMin)
-					elseif tonumber(ilvlTrait2:GetText())>actualSettings.ilvl_RelicMax then
-						ilvlTrait2:SetText(actualSettings.ilvl_RelicMax)
+			UIElements.ilvlTrait2= AceGUI:Create("EditBox")
+			UIElements.ilvlTrait2:SetRelativeWidth(0.4)
+			UIElements.ilvlTrait2:SetMaxLetters(3)
+			UIElements.ilvlTrait2:SetText(itemLevel2)
+			UIElements.ilvlTrait2:SetCallback("OnEnterPressed", function (this, event, item)
+				UIElements.ilvlTrait2:SetText(string.match(item, '(%d+)'))
+				if UIElements.ilvlTrait2:GetText()~=nil and UIElements.ilvlTrait2:GetText()~="" then
+					if tonumber(UIElements.ilvlTrait2:GetText())<actualSettings.ilvl_RelicMin then
+						UIElements.ilvlTrait2:SetText(actualSettings.ilvl_RelicMin)
+					elseif tonumber(UIElements.ilvlTrait2:GetText())>actualSettings.ilvl_RelicMax then
+						UIElements.ilvlTrait2:SetText(actualSettings.ilvl_RelicMax)
 					end
 				else
-					ilvlTrait2:SetText(actualSettings.ilvl_RelicMin)
+					UIElements.ilvlTrait2:SetText(actualSettings.ilvl_RelicMin)
 				end
 			end)
-			reliccontainer2:AddChild(ilvlTrait2)
+			reliccontainer2:AddChild(UIElements.ilvlTrait2)
 		end
 	end
 	
@@ -804,11 +797,11 @@ function SimPermut:BuildRelicFrame()
 		local relicinfo3= AceGUI:Create("Label")
 		relicinfo3:SetRelativeWidth(0.58)
 		relicinfo3:SetColor(1,.82,0)
-		relicinfo3:SetText(_G["RELIC_SLOT_TYPE_"..artifactData.relics[3].type:upper()])
+		relicinfo3:SetText(_G["RELIC_SLOT_TYPE_"..UIParameters.artifactData.relics[3].type:upper()])
 		reliccontainer3:AddChild(relicinfo3)
 		
 		SimPermut:AddSpacer(reliccontainer3,false,0.4)
-		_, _, _, itemLevel3, _, _, _, _, _, itemTexture3, _ = GetItemInfo(artifactData.relics[3].link)
+		_, _, _, itemLevel3, _, _, _, _, _, itemTexture3, _ = GetItemInfo(UIParameters.artifactData.relics[3].link)
 		local artifactRelicIcon3=AceGUI:Create("Icon")
 		if itemTexture then
 			artifactRelicIcon3:SetImage(itemTexture3)
@@ -817,7 +810,7 @@ function SimPermut:BuildRelicFrame()
 		artifactRelicIcon3:SetRelativeWidth(0.2)
 		artifactRelicIcon3:SetCallback("OnEnter", function(widget)
 			GameTooltip:SetOwner(widget.frame, "ANCHOR_TOPRIGHT")
-			GameTooltip:SetHyperlink(artifactData.relics[3].link)
+			GameTooltip:SetHyperlink(UIParameters.artifactData.relics[3].link)
 			GameTooltip:Show()
 		end)			
 		artifactRelicIcon3:SetCallback("OnLeave", function(widget)
@@ -827,33 +820,33 @@ function SimPermut:BuildRelicFrame()
 		
 		SimPermut:AddSpacer(reliccontainer3,true)
 		SimPermut:AddSpacer(reliccontainer3,false,0.1)
-		DropdownTrait3 = AceGUI:Create("Dropdown")
-		DropdownTrait3:SetRelativeWidth(0.8)
-		DropdownTrait3:SetList(ExtraData.ArtifactTableTraits[artifactID][3],ExtraData.ArtifactTableTraitsOrder[artifactID][3])
-		DropdownTrait3:SetLabel("")
-		DropdownTrait3:SetValue(0)
-		reliccontainer3:AddChild(DropdownTrait3)
+		UIElements.DropdownTrait3 = AceGUI:Create("Dropdown")
+		UIElements.DropdownTrait3:SetRelativeWidth(0.8)
+		UIElements.DropdownTrait3:SetList(ExtraData.ArtifactTableTraits[UIParameters.artifactID][3],ExtraData.ArtifactTableTraitsOrder[UIParameters.artifactID][3])
+		UIElements.DropdownTrait3:SetLabel("")
+		UIElements.DropdownTrait3:SetValue(0)
+		reliccontainer3:AddChild(UIElements.DropdownTrait3)
 		
-		if relicComparisonTypeValue==1 then
-			if not artifactData.relics[3].isLocked then
+		if UIParameters.relicComparisonTypeValue==1 then
+			if not UIParameters.artifactData.relics[3].isLocked then
 				SimPermut:AddSpacer(reliccontainer3,false,0.3)
-				ilvlTrait3= AceGUI:Create("EditBox")
-				ilvlTrait3:SetRelativeWidth(0.4)
-				ilvlTrait3:SetMaxLetters(3)
-				ilvlTrait3:SetText(itemLevel3)
-				ilvlTrait3:SetCallback("OnEnterPressed", function (this, event, item)
-					ilvlTrait3:SetText(string.match(item, '(%d+)'))
-					if ilvlTrait3:GetText()~=nil and ilvlTrait3:GetText()~="" then
-						if tonumber(ilvlTrait3:GetText())<actualSettings.ilvl_RelicMin then
-							ilvlTrait3:SetText(actualSettings.ilvl_RelicMin)
-						elseif tonumber(ilvlTrait3:GetText())>actualSettings.ilvl_RelicMax then
-							ilvlTrait3:SetText(actualSettings.ilvl_RelicMax)
+				UIElements.ilvlTrait3= AceGUI:Create("EditBox")
+				UIElements.ilvlTrait3:SetRelativeWidth(0.4)
+				UIElements.ilvlTrait3:SetMaxLetters(3)
+				UIElements.ilvlTrait3:SetText(itemLevel3)
+				UIElements.ilvlTrait3:SetCallback("OnEnterPressed", function (this, event, item)
+					UIElements.ilvlTrait3:SetText(string.match(item, '(%d+)'))
+					if UIElements.ilvlTrait3:GetText()~=nil and UIElements.ilvlTrait3:GetText()~="" then
+						if tonumber(UIElements.ilvlTrait3:GetText())<actualSettings.ilvl_RelicMin then
+							UIElements.ilvlTrait3:SetText(actualSettings.ilvl_RelicMin)
+						elseif tonumber(UIElements.ilvlTrait3:GetText())>actualSettings.ilvl_RelicMax then
+							UIElements.ilvlTrait3:SetText(actualSettings.ilvl_RelicMax)
 						end
 					else
-						ilvlTrait3:SetText(actualSettings.ilvl_RelicMin)
+						UIElements.ilvlTrait3:SetText(actualSettings.ilvl_RelicMin)
 					end
 				end)
-				reliccontainer3:AddChild(ilvlTrait3)
+				reliccontainer3:AddChild(UIElements.ilvlTrait3)
 			end
 		end
 	end
@@ -882,11 +875,10 @@ end
 function SimPermut:BuildNetherlightFrame()
 	--init Artifact
 	SimPermut:GetArtifactString()
-	dropdownTableCrucible={}
+	UIElements.dropdownTableCrucible={}
 	local trait={}
 	
-	local artifactID,artifactData = LAD:GetArtifactInfo()
-	if not ExtraData.ArtifactTableTraitsOrder[artifactID] or #ExtraData.ArtifactTableTraitsOrder[artifactID][1] == 0 then
+	if not ExtraData.ArtifactTableTraitsOrder[UIParameters.artifactID] or #ExtraData.ArtifactTableTraitsOrder[UIParameters.artifactID][1] == 0 then
 		local labeltitre2= AceGUI:Create("Label")
 		labeltitre2:SetText("Class/Spec Not yet implemented")
 		labeltitre2:SetFullWidth(true)
@@ -899,21 +891,21 @@ function SimPermut:BuildNetherlightFrame()
 		T2 = math.min(k, T2)
 	end
 	local T3 = math.huge
-	for k,v in pairs(ExtraData.NetherlightData[3][artifactID])do
+	for k,v in pairs(ExtraData.NetherlightData[3][UIParameters.artifactID])do
 		T3 = math.min(k, T3)
 	end
 	
-	mainGroup = AceGUI:Create("SimpleGroup")
-    mainGroup:SetLayout("Fill")
-	mainGroup:SetHeight(600)
-    mainGroup:SetRelativeWidth(0.65)
-	mainframe:AddChild(mainGroup)
+	UIElements.mainGroup = AceGUI:Create("SimpleGroup")
+    UIElements.mainGroup:SetLayout("Fill")
+	UIElements.mainGroup:SetHeight(600)
+    UIElements.mainGroup:SetRelativeWidth(0.65)
+	UIElements.mainframe:AddChild(UIElements.mainGroup)
 	
 	local container1 = AceGUI:Create("SimpleGroup")
 	container1:SetFullWidth(true)
 	container1:SetHeight(600)
 	container1:SetLayout("Flow")
-	mainGroup:AddChild(container1)	
+	UIElements.mainGroup:AddChild(container1)	
 	
 	local labeltitre1= AceGUI:Create("Heading")
 	labeltitre1:SetText("Netherlight Crucible")
@@ -924,11 +916,11 @@ function SimPermut:BuildNetherlightFrame()
 	crucibletypedropdown:SetWidth(150)
 	crucibletypedropdown:SetList(ExtraData.CrucibleType)
 	crucibletypedropdown:SetLabel("Comparison type")
-	crucibletypedropdown:SetValue(CrucibleTypeTypeValue)
+	crucibletypedropdown:SetValue(UIParameters.CrucibleComparisonTypeValue)
 	crucibletypedropdown:SetCallback("OnValueChanged", function (this, event, item)
-		CrucibleTypeTypeValue=item
-		if mainframe:IsVisible() then
-			mainframe:Release()
+		UIParameters.CrucibleComparisonTypeValue=item
+		if UIElements.mainframe:IsVisible() then
+			UIElements.mainframe:Release()
 		end
 		SimPermut:BuildFrame()
     end)
@@ -978,7 +970,7 @@ function SimPermut:BuildNetherlightFrame()
 	
 	SimPermut:AddSpacer(container1,true)
 	
-	if CrucibleTypeTypeValue==2 then
+	if UIParameters.CrucibleComparisonTypeValue==2 then
 		--add left panel
 		local cruciblecontainerleft = AceGUI:Create("SimpleGroup")
 		cruciblecontainerleft:SetRelativeWidth(0.33)
@@ -1005,20 +997,20 @@ function SimPermut:BuildNetherlightFrame()
 
 		local  spellTextureleft, crucibleIconleft
 		crucibleIconleft=AceGUI:Create("Icon")
-		dropdownTableCrucible[#dropdownTableCrucible+1] = AceGUI:Create("Dropdown")
-		dropdownTableCrucible[#dropdownTableCrucible]:SetRelativeWidth(0.8)
-		dropdownTableCrucible[#dropdownTableCrucible]:SetList(ExtraData.NetherlightData[2])
-		dropdownTableCrucible[#dropdownTableCrucible]:SetLabel("")
-		dropdownTableCrucible[#dropdownTableCrucible]:SetValue(T2)
+		UIElements.dropdownTableCrucible[#UIElements.dropdownTableCrucible+1] = AceGUI:Create("Dropdown")
+		UIElements.dropdownTableCrucible[#UIElements.dropdownTableCrucible]:SetRelativeWidth(0.8)
+		UIElements.dropdownTableCrucible[#UIElements.dropdownTableCrucible]:SetList(ExtraData.NetherlightData[2])
+		UIElements.dropdownTableCrucible[#UIElements.dropdownTableCrucible]:SetLabel("")
+		UIElements.dropdownTableCrucible[#UIElements.dropdownTableCrucible]:SetValue(T2)
 		trait[1]=T2
-		dropdownTableCrucible[#dropdownTableCrucible]:SetCallback("OnValueChanged", function (this, event, item)
+		UIElements.dropdownTableCrucible[#UIElements.dropdownTableCrucible]:SetCallback("OnValueChanged", function (this, event, item)
 			trait[1]=item
 			_, _, spellTextureleft = GetSpellInfo(ExtraData.NetherlightSpellID[item])
 			if spellTextureleft then
 				crucibleIconleft:SetImage(spellTextureleft)
 			end
 		end)
-		cruciblecontainerleft:AddChild(dropdownTableCrucible[#dropdownTableCrucible])
+		cruciblecontainerleft:AddChild(UIElements.dropdownTableCrucible[#UIElements.dropdownTableCrucible])
 		
 		SimPermut:AddSpacer(cruciblecontainerleft,true)
 		SimPermut:AddSpacer(cruciblecontainerleft,false,0.4)
@@ -1050,12 +1042,12 @@ function SimPermut:BuildNetherlightFrame()
 		
 		SimPermut:AddSpacer(cruciblecontainerleft,true)
 		SimPermut:AddSpacer(cruciblecontainerleft,false,0.1)
-		dropdownTableCrucible[#dropdownTableCrucible+1] = AceGUI:Create("Dropdown")
-		dropdownTableCrucible[#dropdownTableCrucible]:SetRelativeWidth(0.8)
-		dropdownTableCrucible[#dropdownTableCrucible]:SetList(ExtraData.NetherlightData[3][artifactID])
-		dropdownTableCrucible[#dropdownTableCrucible]:SetLabel("")
-		dropdownTableCrucible[#dropdownTableCrucible]:SetValue(T3)
-		cruciblecontainerleft:AddChild(dropdownTableCrucible[#dropdownTableCrucible])
+		UIElements.dropdownTableCrucible[#UIElements.dropdownTableCrucible+1] = AceGUI:Create("Dropdown")
+		UIElements.dropdownTableCrucible[#UIElements.dropdownTableCrucible]:SetRelativeWidth(0.8)
+		UIElements.dropdownTableCrucible[#UIElements.dropdownTableCrucible]:SetList(ExtraData.NetherlightData[3][UIParameters.artifactID])
+		UIElements.dropdownTableCrucible[#UIElements.dropdownTableCrucible]:SetLabel("")
+		UIElements.dropdownTableCrucible[#UIElements.dropdownTableCrucible]:SetValue(T3)
+		cruciblecontainerleft:AddChild(UIElements.dropdownTableCrucible[#UIElements.dropdownTableCrucible])
 	else--spacer container
 		local containerfiller = AceGUI:Create("SimpleGroup")
 		containerfiller:SetRelativeWidth(0.33)
@@ -1069,7 +1061,7 @@ function SimPermut:BuildNetherlightFrame()
 	cruciblecontainer:SetLayout("Flow")
 	container1:AddChild(cruciblecontainer)
 	
-	if CrucibleTypeTypeValue==2 then
+	if UIParameters.CrucibleComparisonTypeValue==2 then
 		SimPermut:AddSpacer(cruciblecontainer,false,0.42)
 		local relicinfo2= AceGUI:Create("Label")
 		relicinfo2:SetRelativeWidth(0.58)
@@ -1091,20 +1083,20 @@ function SimPermut:BuildNetherlightFrame()
 
 	local  spellTexture, crucibleIcon
 	crucibleIcon=AceGUI:Create("Icon")
-	dropdownTableCrucible[#dropdownTableCrucible+1] = AceGUI:Create("Dropdown")
-	dropdownTableCrucible[#dropdownTableCrucible]:SetRelativeWidth(0.8)
-	dropdownTableCrucible[#dropdownTableCrucible]:SetList(ExtraData.NetherlightData[2])
-	dropdownTableCrucible[#dropdownTableCrucible]:SetLabel("")
-	dropdownTableCrucible[#dropdownTableCrucible]:SetValue(T2)
+	UIElements.dropdownTableCrucible[#UIElements.dropdownTableCrucible+1] = AceGUI:Create("Dropdown")
+	UIElements.dropdownTableCrucible[#UIElements.dropdownTableCrucible]:SetRelativeWidth(0.8)
+	UIElements.dropdownTableCrucible[#UIElements.dropdownTableCrucible]:SetList(ExtraData.NetherlightData[2])
+	UIElements.dropdownTableCrucible[#UIElements.dropdownTableCrucible]:SetLabel("")
+	UIElements.dropdownTableCrucible[#UIElements.dropdownTableCrucible]:SetValue(T2)
 	trait[2]=T2
-	dropdownTableCrucible[#dropdownTableCrucible]:SetCallback("OnValueChanged", function (this, event, item)
+	UIElements.dropdownTableCrucible[#UIElements.dropdownTableCrucible]:SetCallback("OnValueChanged", function (this, event, item)
 		trait[2]=item
 		_, _, spellTexture = GetSpellInfo(ExtraData.NetherlightSpellID[item])
 		if spellTexture then
 			crucibleIcon:SetImage(spellTexture)
 		end
     end)
-	cruciblecontainer:AddChild(dropdownTableCrucible[#dropdownTableCrucible])
+	cruciblecontainer:AddChild(UIElements.dropdownTableCrucible[#UIElements.dropdownTableCrucible])
 	
 	SimPermut:AddSpacer(cruciblecontainer,true)
 	SimPermut:AddSpacer(cruciblecontainer,false,0.4)
@@ -1136,14 +1128,14 @@ function SimPermut:BuildNetherlightFrame()
 	
 	SimPermut:AddSpacer(cruciblecontainer,true)
 	SimPermut:AddSpacer(cruciblecontainer,false,0.1)
-	dropdownTableCrucible[#dropdownTableCrucible+1] = AceGUI:Create("Dropdown")
-	dropdownTableCrucible[#dropdownTableCrucible]:SetRelativeWidth(0.8)
-	dropdownTableCrucible[#dropdownTableCrucible]:SetList(ExtraData.NetherlightData[3][artifactID])
-	dropdownTableCrucible[#dropdownTableCrucible]:SetLabel("")
-	dropdownTableCrucible[#dropdownTableCrucible]:SetValue(T3)
-	cruciblecontainer:AddChild(dropdownTableCrucible[#dropdownTableCrucible])
+	UIElements.dropdownTableCrucible[#UIElements.dropdownTableCrucible+1] = AceGUI:Create("Dropdown")
+	UIElements.dropdownTableCrucible[#UIElements.dropdownTableCrucible]:SetRelativeWidth(0.8)
+	UIElements.dropdownTableCrucible[#UIElements.dropdownTableCrucible]:SetList(ExtraData.NetherlightData[3][UIParameters.artifactID])
+	UIElements.dropdownTableCrucible[#UIElements.dropdownTableCrucible]:SetLabel("")
+	UIElements.dropdownTableCrucible[#UIElements.dropdownTableCrucible]:SetValue(T3)
+	cruciblecontainer:AddChild(UIElements.dropdownTableCrucible[#UIElements.dropdownTableCrucible])
 	
-	if CrucibleTypeTypeValue==2 then
+	if UIParameters.CrucibleComparisonTypeValue==2 then
 		--add left panel
 		local cruciblecontainerright = AceGUI:Create("SimpleGroup")
 		cruciblecontainerright:SetRelativeWidth(0.33)
@@ -1170,20 +1162,20 @@ function SimPermut:BuildNetherlightFrame()
 
 		local  spellTextureright, crucibleIconright
 		crucibleIconright=AceGUI:Create("Icon")
-		dropdownTableCrucible[#dropdownTableCrucible+1] = AceGUI:Create("Dropdown")
-		dropdownTableCrucible[#dropdownTableCrucible]:SetRelativeWidth(0.8)
-		dropdownTableCrucible[#dropdownTableCrucible]:SetList(ExtraData.NetherlightData[2])
-		dropdownTableCrucible[#dropdownTableCrucible]:SetLabel("")
-		dropdownTableCrucible[#dropdownTableCrucible]:SetValue(T2)
+		UIElements.dropdownTableCrucible[#UIElements.dropdownTableCrucible+1] = AceGUI:Create("Dropdown")
+		UIElements.dropdownTableCrucible[#UIElements.dropdownTableCrucible]:SetRelativeWidth(0.8)
+		UIElements.dropdownTableCrucible[#UIElements.dropdownTableCrucible]:SetList(ExtraData.NetherlightData[2])
+		UIElements.dropdownTableCrucible[#UIElements.dropdownTableCrucible]:SetLabel("")
+		UIElements.dropdownTableCrucible[#UIElements.dropdownTableCrucible]:SetValue(T2)
 		trait[3]=T2
-		dropdownTableCrucible[#dropdownTableCrucible]:SetCallback("OnValueChanged", function (this, event, item)
+		UIElements.dropdownTableCrucible[#UIElements.dropdownTableCrucible]:SetCallback("OnValueChanged", function (this, event, item)
 			trait[3]=item
 			_, _, spellTextureright = GetSpellInfo(ExtraData.NetherlightSpellID[item])
 			if spellTextureright then
 				crucibleIconright:SetImage(spellTextureright)
 			end
 		end)
-		cruciblecontainerright:AddChild(dropdownTableCrucible[#dropdownTableCrucible])
+		cruciblecontainerright:AddChild(UIElements.dropdownTableCrucible[#UIElements.dropdownTableCrucible])
 		
 		SimPermut:AddSpacer(cruciblecontainerright,true)
 		SimPermut:AddSpacer(cruciblecontainerright,false,0.4)
@@ -1215,12 +1207,12 @@ function SimPermut:BuildNetherlightFrame()
 		
 		SimPermut:AddSpacer(cruciblecontainerright,true)
 		SimPermut:AddSpacer(cruciblecontainerright,false,0.1)
-		dropdownTableCrucible[#dropdownTableCrucible+1] = AceGUI:Create("Dropdown")
-		dropdownTableCrucible[#dropdownTableCrucible]:SetRelativeWidth(0.8)
-		dropdownTableCrucible[#dropdownTableCrucible]:SetList(ExtraData.NetherlightData[3][artifactID])
-		dropdownTableCrucible[#dropdownTableCrucible]:SetLabel("")
-		dropdownTableCrucible[#dropdownTableCrucible]:SetValue(T3)
-		cruciblecontainerright:AddChild(dropdownTableCrucible[#dropdownTableCrucible])
+		UIElements.dropdownTableCrucible[#UIElements.dropdownTableCrucible+1] = AceGUI:Create("Dropdown")
+		UIElements.dropdownTableCrucible[#UIElements.dropdownTableCrucible]:SetRelativeWidth(0.8)
+		UIElements.dropdownTableCrucible[#UIElements.dropdownTableCrucible]:SetList(ExtraData.NetherlightData[3][UIParameters.artifactID])
+		UIElements.dropdownTableCrucible[#UIElements.dropdownTableCrucible]:SetLabel("")
+		UIElements.dropdownTableCrucible[#UIElements.dropdownTableCrucible]:SetValue(T3)
+		cruciblecontainerright:AddChild(UIElements.dropdownTableCrucible[#UIElements.dropdownTableCrucible])
 	else
 		local containerfillerright2 = AceGUI:Create("SimpleGroup")
 		containerfillerright2:SetRelativeWidth(0.33)
@@ -1250,16 +1242,16 @@ end
 
 -- Field construction for Dungeon Journal Frame
 function SimPermut:BuildDungeonJournalFrame()
-	mainGroup = AceGUI:Create("SimpleGroup")
-    mainGroup:SetLayout("Flow")
-    mainGroup:SetRelativeWidth(1)
-	mainframe:AddChild(mainGroup)
+	UIElements.mainGroup = AceGUI:Create("SimpleGroup")
+    UIElements.mainGroup:SetLayout("Flow")
+    UIElements.mainGroup:SetRelativeWidth(1)
+	UIElements.mainframe:AddChild(UIElements.mainGroup)
 	
 	local container1 = AceGUI:Create("SimpleGroup")
 	container1:SetFullWidth(true)
 	container1:SetHeight(100)
 	container1:SetLayout("Flow")
-	mainGroup:AddChild(container1)
+	UIElements.mainGroup:AddChild(container1)
 	
 	-- Add an item
 	local editLink= AceGUI:Create("EditBox")
@@ -1304,46 +1296,46 @@ function SimPermut:BuildDungeonJournalFrame()
 	scrollcontainer1:SetRelativeWidth(0.5)
 	scrollcontainer1:SetHeight(600)
 	scrollcontainer1:SetLayout("Fill")
-	mainGroup:AddChild(scrollcontainer1)
+	UIElements.mainGroup:AddChild(scrollcontainer1)
 	
-	scroll1 = AceGUI:Create("ScrollFrame")
-	scroll1:SetLayout("Flow")
-	scrollcontainer1:AddChild(scroll1)
+	UIElements.scroll1 = AceGUI:Create("ScrollFrame")
+	UIElements.scroll1:SetLayout("Flow")
+	scrollcontainer1:AddChild(UIElements.scroll1)
 	
 	local scrollcontainer2 = AceGUI:Create("SimpleGroup")
 	scrollcontainer2:SetRelativeWidth(0.5)
 	scrollcontainer2:SetHeight(600)
 	scrollcontainer2:SetLayout("Fill")
-	mainGroup:AddChild(scrollcontainer2)
+	UIElements.mainGroup:AddChild(scrollcontainer2)
 	
-	scroll2 = AceGUI:Create("ScrollFrame")
-	scroll2:SetLayout("Flow")
-	scrollcontainer2:AddChild(scroll2)
+	UIElements.scroll2 = AceGUI:Create("ScrollFrame")
+	UIElements.scroll2:SetLayout("Flow")
+	scrollcontainer2:AddChild(UIElements.scroll2)
 	
 	local socketString=""
 	local ilvlString=""
 	for j=1,#ExtraData.ListNames do
-		tableTitres[j]=AceGUI:Create("Label")
-		tableTitres[j]:SetText(PersoLib:firstToUpper(ExtraData.ListNames[j]))
-		tableTitres[j]:SetFullWidth(true)
+		UIElements.tableTitres[j]=AceGUI:Create("Label")
+		UIElements.tableTitres[j]:SetText(PersoLib:firstToUpper(ExtraData.ListNames[j]))
+		UIElements.tableTitres[j]:SetFullWidth(true)
 		if(j<7) then
-			scroll1:AddChild(tableTitres[j])
+			UIElements.scroll1:AddChild(UIElements.tableTitres[j])
 		else
-			scroll2:AddChild(tableTitres[j])
+			UIElements.scroll2:AddChild(UIElements.tableTitres[j])
 		end
 		
-		tableCheckBoxes[j]={}
-		tableLabel[j]={}
+		UIElements.tableCheckBoxes[j]={}
+		UIElements.tableLabel[j]={}
 		if SimPermutVars.addedItemsTable and SimPermutVars.addedItemsTable[j] then
 			for i,_ in pairs(SimPermutVars.addedItemsTable[j]) do
-				tableCheckBoxes[j][i]=AceGUI:Create("CheckBox")
-				tableCheckBoxes[j][i]:SetLabel("")
-				tableCheckBoxes[j][i]:SetRelativeWidth(0.05)
-				tableCheckBoxes[j][i]:SetValue(false)
+				UIElements.tableCheckBoxes[j][i]=AceGUI:Create("CheckBox")
+				UIElements.tableCheckBoxes[j][i]:SetLabel("")
+				UIElements.tableCheckBoxes[j][i]:SetRelativeWidth(0.05)
+				UIElements.tableCheckBoxes[j][i]:SetValue(false)
 				if j<7 then
-					scroll1:AddChild(tableCheckBoxes[j][i])
+					UIElements.scroll1:AddChild(UIElements.tableCheckBoxes[j][i])
 				else
-					scroll2:AddChild(tableCheckBoxes[j][i])
+					UIElements.scroll2:AddChild(UIElements.tableCheckBoxes[j][i])
 				end
 				
 				if SimPermutVars.addedItemsTable[j][i][2] then 
@@ -1357,20 +1349,20 @@ function SimPermut:BuildDungeonJournalFrame()
 					socketString="" 
 				end
 				
-				tableLabel[j][i]=AceGUI:Create("InteractiveLabel")
-				tableLabel[j][i]:SetText(SimPermutVars.addedItemsTable[j][i][1]..ilvlString..socketString)
-				tableLabel[j][i]:SetRelativeWidth(0.95)
-				tableLabel[j][i]:SetCallback("OnEnter", function(widget)
+				UIElements.tableLabel[j][i]=AceGUI:Create("InteractiveLabel")
+				UIElements.tableLabel[j][i]:SetText(SimPermutVars.addedItemsTable[j][i][1]..ilvlString..socketString)
+				UIElements.tableLabel[j][i]:SetRelativeWidth(0.95)
+				UIElements.tableLabel[j][i]:SetCallback("OnEnter", function(widget)
 					GameTooltip:SetOwner(widget.frame, "ANCHOR_BOTTOMLEFT")
 					GameTooltip:SetHyperlink(SimPermutVars.addedItemsTable[j][i][1])
 					GameTooltip:Show()
 				end)
-				tableLabel[j][i]:SetCallback("OnLeave", function() GameTooltip:Hide()  end)
+				UIElements.tableLabel[j][i]:SetCallback("OnLeave", function() GameTooltip:Hide()  end)
 				
 				if(j<7) then
-					scroll1:AddChild(tableLabel[j][i])
+					UIElements.scroll1:AddChild(UIElements.tableLabel[j][i])
 				else
-					scroll2:AddChild(tableLabel[j][i])
+					UIElements.scroll2:AddChild(UIElements.tableLabel[j][i])
 				end
 				
 				
@@ -1386,7 +1378,7 @@ function SimPermut:BuildDungeonJournalFrame()
 		for j=1,#ExtraData.ListNames do
 			if SimPermutVars.addedItemsTable and SimPermutVars.addedItemsTable[j] then
 				for i,_ in pairs(SimPermutVars.addedItemsTable[j]) do
-					if tableCheckBoxes[j][i]:GetValue() then
+					if UIElements.tableCheckBoxes[j][i]:GetValue() then
 						SimPermutVars.addedItemsTable[j][i]=nil
 					end
 				end
@@ -1394,20 +1386,20 @@ function SimPermut:BuildDungeonJournalFrame()
 		end
 		SimPermut:BuildFrame()
 	end)
-	mainGroup:AddChild(buttonAdd)
+	UIElements.mainGroup:AddChild(buttonAdd)
 end
 
 -- Field construction for option Frame
 function SimPermut:BuildOptionFrame()
-	mainGroup = AceGUI:Create("SimpleGroup")
-    mainGroup:SetLayout("Fill")
-    mainGroup:SetRelativeWidth(1)
+	UIElements.mainGroup = AceGUI:Create("SimpleGroup")
+    UIElements.mainGroup:SetLayout("Fill")
+    UIElements.mainGroup:SetRelativeWidth(1)
 	
 	local container1 = AceGUI:Create("SimpleGroup")
 	container1:SetFullWidth(true)
 	container1:SetHeight(600)
 	container1:SetLayout("Flow")
-	mainGroup:AddChild(container1)
+	UIElements.mainGroup:AddChild(container1)
 	
 	local labeltitre1= AceGUI:Create("Heading")
 	labeltitre1:SetText("General options")
@@ -1573,6 +1565,7 @@ function SimPermut:BuildOptionFrame()
 	checkBoxSmallUI:SetCallback("OnValueChanged", function (this, event, item)
 		SimPermutVars.smallUI=checkBoxSmallUI:GetValue()
 		PersoLib:MergeTables(defaultSettings,SimPermutVars,actualSettings)
+		SimPermut:BuildFrame()
     end)
 	container1:AddChild(checkBoxSmallUI)
 	
@@ -1647,14 +1640,14 @@ function SimPermut:BuildOptionFrame()
 	
 	SimPermut:AddSpacer(container1,true)
 	
-	local checkBoxForce = AceGUI:Create("CheckBox")
-	checkBoxForce:SetWidth(250)
-	checkBoxForce:SetLabel("Replace current enchant/gems")
-	checkBoxForce:SetCallback("OnValueChanged", function (this, event, item)
-		SimPermutVars.replaceEnchants=checkBoxForce:GetValue()
+	UIElements.checkBoxForce = AceGUI:Create("CheckBox")
+	UIElements.checkBoxForce:SetWidth(250)
+	UIElements.checkBoxForce:SetLabel("Replace current enchant/gems")
+	UIElements.checkBoxForce:SetCallback("OnValueChanged", function (this, event, item)
+		SimPermutVars.replaceEnchants=UIElements.checkBoxForce:GetValue()
 		PersoLib:MergeTables(defaultSettings,SimPermutVars,actualSettings)
     end)
-	container1:AddChild(checkBoxForce)
+	container1:AddChild(UIElements.checkBoxForce)
 	
 	SimPermut:AddSpacer(container1,false,180)
 	
@@ -1744,14 +1737,14 @@ function SimPermut:BuildOptionFrame()
     end)
 	scrollcontainer3:AddChild(simcBox)
 	
-	mainframe:AddChild(mainGroup)
+	UIElements.mainframe:AddChild(UIElements.mainGroup)
 end
 
 -- Field construction for right Panel
 function SimPermut:BuildResultFrame(autoSimcExportVisible)
-	resultGroup = AceGUI:Create("SimpleGroup")
-    resultGroup:SetLayout("Flow")
-    resultGroup:SetRelativeWidth(0.35)
+	UIElements.resultGroup = AceGUI:Create("SimpleGroup")
+    UIElements.resultGroup:SetLayout("Flow")
+    UIElements.resultGroup:SetRelativeWidth(0.35)
 	
 	local scrollcontainer3 = AceGUI:Create("SimpleGroup")
 	scrollcontainer3:SetRelativeWidth(1)
@@ -1761,17 +1754,17 @@ function SimPermut:BuildResultFrame(autoSimcExportVisible)
 		scrollcontainer3:SetHeight(600)
 	end
 	scrollcontainer3:SetLayout("Fill")
-	resultGroup:AddChild(scrollcontainer3)
+	UIElements.resultGroup:AddChild(scrollcontainer3)
 	
-	resultBox= AceGUI:Create("MultiLineEditBox")
-	resultBox:SetText("")
-	resultBox:SetLabel("")
-	resultBox:DisableButton(true)
-	resultBox:SetRelativeWidth(1)
-	scrollcontainer3:AddChild(resultBox)
+	UIElements.resultBox= AceGUI:Create("MultiLineEditBox")
+	UIElements.resultBox:SetText("")
+	UIElements.resultBox:SetLabel("")
+	UIElements.resultBox:DisableButton(true)
+	UIElements.resultBox:SetRelativeWidth(1)
+	scrollcontainer3:AddChild(UIElements.resultBox)
 	
 	if autoSimcExportVisible then
-		SimPermut:AddSpacer(resultGroup,false,0.7)
+		SimPermut:AddSpacer(UIElements.resultGroup,false,0.7)
 		
 		local buttonGenerateRaw = AceGUI:Create("Button")
 		buttonGenerateRaw:SetText("AutoSimc Export")
@@ -1779,32 +1772,32 @@ function SimPermut:BuildResultFrame(autoSimcExportVisible)
 		buttonGenerateRaw:SetCallback("OnClick", function()
 			SimPermut:GenerateRaw()
 		end)
-		resultGroup:AddChild(buttonGenerateRaw)
+		UIElements.resultGroup:AddChild(buttonGenerateRaw)
 	end
 	
-	mainframe:AddChild(resultGroup)
+	UIElements.mainframe:AddChild(UIElements.resultGroup)
 end
 
 -- Init the frame for the first time
 function SimPermut:InitGearFrame()
-	tableTitres={}
-	tableLabel={}
-	tableCheckBoxes={}
-	tableLinkPermut={}
+	UIElements.tableTitres={}
+	UIElements.tableLabel={}
+	UIElements.tableCheckBoxes={}
+	UIElements.tableLinkPermut={}
 	
 	--init with default parameters
-	actualEnchantNeck=actualSettings.enchant_neck
-	actualEnchantFinger=actualSettings.enchant_ring
-	actualEnchantBack=actualSettings.enchant_back
-	actualGem=actualSettings.gems
-	actualForce=actualSettings.replaceEnchants
-	actualSetsT19=actualSettings.setsT19
-	actualSetsT20=actualSettings.setsT20
-	actualSetsT21=actualSettings.setsT21
+	UIParameters.actualEnchantNeck=actualSettings.enchant_neck
+	UIParameters.actualEnchantFinger=actualSettings.enchant_ring
+	UIParameters.actualEnchantBack=actualSettings.enchant_back
+	UIParameters.actualGem=actualSettings.gems
+	UIParameters.actualForce=actualSettings.replaceEnchants
+	UIParameters.actualSetsT19=actualSettings.setsT19
+	UIParameters.actualSetsT20=actualSettings.setsT20
+	UIParameters.actualSetsT21=actualSettings.setsT21
 	
-	_,tableBaseLink=SimPermut:GetBaseString()
+	_,UIElements.tableBaseLink=SimPermut:GetBaseString()
 	
-	editLegMin:SetText(equipedLegendaries)
+	UIElements.editLegMin:SetText(UIParameters.equipedLegendaries)
 	
 	SimPermut:GetListItems()
 	SimPermut:BuildItemFrame()
@@ -1820,70 +1813,70 @@ function SimPermut:BuildItemFrame()
 	local socketString=""
 	local ilvlString=""
 	for j=1,#ExtraData.ListNames do
-		tableTitres[j]=AceGUI:Create("Label")
-		tableTitres[j]:SetText(PersoLib:firstToUpper(ExtraData.ListNames[j]))
-		tableTitres[j]:SetFullWidth(true)
+		UIElements.tableTitres[j]=AceGUI:Create("Label")
+		UIElements.tableTitres[j]:SetText(PersoLib:firstToUpper(ExtraData.ListNames[j]))
+		UIElements.tableTitres[j]:SetFullWidth(true)
 		if(j<7) then
-			scroll1:AddChild(tableTitres[j])
+			UIElements.scroll1:AddChild(UIElements.tableTitres[j])
 		else
-			scroll2:AddChild(tableTitres[j])
+			UIElements.scroll2:AddChild(UIElements.tableTitres[j])
 		end
 		
-		tableCheckBoxes[j]={}
-		tableLabel[j]={}
-		for i=1 ,#tableListItems[j] do
-			tableCheckBoxes[j][i]=AceGUI:Create("CheckBox")
-			tableCheckBoxes[j][i]:SetLabel("")
-			tableCheckBoxes[j][i]:SetRelativeWidth(0.05)
-			if SimPermut:isEquiped(tableListItems[j][i][1],j) or tablePreCheck[j] then
-				tableCheckBoxes[j][i]:SetValue(true)
+		UIElements.tableCheckBoxes[j]={}
+		UIElements.tableLabel[j]={}
+		for i=1 ,#UIElements.tableListItems[j] do
+			UIElements.tableCheckBoxes[j][i]=AceGUI:Create("CheckBox")
+			UIElements.tableCheckBoxes[j][i]:SetLabel("")
+			UIElements.tableCheckBoxes[j][i]:SetRelativeWidth(0.05)
+			if SimPermut:isEquiped(UIElements.tableListItems[j][i][1],j) or UIElements.tablePreCheck[j] then
+				UIElements.tableCheckBoxes[j][i]:SetValue(true)
 			else
-				tableCheckBoxes[j][i]:SetValue(false)
+				UIElements.tableCheckBoxes[j][i]:SetValue(false)
 			end
-			tableCheckBoxes[j][i]:SetCallback("OnValueChanged", function(this, event, item)
-				if tableCheckBoxes[j][i]:GetValue() then
-					selecteditems=selecteditems+1
+			UIElements.tableCheckBoxes[j][i]:SetCallback("OnValueChanged", function(this, event, item)
+				if UIElements.tableCheckBoxes[j][i]:GetValue() then
+					UIParameters.selecteditems=UIParameters.selecteditems+1
 				else
-					selecteditems=selecteditems-1
+					UIParameters.selecteditems=UIParameters.selecteditems-1
 				end
 				SimPermut:CheckItemCount()
 			end)
-			selecteditems=selecteditems+1
+			UIParameters.selecteditems=UIParameters.selecteditems+1
 			if j<7 then
-				scroll1:AddChild(tableCheckBoxes[j][i])
+				UIElements.scroll1:AddChild(UIElements.tableCheckBoxes[j][i])
 			else
-				scroll2:AddChild(tableCheckBoxes[j][i])
+				UIElements.scroll2:AddChild(UIElements.tableCheckBoxes[j][i])
 			end
 			
-			if tableListItems[j][i][2] then 
-				ilvlString=" "..tableListItems[j][i][2] 
+			if UIElements.tableListItems[j][i][2] then 
+				ilvlString=" "..UIElements.tableListItems[j][i][2] 
 			else
 				ilvlString=""
 			end
-			if tableListItems[j][i][3] then 
+			if UIElements.tableListItems[j][i][3] then 
 				socketString="+S" 
 			else
 				socketString="" 
 			end
 			
-			tableLabel[j][i]=AceGUI:Create("InteractiveLabel")
-			tableLabel[j][i]:SetText(tableListItems[j][i][1]..ilvlString..socketString)
-			tableLabel[j][i]:SetRelativeWidth(0.95)
-			tableLabel[j][i]:SetCallback("OnEnter", function(widget)
+			UIElements.tableLabel[j][i]=AceGUI:Create("InteractiveLabel")
+			UIElements.tableLabel[j][i]:SetText(UIElements.tableListItems[j][i][1]..ilvlString..socketString)
+			UIElements.tableLabel[j][i]:SetRelativeWidth(0.95)
+			UIElements.tableLabel[j][i]:SetCallback("OnEnter", function(widget)
 				GameTooltip:SetOwner(widget.frame, "ANCHOR_BOTTOMLEFT")
-				GameTooltip:SetHyperlink(tableListItems[j][i][1])
+				GameTooltip:SetHyperlink(UIElements.tableListItems[j][i][1])
 				GameTooltip:Show()
 			end)
-			tableLabel[j][i]:SetCallback("OnLeave", function() GameTooltip:Hide()  end)
+			UIElements.tableLabel[j][i]:SetCallback("OnLeave", function() GameTooltip:Hide()  end)
 			
-			if (j>=11 and ad) then
-				PersoLib:debugPrint(ExtraData.ListNames[j]..i.." : "..PersoLib:GetIDFromLink(tableListItems[j][i][1]),ad)
+			if (j>=11 and UIParameters.ad) then
+				PersoLib:debugPrint(ExtraData.ListNames[j]..i.." : "..PersoLib:GetIDFromLink(UIElements.tableListItems[j][i][1]),UIParameters.ad)
 			end
 			
 			if(j<7) then
-				scroll1:AddChild(tableLabel[j][i])
+				UIElements.scroll1:AddChild(UIElements.tableLabel[j][i])
 			else
-				scroll2:AddChild(tableLabel[j][i])
+				UIElements.scroll2:AddChild(UIElements.tableLabel[j][i])
 			end
 		end
 	end
@@ -1896,10 +1889,10 @@ function SimPermut:Generate()
 	local baseString=""
 	local finalString=""
 	if SimPermut:GetTableLink() then
-		PersoLib:debugPrint("--------------------",ad)
-		PersoLib:debugPrint("Generating Gear string...",ad)
+		PersoLib:debugPrint("--------------------",UIParameters.ad)
+		PersoLib:debugPrint("Generating Gear string...",UIParameters.ad)
 		SimPermut:GetSelectedCount()
-		baseString,tableBaseLink=SimPermut:GetBaseString()
+		baseString,UIElements.tableBaseLink=SimPermut:GetBaseString()
 		permuttable=SimPermut:GetAllPermutations()
 		SimPermut:PreparePermutations(permuttable)
 		permutString=SimPermut:GetPermutationString(permuttable)
@@ -1907,16 +1900,16 @@ function SimPermut:Generate()
 		SimPermut:PrintPermut(finalString)
 		
 		
-		PersoLib:debugPrint("End of generation",ad)
-		PersoLib:debugPrint("--------------------",ad)
+		PersoLib:debugPrint("End of generation",UIParameters.ad)
+		PersoLib:debugPrint("--------------------",UIParameters.ad)
 	else --error
-		mainframe:SetStatusText(errorMessage)
+		UIElements.mainframe:SetStatusText(UIParameters.errorMessage)
 	end
 end
 
 -- clic btn generate raw
 function SimPermut:GenerateRaw()
-	mainframe:SetStatusText("")
+	UIElements.mainframe:SetStatusText("")
 	
 	local itemList=""
 	local baseString=""
@@ -1924,15 +1917,15 @@ function SimPermut:GenerateRaw()
 	local AutoSimcString=""
 	
 	if SimPermut:GetTableLink() then
-		PersoLib:debugPrint("--------------------",ad)
-		PersoLib:debugPrint("Generating string...",ad)
-		baseString,tableBaseLink=SimPermut:GetBaseString()
+		PersoLib:debugPrint("--------------------",UIParameters.ad)
+		PersoLib:debugPrint("Generating string...",UIParameters.ad)
+		baseString,UIElements.tableBaseLink=SimPermut:GetBaseString()
 		AutoSimcString=SimPermut:GetAutoSimcString()
 		itemList=SimPermut:GetItemListString()
 		finalString=SimPermut:GetFinalString(AutoSimcString,itemList)
 		SimPermut:PrintPermut(finalString)
-		PersoLib:debugPrint("End of generation",ad)
-		PersoLib:debugPrint("--------------------",ad)
+		PersoLib:debugPrint("End of generation",UIParameters.ad)
+		PersoLib:debugPrint("--------------------",UIParameters.ad)
 	end
 end
 
@@ -1941,17 +1934,17 @@ function SimPermut:GenerateTalents()
 	local permutString=""
 	local baseString=""
 	local finalString=""
-	tableTalentResults={}
+	UIElements.tableTalentResults={}
 	
-	PersoLib:debugPrint("--------------------",ad)
-	PersoLib:debugPrint("Generating Talent String...",ad)
+	PersoLib:debugPrint("--------------------",UIParameters.ad)
+	PersoLib:debugPrint("Generating Talent String...",UIParameters.ad)
 	SimPermut:GenerateTalentsRecursive(1,"")
 	baseString=SimPermut:GetBaseString()
 	permutString=SimPermut:GenerateTalentString()
 	finalString=SimPermut:GetFinalString(baseString,permutString)
 	SimPermut:PrintPermut(finalString)
-	PersoLib:debugPrint("End of generation",ad)
-	PersoLib:debugPrint("--------------------",ad)
+	PersoLib:debugPrint("End of generation",UIParameters.ad)
+	PersoLib:debugPrint("--------------------",UIParameters.ad)
 end
 
 -- clic btn generate Relic
@@ -1960,15 +1953,15 @@ function SimPermut:GenerateRelic()
 	local baseString=""
 	local finalString=""
 
-	PersoLib:debugPrint("--------------------",ad)
-	PersoLib:debugPrint("Generating Relic String...",ad)
+	PersoLib:debugPrint("--------------------",UIParameters.ad)
+	PersoLib:debugPrint("Generating Relic String...",UIParameters.ad)
 	baseString=SimPermut:GetBaseString(true)
 	permutString=SimPermut:GenerateRelicString()
-	relicString=relicString.."\n"..permutString
-	finalString=SimPermut:GetFinalString(baseString,relicString)
+	UIParameters.relicString=UIParameters.relicString.."\n"..permutString
+	finalString=SimPermut:GetFinalString(baseString,UIParameters.relicString)
 	SimPermut:PrintPermut(finalString)
-	PersoLib:debugPrint("End of generation",ad)
-	PersoLib:debugPrint("--------------------",ad)
+	PersoLib:debugPrint("End of generation",UIParameters.ad)
+	PersoLib:debugPrint("--------------------",UIParameters.ad)
 end
 
 -- clic btn generate Relic
@@ -1976,32 +1969,31 @@ function SimPermut:GenerateCrucible()
 	local permutString=""
 	local baseString=""
 	local finalString=""
-	local artifactID,artifactData = LAD:GetArtifactInfo()
 
-	PersoLib:debugPrint("--------------------",ad)
-	PersoLib:debugPrint("Generating crucible String...",ad)
+	PersoLib:debugPrint("--------------------",UIParameters.ad)
+	PersoLib:debugPrint("Generating crucible String...",UIParameters.ad)
 	baseString=SimPermut:GetBaseString()
 	permutString=SimPermut:GenerateCrucibleString()
-	crucibleString=crucibleString.."\n"..permutString
-	finalString=SimPermut:GetFinalString(baseString,crucibleString)
+	UIParameters.crucibleString=UIParameters.crucibleString.."\n"..permutString
+	finalString=SimPermut:GetFinalString(baseString,UIParameters.crucibleString)
 	SimPermut:PrintPermut(finalString)
-	PersoLib:debugPrint("End of generation",ad)
-	PersoLib:debugPrint("--------------------",ad)
+	PersoLib:debugPrint("End of generation",UIParameters.ad)
+	PersoLib:debugPrint("--------------------",UIParameters.ad)
 end
 
 -- clic btn generate Talent recursion
 function SimPermut:GenerateTalentsRecursive(stacks,str)
 	local newstacks=stacks
 	local newstr=str
-	if newstacks > TALENTS_MAX_ROW then
-		tableTalentResults[#tableTalentResults+1]=newstr
+	if newstacks > UIParameters.TALENTS_MAX_ROW then
+		UIElements.tableTalentResults[#UIElements.tableTalentResults+1]=newstr
 	else
-		if tableTalentcheckbox[newstacks][1]:GetValue()==false and tableTalentcheckbox[newstacks][2]:GetValue()==false and tableTalentcheckbox[newstacks][3]:GetValue()==false then
+		if UIElements.tableTalentcheckbox[newstacks][1]:GetValue()==false and UIElements.tableTalentcheckbox[newstacks][2]:GetValue()==false and UIElements.tableTalentcheckbox[newstacks][3]:GetValue()==false then
 			newstr=newstr.."0"
 			SimPermut:GenerateTalentsRecursive(newstacks+1,newstr)
 		else
-			for i=1,TALENTS_MAX_COLUMN do
-				if tableTalentcheckbox[newstacks][i]:GetValue() then
+			for i=1,UIParameters.TALENTS_MAX_COLUMN do
+				if UIElements.tableTalentcheckbox[newstacks][i]:GetValue() then
 					newstr=str..""..i
 					SimPermut:GenerateTalentsRecursive(newstacks+1,newstr)
 				end
@@ -2012,14 +2004,14 @@ end
 
 -- Get the count of selected items
 function SimPermut:GetSelectedCount()
-	selecteditems = 0
-	tableNumberSelected={}
+	UIParameters.selecteditems = 0
+	UIElements.tableNumberSelected={}
 	for i=1,#ExtraData.ListNames do
-		tableNumberSelected[i]=0
-		for j=1,#tableListItems[i] do
-			if tableCheckBoxes[i][j]:GetValue() then
-				selecteditems=selecteditems+1
-				tableNumberSelected[i]=tableNumberSelected[i]+1
+		UIElements.tableNumberSelected[i]=0
+		for j=1,#UIElements.tableListItems[i] do
+			if UIElements.tableCheckBoxes[i][j]:GetValue() then
+				UIParameters.selecteditems=UIParameters.selecteditems+1
+				UIElements.tableNumberSelected[i]=UIElements.tableNumberSelected[i]+1
 			end
 		end
 	end
@@ -2029,36 +2021,36 @@ end
 
 -- Check if item count is not too high
 function SimPermut:CheckItemCount()
-	if selecteditems >= ITEM_COUNT_THRESHOLD then
-		labelCount:SetText("     Warning : Too many items selected ("..selecteditems.."). Consider using AutoSimC Export")
+	if UIParameters.selecteditems >= UIParameters.ITEM_COUNT_THRESHOLD then
+		UIParameters.labelCount:SetText("     Warning : Too many items selected ("..UIParameters.selecteditems.."). Consider using AutoSimC Export")
 	else
-		labelCount:SetText("     ".. selecteditems.. " items selected")
+		UIParameters.labelCount:SetText("     ".. UIParameters.selecteditems.. " items selected")
 	end
 end
 
 -- draw the frame and print the text
 function SimPermut:PrintPermut(finalString)
-	resultBox:SetText(finalString)
-	resultBox:HighlightText()
-	resultBox:SetFocus()
+	UIElements.resultBox:SetText(finalString)
+	UIElements.resultBox:HighlightText()
+	UIElements.resultBox:SetFocus()
 end
 
 -- manage spacers
 function SimPermut:AddSpacer(targetFrame,full,width,height)
-	spacerTable[#spacerTable+1] = AceGUI:Create("Label")
+	UIElements.spacerTable[#UIElements.spacerTable+1] = AceGUI:Create("Label")
 	if full then
-		spacerTable[#spacerTable]:SetFullWidth(true)
+		UIElements.spacerTable[#UIElements.spacerTable]:SetFullWidth(true)
 	else
 		if width<=1 then
-			spacerTable[#spacerTable]:SetRelativeWidth(width)
+			UIElements.spacerTable[#UIElements.spacerTable]:SetRelativeWidth(width)
 		else
-			spacerTable[#spacerTable]:SetWidth(width)
+			UIElements.spacerTable[#UIElements.spacerTable]:SetWidth(width)
 		end
 	end
 	if height then
-		spacerTable[#spacerTable]:SetHeight(height)
+		UIElements.spacerTable[#UIElements.spacerTable]:SetHeight(height)
 	end
-	targetFrame:AddChild(spacerTable[#spacerTable])
+	targetFrame:AddChild(UIElements.spacerTable[#UIElements.spacerTable])
 end
 
 ----------------------------
@@ -2075,54 +2067,54 @@ function SimPermut:GetItemString(itemLink,itemType,base,forceilvl,forcegem)
 	local enchantID=""
 	
 	-- Item id
-	local itemId = tonumber(itemSplit[OFFSET_ITEM_ID])
+	local itemId = tonumber(itemSplit[UIParameters.OFFSET_ITEM_ID])
 	simcItemOptions[#simcItemOptions + 1] = ',id=' .. itemId
 	
 	-- Enchant
 	if base and not SimPermutVars.replaceEnchantsBase then 
-		if tonumber(itemSplit[OFFSET_ENCHANT_ID]) > 0 then
-			enchantID=itemSplit[OFFSET_ENCHANT_ID]
+		if tonumber(itemSplit[UIParameters.OFFSET_ENCHANT_ID]) > 0 then
+			enchantID=itemSplit[UIParameters.OFFSET_ENCHANT_ID]
 		end
 	else
 		if itemType=="neck" then
-			if (actualForce or (base and SimPermutVars.replaceEnchantsBase)) and actualEnchantNeck~=0 then
-				enchantID=actualEnchantNeck
+			if (UIParameters.actualForce or (base and SimPermutVars.replaceEnchantsBase)) and UIParameters.actualEnchantNeck~=0 then
+				enchantID=UIParameters.actualEnchantNeck
 			else	
-				if actualEnchantNeck==0 or tonumber(itemSplit[OFFSET_ENCHANT_ID]) > 0 then
-					if tonumber(itemSplit[OFFSET_ENCHANT_ID]) > 0 then
-						enchantID=itemSplit[OFFSET_ENCHANT_ID]
+				if UIParameters.actualEnchantNeck==0 or tonumber(itemSplit[UIParameters.OFFSET_ENCHANT_ID]) > 0 then
+					if tonumber(itemSplit[UIParameters.OFFSET_ENCHANT_ID]) > 0 then
+						enchantID=itemSplit[UIParameters.OFFSET_ENCHANT_ID]
 					end
 				else
-					enchantID=actualEnchantNeck
+					enchantID=UIParameters.actualEnchantNeck
 				end
 			end
 		elseif itemType=="back" then
-			if (actualForce or (base and SimPermutVars.replaceEnchantsBase))  and actualEnchantBack~=0 then
-				enchantID=actualEnchantBack
+			if (UIParameters.actualForce or (base and SimPermutVars.replaceEnchantsBase))  and UIParameters.actualEnchantBack~=0 then
+				enchantID=UIParameters.actualEnchantBack
 			else
-				if actualEnchantBack==0 or tonumber(itemSplit[OFFSET_ENCHANT_ID]) > 0 then
-					if tonumber(itemSplit[OFFSET_ENCHANT_ID]) > 0 then
-						enchantID=itemSplit[OFFSET_ENCHANT_ID]
+				if UIParameters.actualEnchantBack==0 or tonumber(itemSplit[UIParameters.OFFSET_ENCHANT_ID]) > 0 then
+					if tonumber(itemSplit[UIParameters.OFFSET_ENCHANT_ID]) > 0 then
+						enchantID=itemSplit[UIParameters.OFFSET_ENCHANT_ID]
 					end
 				else
-					enchantID=actualEnchantBack
+					enchantID=UIParameters.actualEnchantBack
 				end
 			end
 		elseif string.match(itemType, 'finger*') then
-			if (actualForce or (base and SimPermutVars.replaceEnchantsBase))  and actualEnchantFinger~=0 then
-				enchantID=actualEnchantFinger
+			if (UIParameters.actualForce or (base and SimPermutVars.replaceEnchantsBase))  and UIParameters.actualEnchantFinger~=0 then
+				enchantID=UIParameters.actualEnchantFinger
 			else
-				if actualEnchantFinger==0 or tonumber(itemSplit[OFFSET_ENCHANT_ID]) > 0 then
-					if tonumber(itemSplit[OFFSET_ENCHANT_ID]) > 0 then
-						enchantID=itemSplit[OFFSET_ENCHANT_ID]
+				if UIParameters.actualEnchantFinger==0 or tonumber(itemSplit[UIParameters.OFFSET_ENCHANT_ID]) > 0 then
+					if tonumber(itemSplit[UIParameters.OFFSET_ENCHANT_ID]) > 0 then
+						enchantID=itemSplit[UIParameters.OFFSET_ENCHANT_ID]
 					end
 				else
-					enchantID=actualEnchantFinger
+					enchantID=UIParameters.actualEnchantFinger
 				end
 			end
 		else
-			if tonumber(itemSplit[OFFSET_ENCHANT_ID]) > 0 then
-				enchantID=itemSplit[OFFSET_ENCHANT_ID]
+			if tonumber(itemSplit[UIParameters.OFFSET_ENCHANT_ID]) > 0 then
+				enchantID=itemSplit[UIParameters.OFFSET_ENCHANT_ID]
 			end
 		end
 	end
@@ -2132,23 +2124,23 @@ function SimPermut:GetItemString(itemLink,itemType,base,forceilvl,forcegem)
 	end
 
 	-- New style item suffix, old suffix style not supported
-	if tonumber(itemSplit[OFFSET_SUFFIX_ID]) ~= 0 then
-		simcItemOptions[#simcItemOptions + 1] = 'suffix=' .. itemSplit[OFFSET_SUFFIX_ID]
+	if tonumber(itemSplit[UIParameters.OFFSET_SUFFIX_ID]) ~= 0 then
+		simcItemOptions[#simcItemOptions + 1] = 'suffix=' .. itemSplit[UIParameters.OFFSET_SUFFIX_ID]
 	end
 
-	local flags = tonumber(itemSplit[OFFSET_FLAGS])
+	local flags = tonumber(itemSplit[UIParameters.OFFSET_FLAGS])
 
 	local bonuses = {}
 
-	for index=1, tonumber(itemSplit[OFFSET_BONUS_ID]) do
-		bonuses[#bonuses + 1] = itemSplit[OFFSET_BONUS_ID + index]
+	for index=1, tonumber(itemSplit[UIParameters.OFFSET_BONUS_ID]) do
+		bonuses[#bonuses + 1] = itemSplit[UIParameters.OFFSET_BONUS_ID + index]
 	end
 
 	if #bonuses > 0 then
 		simcItemOptions[#simcItemOptions + 1] = 'bonus_id=' .. table.concat(bonuses, '/')
 	end
 
-	local rest_offset = OFFSET_BONUS_ID + #bonuses + 1
+	local rest_offset = UIParameters.OFFSET_BONUS_ID + #bonuses + 1
 
 
 	-- Artifacts use this
@@ -2214,16 +2206,16 @@ function SimPermut:GetItemString(itemLink,itemType,base,forceilvl,forcegem)
 			end
 		end
 		if base and not SimPermutVars.replaceEnchantsBase then
-			if tonumber(itemSplit[OFFSET_GEM_ID_1]) ~= 0 then
+			if tonumber(itemSplit[UIParameters.OFFSET_GEM_ID_1]) ~= 0 then
 				gemstring='gem_id='
-				if (itemSplit[OFFSET_GEM_ID_1]~=0) then 
-					gemstring=gemstring..itemSplit[OFFSET_GEM_ID_1]
-					if (itemSplit[OFFSET_GEM_ID_2]~=0) then 
-						gemstring=gemstring..itemSplit[OFFSET_GEM_ID_2]
-						if (itemSplit[OFFSET_GEM_ID_3]~=0) then 
-							gemstring=gemstring..itemSplit[OFFSET_GEM_ID_3]
-							if (itemSplit[OFFSET_GEM_ID_4]~=0) then 
-								gemstring=gemstring..itemSplit[OFFSET_GEM_ID_4]
+				if (itemSplit[UIParameters.OFFSET_GEM_ID_1]~=0) then 
+					gemstring=gemstring..itemSplit[UIParameters.OFFSET_GEM_ID_1]
+					if (itemSplit[UIParameters.OFFSET_GEM_ID_2]~=0) then 
+						gemstring=gemstring..itemSplit[UIParameters.OFFSET_GEM_ID_2]
+						if (itemSplit[UIParameters.OFFSET_GEM_ID_3]~=0) then 
+							gemstring=gemstring..itemSplit[UIParameters.OFFSET_GEM_ID_3]
+							if (itemSplit[UIParameters.OFFSET_GEM_ID_4]~=0) then 
+								gemstring=gemstring..itemSplit[UIParameters.OFFSET_GEM_ID_4]
 							end
 						end
 					end
@@ -2231,50 +2223,50 @@ function SimPermut:GetItemString(itemLink,itemType,base,forceilvl,forcegem)
 				simcItemOptions[#simcItemOptions + 1] = gemstring
 			end
 		else
-			if (actualForce or forcegem or (base and SimPermutVars.replaceEnchantsBase)) and actualGem~=0 then
-				if actualGem and actualGem~=0 and (hasSocket>0 or tonumber(itemSplit[OFFSET_GEM_ID_1]) ~= 0) then
+			if (UIParameters.actualForce or forcegem or (base and SimPermutVars.replaceEnchantsBase)) and UIParameters.actualGem~=0 then
+				if UIParameters.actualGem and UIParameters.actualGem~=0 and (hasSocket>0 or tonumber(itemSplit[UIParameters.OFFSET_GEM_ID_1]) ~= 0) then
 					gemstring='gem_id='
 					for i=1,hasSocket do
 						if i>1 then 
 							gemstring=gemstring.."/"
 						end
-						if actualSettings.gemsEpic>0 and not epicGemUsed then
+						if actualSettings.gemsEpic>0 and not UIParameters.epicGemUsed then
 							gemstring=gemstring..actualSettings.gemsEpic
-							epicGemUsed=true
+							UIParameters.epicGemUsed=true
 						else
-							gemstring=gemstring..actualGem
+							gemstring=gemstring..UIParameters.actualGem
 						end
 					end
 					simcItemOptions[#simcItemOptions + 1] = gemstring
 				end
 			else
-				if tonumber(itemSplit[OFFSET_GEM_ID_1]) ~= 0 then
+				if tonumber(itemSplit[UIParameters.OFFSET_GEM_ID_1]) ~= 0 then
 					gemstring='gem_id='
-					if (itemSplit[OFFSET_GEM_ID_1]~=0) then 
-						gemstring=gemstring..itemSplit[OFFSET_GEM_ID_1]
-						if (itemSplit[OFFSET_GEM_ID_2]~=0) then 
-							gemstring=gemstring..itemSplit[OFFSET_GEM_ID_2]
-							if (itemSplit[OFFSET_GEM_ID_3]~=0) then 
-								gemstring=gemstring..itemSplit[OFFSET_GEM_ID_3]
-								if (itemSplit[OFFSET_GEM_ID_4]~=0) then 
-									gemstring=gemstring..itemSplit[OFFSET_GEM_ID_4]
+					if (itemSplit[UIParameters.OFFSET_GEM_ID_1]~=0) then 
+						gemstring=gemstring..itemSplit[UIParameters.OFFSET_GEM_ID_1]
+						if (itemSplit[UIParameters.OFFSET_GEM_ID_2]~=0) then 
+							gemstring=gemstring..itemSplit[UIParameters.OFFSET_GEM_ID_2]
+							if (itemSplit[UIParameters.OFFSET_GEM_ID_3]~=0) then 
+								gemstring=gemstring..itemSplit[UIParameters.OFFSET_GEM_ID_3]
+								if (itemSplit[UIParameters.OFFSET_GEM_ID_4]~=0) then 
+									gemstring=gemstring..itemSplit[UIParameters.OFFSET_GEM_ID_4]
 								end
 							end
 						end
 					end
 					simcItemOptions[#simcItemOptions + 1] = gemstring
 				else
-					if actualGem and actualGem~=0 and hasSocket>0 then
+					if UIParameters.actualGem and UIParameters.actualGem~=0 and hasSocket>0 then
 						gemstring='gem_id='
 						for i=1,hasSocket do
 							if i>1 then 
 								gemstring=gemstring.."/"
 							end
-							if actualSettings.gemsEpic>0 and not epicGemUsed then
+							if actualSettings.gemsEpic>0 and not UIParameters.epicGemUsed then
 							gemstring=gemstring..actualSettings.gemsEpic
-							epicGemUsed=true
+							UIParameters.epicGemUsed=true
 						else
-							gemstring=gemstring..actualGem
+							gemstring=gemstring..UIParameters.actualGem
 						end
 						end
 						simcItemOptions[#simcItemOptions + 1] = gemstring
@@ -2303,9 +2295,9 @@ function SimPermut:GetItemStrings()
 	local itemsLinks = {}
 	local slotId,itemLink
 	local itemString = {}
-	epicGemUsed=false
+	UIParameters.epicGemUsed=false
 	
-	equipedLegendaries = 0
+	UIParameters.equipedLegendaries = 0
 
 	for slotNum=1, #ExtraData.PermutSlotNames do
 		slotId = GetInventorySlotInfo(ExtraData.PermutSlotNames[slotNum])
@@ -2315,10 +2307,10 @@ function SimPermut:GetItemStrings()
 		if itemLink then
 			local _,_,itemRarity = GetItemInfo(itemLink)
 			if itemRarity==5 then
-				equipedLegendaries= equipedLegendaries+1
+				UIParameters.equipedLegendaries= UIParameters.equipedLegendaries+1
 			end
 			itemString=SimPermut:GetItemString(itemLink,ExtraData.PermutSimcNames[slotNum],true)
-			tableBaseString[slotNum]=table.concat(itemString, ',')
+			UIElements.tableBaseString[slotNum]=table.concat(itemString, ',')
 			itemsLinks[slotNum]=itemLink
 			items[slotNum] = ExtraData.PermutSimcNames[slotNum] .. "=" .. table.concat(itemString, ',')
 		end
@@ -2407,13 +2399,13 @@ end
 -- get the list of items of all selected items from dropdown
 function SimPermut:GetListItems()
 	for i=1,#ExtraData.ListNames do
-		tableListItems[i]={}
-		tableListItems[i]=SimPermut:GetListItem(ExtraData.ListNames[i],i)
+		UIElements.tableListItems[i]={}
+		UIElements.tableListItems[i]=SimPermut:GetListItem(ExtraData.ListNames[i],i)
 		
 		--added items
 		if SimPermutVars.addedItemsTable and SimPermutVars.addedItemsTable[i] then
 			for j,_ in pairs(SimPermutVars.addedItemsTable[i]) do
-				table.insert(tableListItems[i],SimPermutVars.addedItemsTable[i][j])
+				table.insert(UIElements.tableListItems[i],SimPermutVars.addedItemsTable[i][j])
 			end
 		end
 	end
@@ -2424,65 +2416,65 @@ function SimPermut:GetTableLink()
 	local returnvalue=true
 	local slotid
 	for i=1,#ExtraData.ListNames do
-		tableLinkPermut[i]={}
-		if tableListItems[i] and #tableListItems[i]>0 then
-			for j=1,#tableListItems[i] do
-				if tableCheckBoxes[i][j]:GetValue() then
-					tableLinkPermut[i][#tableLinkPermut[i] + 1] = {tableListItems[i][j][1],tableListItems[i][j][2],tableListItems[i][j][3]}
+		UIElements.tableLinkPermut[i]={}
+		if UIElements.tableListItems[i] and #UIElements.tableListItems[i]>0 then
+			for j=1,#UIElements.tableListItems[i] do
+				if UIElements.tableCheckBoxes[i][j]:GetValue() then
+					UIElements.tableLinkPermut[i][#UIElements.tableLinkPermut[i] + 1] = {UIElements.tableListItems[i][j][1],UIElements.tableListItems[i][j][2],UIElements.tableListItems[i][j][3]}
 				end
 			end
 		end
 		
 		--if we have no items, we take the equiped one. exception for finger and trinket
-		if #tableLinkPermut[i] == 0 and i<11 then
+		if #UIElements.tableLinkPermut[i] == 0 and i<11 then
 			if(i>=6) then
 				slotid=i+2
 			else
 				slotid=i
 			end
-			tableLinkPermut[i][1]={GetInventoryItemLink('player', GetInventorySlotInfo(ExtraData.SlotNames[slotid])),nil,nil}
+			UIElements.tableLinkPermut[i][1]={GetInventoryItemLink('player', GetInventorySlotInfo(ExtraData.SlotNames[slotid])),nil,nil}
 		end
 			
 	end
 	
 	--manage fingers and trinkets
-	if #tableLinkPermut[12]==0 then --if no trinket chosen, we take the equiped ones
-		tableLinkPermut[13]={}
-		tableLinkPermut[13][1]={GetInventoryItemLink('player', GetInventorySlotInfo(ExtraData.SlotNames[15])),nil,nil}
-		tableLinkPermut[14]={}
-		tableLinkPermut[14][1]={GetInventoryItemLink('player', GetInventorySlotInfo(ExtraData.SlotNames[16])),nil,nil}
+	if #UIElements.tableLinkPermut[12]==0 then --if no trinket chosen, we take the equiped ones
+		UIElements.tableLinkPermut[13]={}
+		UIElements.tableLinkPermut[13][1]={GetInventoryItemLink('player', GetInventorySlotInfo(ExtraData.SlotNames[15])),nil,nil}
+		UIElements.tableLinkPermut[14]={}
+		UIElements.tableLinkPermut[14][1]={GetInventoryItemLink('player', GetInventorySlotInfo(ExtraData.SlotNames[16])),nil,nil}
 	else --else we copy the selected ones on the second slot and reposition the slot in the good position
-		if #tableLinkPermut[12]==1 then
-			errorMessage="Can't permut with only one trinket"
+		if #UIElements.tableLinkPermut[12]==1 then
+			UIParameters.errorMessage="Can't permut with only one trinket"
 			returnvalue=false
-		elseif #tableLinkPermut[12]==2 then
-			tableLinkPermut[13]={}
-			tableLinkPermut[13][1]=tableLinkPermut[12][1]
-			tableLinkPermut[14]={}
-			tableLinkPermut[14][1]=tableLinkPermut[12][2]
-			tableLinkPermut[12]={}
+		elseif #UIElements.tableLinkPermut[12]==2 then
+			UIElements.tableLinkPermut[13]={}
+			UIElements.tableLinkPermut[13][1]=UIElements.tableLinkPermut[12][1]
+			UIElements.tableLinkPermut[14]={}
+			UIElements.tableLinkPermut[14][1]=UIElements.tableLinkPermut[12][2]
+			UIElements.tableLinkPermut[12]={}
 		else
-			tableLinkPermut[13]=tableLinkPermut[12]
-			tableLinkPermut[14]=tableLinkPermut[13]
-			tableLinkPermut[12]={}
+			UIElements.tableLinkPermut[13]=UIElements.tableLinkPermut[12]
+			UIElements.tableLinkPermut[14]=UIElements.tableLinkPermut[13]
+			UIElements.tableLinkPermut[12]={}
 		end
 	end
 	
-	if #tableLinkPermut[11]==0 then --if no finger chosen, we take the equiped ones
-		tableLinkPermut[11][1]={GetInventoryItemLink('player', GetInventorySlotInfo(ExtraData.SlotNames[13])),nil,nil}
-		tableLinkPermut[12][1]={GetInventoryItemLink('player', GetInventorySlotInfo(ExtraData.SlotNames[14])),nil,nil}
+	if #UIElements.tableLinkPermut[11]==0 then --if no finger chosen, we take the equiped ones
+		UIElements.tableLinkPermut[11][1]={GetInventoryItemLink('player', GetInventorySlotInfo(ExtraData.SlotNames[13])),nil,nil}
+		UIElements.tableLinkPermut[12][1]={GetInventoryItemLink('player', GetInventorySlotInfo(ExtraData.SlotNames[14])),nil,nil}
 	else --else we copy the selected ones on the second slot
-		if #tableLinkPermut[11]==1 then
-			errorMessage="Can't permut with only one ring"
+		if #UIElements.tableLinkPermut[11]==1 then
+			UIParameters.errorMessage="Can't permut with only one ring"
 			returnvalue=false
-		elseif #tableLinkPermut[11]==2 then
+		elseif #UIElements.tableLinkPermut[11]==2 then
 			local temptable={}
-			temptable[1]=tableLinkPermut[11]
-			tableLinkPermut[11]={}
-			tableLinkPermut[11][1]=temptable[1][1]
-			tableLinkPermut[12][1]=temptable[1][2]
+			temptable[1]=UIElements.tableLinkPermut[11]
+			UIElements.tableLinkPermut[11]={}
+			UIElements.tableLinkPermut[11][1]=temptable[1][1]
+			UIElements.tableLinkPermut[12][1]=temptable[1][2]
 		else
-			tableLinkPermut[12]=tableLinkPermut[11]
+			UIElements.tableLinkPermut[12]=UIElements.tableLinkPermut[11]
 		end
 	end
 		
@@ -2494,13 +2486,13 @@ end
 function SimPermut:GetItemListString()
 	local returnString=""
 	local actualString
-	for i=1,#tableLinkPermut do
+	for i=1,#UIElements.tableLinkPermut do
 		actualString=""
-		for j=1,#tableLinkPermut[i] do
-			local _,_,itemRarity = GetItemInfo(tableLinkPermut[i][j][1])
-			local itemid = tonumber(PersoLib:GetIDFromLink(tableLinkPermut[i][j][1]))
-			local itemString = SimPermut:GetItemString(tableLinkPermut[i][j][1],ExtraData.PermutSimcNames[i],false,tableLinkPermut[i][j][2],tableLinkPermut[i][j][3])
-			actualString = actualString .. ((itemid == ExtraData.HasTierSets["T21"][classID][i]) and "T21" or "")..((itemid == ExtraData.HasTierSets["T20"][classID][i]) and "T20" or "").. ((itemid == ExtraData.HasTierSets["T19"][classID][i]) and "T19" or "").. ((itemRarity== 5) and "L" or "")..table.concat(itemString, ',').."|"
+		for j=1,#UIElements.tableLinkPermut[i] do
+			local _,_,itemRarity = GetItemInfo(UIElements.tableLinkPermut[i][j][1])
+			local itemid = tonumber(PersoLib:GetIDFromLink(UIElements.tableLinkPermut[i][j][1]))
+			local itemString = SimPermut:GetItemString(UIElements.tableLinkPermut[i][j][1],ExtraData.PermutSimcNames[i],false,UIElements.tableLinkPermut[i][j][2],UIElements.tableLinkPermut[i][j][3])
+			actualString = actualString .. ((itemid == ExtraData.HasTierSets["T21"][UIParameters.classID][i]) and "T21" or "")..((itemid == ExtraData.HasTierSets["T20"][UIParameters.classID][i]) and "T20" or "").. ((itemid == ExtraData.HasTierSets["T19"][UIParameters.classID][i]) and "T19" or "").. ((itemRarity== 5) and "L" or "")..table.concat(itemString, ',').."|"
 		end
 		actualString=actualString:sub(1, -2)
 		returnString = returnString..ExtraData.PermutSimcNames[i] .. "="..actualString.."\n"
@@ -2557,14 +2549,14 @@ function SimPermut:GetAutoSimcString()
 	return autoSimcString
 end
 
--- generates all permutations for the tableLinkPermut
+-- generates all permutations for the UIElements.tableLinkPermut
 function SimPermut:GetAllPermutations()
 	local returnTable={}
 
-	returnTable=PersoLib:doCartesianALACON(tableLinkPermut)
+	returnTable=PersoLib:doCartesianALACON(UIElements.tableLinkPermut)
 	
-	PersoLib:debugPrint("Nb of rings:"..tableNumberSelected[11],ad)
-	PersoLib:debugPrint("Nb of trinkets:"..tableNumberSelected[12],ad)
+	PersoLib:debugPrint("Nb of rings:"..UIElements.tableNumberSelected[11],UIParameters.ad)
+	PersoLib:debugPrint("Nb of trinkets:"..UIElements.tableNumberSelected[12],UIParameters.ad)
 	
 	return returnTable
 end
@@ -2573,23 +2565,23 @@ end
 function SimPermut:ReorganizeEquip(tabletoPermut)
 	local itemIdRing1,itemIdRing2
 	local itemIdTrinket1,itemIdTrinket2 
-	if tableNumberSelected[11]<=2 then
-		PersoLib:debugPrint(tableNumberSelected[11].." rings. Re-organize",ad)
+	if UIElements.tableNumberSelected[11]<=2 then
+		PersoLib:debugPrint(UIElements.tableNumberSelected[11].." rings. Re-organize",UIParameters.ad)
 		itemIdRing1 = PersoLib:GetIDFromLink(tabletoPermut[11][1])
 		itemIdRing2 = PersoLib:GetIDFromLink(tabletoPermut[12][1])
-		PersoLib:debugPrint("fingerInf:"..tostring(fingerInf).."("..itemIdRing1.."-"..itemIdRing2..")",ad)
-		if (fingerInf and itemIdRing1>itemIdRing2) or (not fingerInf and itemIdRing1<itemIdRing2) then
+		PersoLib:debugPrint("fingerInf:"..tostring(UIParameters.fingerInf).."("..itemIdRing1.."-"..itemIdRing2..")",UIParameters.ad)
+		if (UIParameters.fingerInf and itemIdRing1>itemIdRing2) or (not UIParameters.fingerInf and itemIdRing1<itemIdRing2) then
 			local tempring = tabletoPermut[11]
 			tabletoPermut[11] = tabletoPermut[12]
 			tabletoPermut[12] = tempring
 		end
 	end
-	if tableNumberSelected[12]<=2 then
-		PersoLib:debugPrint(tableNumberSelected[12].." trinkets. Re-organize",ad)
+	if UIElements.tableNumberSelected[12]<=2 then
+		PersoLib:debugPrint(UIElements.tableNumberSelected[12].." trinkets. Re-organize",UIParameters.ad)
 		itemIdTrinket1 = PersoLib:GetIDFromLink(tabletoPermut[13][1])
 		itemIdTrinket2 = PersoLib:GetIDFromLink(tabletoPermut[14][1])
-		PersoLib:debugPrint("trinketInf:"..tostring(trinketInf).."("..itemIdTrinket1.."-"..itemIdTrinket2..")",ad)
-		if (trinketInf and itemIdTrinket1>itemIdTrinket2) or (not trinketInf and itemIdTrinket1<itemIdTrinket2) then
+		PersoLib:debugPrint("trinketInf:"..tostring(UIParameters.trinketInf).."("..itemIdTrinket1.."-"..itemIdTrinket2..")",UIParameters.ad)
+		if (UIParameters.trinketInf and itemIdTrinket1>itemIdTrinket2) or (not UIParameters.trinketInf and itemIdTrinket1<itemIdTrinket2) then
 			local temptrinket = tabletoPermut[13]
 			tabletoPermut[13] = tabletoPermut[14]
 			tabletoPermut[14] = temptrinket
@@ -2613,7 +2605,7 @@ function SimPermut:PreparePermutations(permuttable)
 		itemIdRing2 = PersoLib:GetIDFromLink(permuttable[1][12][1])
 	end
 	if itemIdRing1<itemIdRing2 then
-		fingerInf=true
+		UIParameters.fingerInf=true
 	end
 	
 	--prepare trinkets
@@ -2627,10 +2619,10 @@ function SimPermut:PreparePermutations(permuttable)
 		itemIdTrinket2 = PersoLib:GetIDFromLink(permuttable[1][14][1])
 	end
 	if itemIdTrinket1<itemIdTrinket2 then
-		trinketInf=true
+		UIParameters.trinketInf=true
 	end
 	
-	PersoLib:debugPrint("fingerInf:"..tostring(fingerInf).."("..itemIdRing1.."-"..itemIdRing2..")  ".."trinketInf:"..tostring(trinketInf).."("..itemIdTrinket1.."-"..itemIdTrinket2..")",ad)
+	PersoLib:debugPrint("fingerInf:"..tostring(UIParameters.fingerInf).."("..itemIdRing1.."-"..itemIdRing2..")  ".."trinketInf:"..tostring(UIParameters.trinketInf).."("..itemIdTrinket1.."-"..itemIdTrinket2..")",UIParameters.ad)
 		
 end
 
@@ -2657,18 +2649,18 @@ function SimPermut:GetPermutationString(permuttable)
 	local notDrawn=0
 	local okDrawn=0
 	
-	actualLegMin=tonumber(editLegMin:GetText())
-	actualLegMax=tonumber(editLegMax:GetText())
+	UIParameters.actualLegMin=tonumber(UIElements.editLegMin:GetText())
+	UIParameters.actualLegMax=tonumber(UIElements.editLegMax:GetText())
 	
 	
 	for i=1,#permuttable do
 		T192p,T194p=SimPermut:HasTier("T19",permuttable[i])
 		T202p,T204p=SimPermut:HasTier("T20",permuttable[i])
 		T212p,T214p=SimPermut:HasTier("T21",permuttable[i])
-		epicGemUsed=false
+		UIParameters.epicGemUsed=false
 		SimPermut:ReorganizeEquip(permuttable[i])
-		result=SimPermut:CheckUsability(permuttable[i],tableBaseLink)
-		if result=="" or ad then
+		result=SimPermut:CheckUsability(permuttable[i],UIElements.tableBaseLink)
+		if result=="" or UIParameters.ad then
 			currentString=""
 			nbLeg=0
 			nbitem=0
@@ -2687,7 +2679,7 @@ function SimPermut:GetPermutationString(permuttable)
 					if (j==11 or j==13) then
 						itemString2 =SimPermut:GetItemString(permuttable[i][j+1][1],ExtraData.PermutSimcNames[j+1],false,permuttable[i][j][2],permuttable[i][j][3])
 						itemStringFinal2 = table.concat(itemString2, ',')
-						if(itemStringFinal==tableBaseString[j] or (itemStringFinal==tableBaseString[j+1] and itemStringFinal2==tableBaseString[j]))then
+						if(itemStringFinal==UIElements.tableBaseString[j] or (itemStringFinal==UIElements.tableBaseString[j+1] and itemStringFinal2==UIElements.tableBaseString[j]))then
 							draw=false
 						else
 							draw=true
@@ -2695,23 +2687,23 @@ function SimPermut:GetPermutationString(permuttable)
 					else
 						itemString2 =SimPermut:GetItemString(permuttable[i][j-1][1],ExtraData.PermutSimcNames[j-1],false,permuttable[i][j][2],permuttable[i][j][3])
 						itemStringFinal2 = table.concat(itemString2, ',')
-						if(itemStringFinal==tableBaseString[j] or (itemStringFinal==tableBaseString[j-1] and itemStringFinal2==tableBaseString[j]))then
+						if(itemStringFinal==UIElements.tableBaseString[j] or (itemStringFinal==UIElements.tableBaseString[j-1] and itemStringFinal2==UIElements.tableBaseString[j]))then
 							draw=false
 						else
 							draw=true
 						end
 					end
 				else
-					draw = (itemStringFinal ~= tableBaseString[j])
+					draw = (itemStringFinal ~= UIElements.tableBaseString[j])
 				end
 				
-				if draw or ad then
+				if draw or UIParameters.ad then
 					local adString=""
-					if ad and not draw then
+					if UIParameters.ad and not draw then
 						notDrawn=notDrawn+1
 						adString=" # Debug not drawn : "
 					end
-					if not ad then
+					if not UIParameters.ad then
 						okDrawn=okDrawn+1
 					end
 					currentString = currentString.. adString ..ExtraData.PermutSimcNames[j] .. "=" .. table.concat(itemString, ',').."\n"
@@ -2719,7 +2711,7 @@ function SimPermut:GetPermutationString(permuttable)
 					nbitem=nbitem+1
 					itemList=itemList..PersoLib:tokenize(itemname).."-"
 				else
-					PersoLib:debugPrint("Not printed: not drawn",ad)
+					PersoLib:debugPrint("Not printed: not drawn",UIParameters.ad)
 					notDrawn=notDrawn+1
 				end
 				
@@ -2727,30 +2719,30 @@ function SimPermut:GetPermutationString(permuttable)
 			
 			itemList=itemList:sub(1, -2)
 			
-			if((nbLeg >=actualLegMin and nbLeg<=actualLegMax and nbitem>0 
-				and (actualSetsT19==0 or (actualSetsT19==2 and T192p) or (actualSetsT19==4 and T194p)) 
-				and (actualSetsT20==0 or (actualSetsT20==2 and T202p) or (actualSetsT20==4 and T204p))
-				and (actualSetsT21==0 or (actualSetsT21==2 and T212p) or (actualSetsT21==4 and T214p))) 
-				or ad) then
+			if((nbLeg >=UIParameters.actualLegMin and nbLeg<=UIParameters.actualLegMax and nbitem>0 
+				and (UIParameters.actualSetsT19==0 or (UIParameters.actualSetsT19==2 and T192p) or (UIParameters.actualSetsT19==4 and T194p)) 
+				and (UIParameters.actualSetsT20==0 or (UIParameters.actualSetsT20==2 and T202p) or (UIParameters.actualSetsT20==4 and T204p))
+				and (UIParameters.actualSetsT21==0 or (UIParameters.actualSetsT21==2 and T212p) or (UIParameters.actualSetsT21==4 and T214p))) 
+				or UIParameters.ad) then
 				local adString=""
-				if ad then
+				if UIParameters.ad then
 					if result ~= "" then
 						adString=" # Debug print : "..result.."\n"
-					elseif(nbLeg>actualLegMax) then
+					elseif(nbLeg>UIParameters.actualLegMax) then
 						adString=" # Debug print : Not printed:Too much Leg ("..nbLeg..")\n"
-					elseif(nbLeg<actualLegMin) then
+					elseif(nbLeg<UIParameters.actualLegMin) then
 						adString=" # Debug print : Not printed:Too few Leg ("..nbLeg..")\n"
-					elseif(not T192p and actualSetsT19==2) then
+					elseif(not T192p and UIParameters.actualSetsT19==2) then
 						adString=" # Debug print : Not printed:No 2p T19\n"
-					elseif(not T194p and actualSetsT19==4) then
+					elseif(not T194p and UIParameters.actualSetsT19==4) then
 						adString=" # Debug print : Not printed:No 4p T19\n"
-					elseif(not T202p and actualSetsT20==2) then
+					elseif(not T202p and UIParameters.actualSetsT20==2) then
 						adString=" # Debug print : Not printed:No 2p T20\n"
-					elseif(not T204p and actualSetsT20==4) then
+					elseif(not T204p and UIParameters.actualSetsT20==4) then
 						adString=" # Debug print : Not printed:No 4p T20\n"	
-					elseif(not T212p and actualSetsT21==2) then
+					elseif(not T212p and UIParameters.actualSetsT21==2) then
 						adString=" # Debug print : Not printed:No 2p T21\n"
-					elseif(not T214p and actualSetsT21==4) then
+					elseif(not T214p and UIParameters.actualSetsT21==4) then
 						adString=" # Debug print : Not printed:No 4p T21\n"	
 					end
 				end
@@ -2759,20 +2751,20 @@ function SimPermut:GetPermutationString(permuttable)
 			
 			end
 		else
-			PersoLib:debugPrint("Not printed:"..result,ad)
+			PersoLib:debugPrint("Not printed:"..result,UIParameters.ad)
 		end
 	end
 	
-	if copynumber > COPY_THRESHOLD then
+	if copynumber > UIParameters.COPY_THRESHOLD then
 		str="Large number of copy, you may not have every copy (frame limitation). Consider using AutoSimC Export"
-		mainframe:SetStatusText(str)
-		PersoLib:debugPrint(str,ad)
+		UIElements.mainframe:SetStatusText(str)
+		PersoLib:debugPrint(str,UIParameters.ad)
 	end
 	
-	if notDrawn>0 and okDrawn==0 and selecteditems>14 then
+	if notDrawn>0 and okDrawn==0 and UIParameters.selecteditems>14 then
 		str="No copy generated because no other possible combination were found (outside boundaries legendaries, same ring/trinket, no 4P...)"
-		mainframe:SetStatusText(str)
-		PersoLib:debugPrint(str,ad)
+		UIElements.mainframe:SetStatusText(str)
+		PersoLib:debugPrint(str,UIParameters.ad)
 	end
 	
 	return returnString
@@ -2782,10 +2774,10 @@ end
 function SimPermut:GenerateTalentString()
 	local copynb
 	local returnString=""
-	for i=1,#tableTalentResults do
-		if tableTalentResults[i]~=PersoLib:CreateSimcTalentString() then
-			copynb = SimPermut:GetCopyName(i,nil,tableTalentResults[i],#tableTalentResults,2)
-			returnString =  returnString.."\n" ..copynb .. "\n".. "talents="..tableTalentResults[i].."\n"
+	for i=1,#UIElements.tableTalentResults do
+		if UIElements.tableTalentResults[i]~=PersoLib:CreateSimcTalentString() then
+			copynb = SimPermut:GetCopyName(i,nil,UIElements.tableTalentResults[i],#UIElements.tableTalentResults,2)
+			returnString =  returnString.."\n" ..copynb .. "\n".. "talents="..UIElements.tableTalentResults[i].."\n"
 		end
 	end
 	return returnString
@@ -2796,90 +2788,88 @@ function SimPermut:GenerateRelicString()
 	
 	local weaponString,itemLink
 	local returnString=""
-	local artifactID,artifactData = LAD:GetArtifactInfo() 
 	local CopyString=""
-	local artifactID,artifactData = LAD:GetArtifactInfo()
 	local itemLevel1,itemLevel2,itemLevel3
-	if not artifactData.relics[1].link or not artifactData.relics[2].link then
+	if not UIParameters.artifactData.relics[1].link or not UIParameters.artifactData.relics[2].link then
 		return ""
 	end
-	_, _, _, itemLevel1 = GetItemInfo(artifactData.relics[1].link)
-	_, _, _, itemLevel2 = GetItemInfo(artifactData.relics[2].link)
+	_, _, _, itemLevel1 = GetItemInfo(UIParameters.artifactData.relics[1].link)
+	_, _, _, itemLevel2 = GetItemInfo(UIParameters.artifactData.relics[2].link)
 	
-	if not artifactData.relics[3].isLocked then
-		_, _, _, itemLevel3 = GetItemInfo(artifactData.relics[3].link)
+	if not UIParameters.artifactData.relics[3].isLocked then
+		_, _, _, itemLevel3 = GetItemInfo(UIParameters.artifactData.relics[3].link)
 	end
 	
 	itemLink = GetInventoryItemLink('player', INVSLOT_MAINHAND)
-	if itemLink and (relicComparisonTypeValue==1 and ilvlTrait1:GetText() and ilvlTrait2:GetText() or (relicComparisonTypeValue==2 and ilvlWeapon:GetText())) then
+	if itemLink and (UIParameters.relicComparisonTypeValue==1 and UIElements.ilvlTrait1:GetText() and UIElements.ilvlTrait2:GetText() or (UIParameters.relicComparisonTypeValue==2 and UIElements.ilvlWeapon:GetText())) then
 			local relicid1,relicid2,relicid3,relicilvl1,relicilvl2,relicilvl3,weaponilvl
 			
-			if DropdownTrait1:GetValue()==0 then
-				relicid1=artifactData.relics[1].itemID
+			if UIElements.DropdownTrait1:GetValue()==0 then
+				relicid1=UIParameters.artifactData.relics[1].itemID
 			else
-				relicid1=DropdownTrait1:GetValue()
+				relicid1=UIElements.DropdownTrait1:GetValue()
 			end
 			
-			if DropdownTrait2:GetValue()==0 then
-				relicid2=artifactData.relics[2].itemID
+			if UIElements.DropdownTrait2:GetValue()==0 then
+				relicid2=UIParameters.artifactData.relics[2].itemID
 			else
-				relicid2=DropdownTrait2:GetValue()
+				relicid2=UIElements.DropdownTrait2:GetValue()
 			end
-			if not artifactData.relics[3].isLocked then
-				if DropdownTrait3:GetValue()==0 then
-					relicid3=artifactData.relics[3].itemID
+			if not UIParameters.artifactData.relics[3].isLocked then
+				if UIElements.DropdownTrait3:GetValue()==0 then
+					relicid3=UIParameters.artifactData.relics[3].itemID
 				else
-					relicid3=DropdownTrait3:GetValue()
+					relicid3=UIElements.DropdownTrait3:GetValue()
 				end
 			end
-			if relicComparisonTypeValue==1 then
-				relicilvl1=ilvlTrait1:GetText()
-				relicilvl2=ilvlTrait2:GetText()
-				if not artifactData.relics[3].isLocked then
-					relicilvl3=ilvlTrait3:GetText()
+			if UIParameters.relicComparisonTypeValue==1 then
+				relicilvl1=UIElements.ilvlTrait1:GetText()
+				relicilvl2=UIElements.ilvlTrait2:GetText()
+				if not UIParameters.artifactData.relics[3].isLocked then
+					relicilvl3=UIElements.ilvlTrait3:GetText()
 				end
 			else
-				weaponilvl=ilvlWeapon:GetText()
+				weaponilvl=UIElements.ilvlWeapon:GetText()
 			end
 			
 			--CopyName
-			if relicComparisonTypeValue==2 then
+			if UIParameters.relicComparisonTypeValue==2 then
 				CopyString="Weapon-"..weaponilvl.."_"
 			end
-			if relicComparisonTypeValue==1 and tonumber(relicilvl1)~=itemLevel1 then
+			if UIParameters.relicComparisonTypeValue==1 and tonumber(relicilvl1)~=itemLevel1 then
 				CopyString=CopyString..relicilvl1.."-"
 			end
-			if DropdownTrait1:GetValue()==0 then
+			if UIElements.DropdownTrait1:GetValue()==0 then
 				CopyString=CopyString.."Current".."_"
 			else
-				CopyString=CopyString..ExtraData.ArtifactTableTraits[artifactID][1][relicid1].."_"
+				CopyString=CopyString..ExtraData.ArtifactTableTraits[UIParameters.artifactID][1][relicid1].."_"
 			end
 			
-			if relicComparisonTypeValue==1 and tonumber(relicilvl2)~=itemLevel2 then
+			if UIParameters.relicComparisonTypeValue==1 and tonumber(relicilvl2)~=itemLevel2 then
 				CopyString=CopyString..relicilvl2.."-"
 			end
-			if DropdownTrait2:GetValue()==0 then
+			if UIElements.DropdownTrait2:GetValue()==0 then
 				CopyString=CopyString.."Current".."_"
 			else
-				CopyString=CopyString..ExtraData.ArtifactTableTraits[artifactID][2][relicid2].."_"
+				CopyString=CopyString..ExtraData.ArtifactTableTraits[UIParameters.artifactID][2][relicid2].."_"
 			end
 			
-			if not artifactData.relics[3].isLocked then
-				if relicComparisonTypeValue==1 and tonumber(relicilvl3)~=itemLevel3 then
+			if not UIParameters.artifactData.relics[3].isLocked then
+				if UIParameters.relicComparisonTypeValue==1 and tonumber(relicilvl3)~=itemLevel3 then
 					CopyString=CopyString..relicilvl3.."-"
 				end
-				if DropdownTrait3:GetValue()==0 then
+				if UIElements.DropdownTrait3:GetValue()==0 then
 					CopyString=CopyString.."Current"
 				else
-					CopyString=CopyString..ExtraData.ArtifactTableTraits[artifactID][3][relicid3]
+					CopyString=CopyString..ExtraData.ArtifactTableTraits[UIParameters.artifactID][3][relicid3]
 				end
 			end
 			
-			local copynb = SimPermut:GetCopyName(relicCopyCount,nil,CopyString,1,3)
+			local copynb = SimPermut:GetCopyName(UIParameters.relicCopyCount,nil,CopyString,1,3)
 			weaponString = SimPermut:OverrideWeapon(itemLink,relicid1,relicid2,relicid3,relicilvl1,relicilvl2,relicilvl3,weaponilvl)
 			returnString =  returnString.."\n" ..copynb .. "\n".. "main_hand=" .. weaponString.. '\n'
 			
-			relicCopyCount=relicCopyCount+1
+			UIParameters.relicCopyCount=UIParameters.relicCopyCount+1
 	end
 
 	return returnString
@@ -2888,13 +2878,12 @@ end
 -- Generate selected crucible traits
 function SimPermut:GenerateCrucibleString()
 	local str=""
-	local artifactID,artifactData = LAD:GetArtifactInfo() 
 	local CopyString=""
 	local crucibleString
 	local T1,_=next(ExtraData.NetherlightData[1],nil)
 	
 	local tabletraits={}
-	for _,v in pairs(dropdownTableCrucible) do 
+	for _,v in pairs(UIElements.dropdownTableCrucible) do 
 		if not tabletraits[v:GetValue()] then tabletraits[v:GetValue()]=0 end
 		tabletraits[v:GetValue()]=tabletraits[v:GetValue()]+1
 	end
@@ -2905,12 +2894,14 @@ function SimPermut:GenerateCrucibleString()
 		if ExtraData.NetherlightData[2][k] then --crucible trait
 			CopyString = CopyString..ExtraData.NetherlightData[2][k].."-"..v.."_"
 		else --artifact trait
-			CopyString = CopyString..ExtraData.NetherlightData[3][artifactID][k].."-"..v.."_"
+			CopyString = CopyString..ExtraData.NetherlightData[3][UIParameters.artifactID][k].."-"..v.."_"
 		end
 	end
 	CopyString=CopyString:sub(1, -2)
-	local copynb = SimPermut:GetCopyName(crucibleCopyCount,nil,CopyString,1,4)
+	local copynb = SimPermut:GetCopyName(UIParameters.crucibleCopyCount,nil,CopyString,1,4)
 	str =  "\n" ..copynb .. "\n".. "crucible=" .. crucibleString.. '\n'
+	
+	UIParameters.crucibleCopyCount=UIParameters.crucibleCopyCount+1
 		
 	return str
 end
@@ -2918,37 +2909,28 @@ end
 -- Modify main hand relics
 function SimPermut:OverrideWeapon(itemLink,relic1,relic2,relic3,ilvlRelic1,ilvlRelic2,ilvlRelic3,ilvlWeapon)
 	local weaponString
-	local itemString = string.match(itemLink, "item:([%-?%d:]+)")
-	local itemSplit = {}
-	-- Split data into a table
-	for v in string.gmatch(itemString, "(%d*:?)") do
-		if v == ":" then
-		  itemSplit[#itemSplit + 1] = 0
-		else
-		  itemSplit[#itemSplit + 1] = string.gsub(v, ':', '')
-		end
-	end
+	local itemSplit = PersoLib:LinkSplit(itemLink)
+
 	local bonuses = {}
-	for index=1, tonumber(itemSplit[OFFSET_BONUS_ID]) do
-		bonuses[#bonuses + 1] = itemSplit[OFFSET_BONUS_ID + index]
+	for index=1, tonumber(itemSplit[UIParameters.OFFSET_BONUS_ID]) do
+		bonuses[#bonuses + 1] = itemSplit[UIParameters.OFFSET_BONUS_ID + index]
 	end
 	
-	-- ,id=128827,bonus_id=740,relic_id=//,gem_id=137377/140819/137463,relic_ilevel=925/925/925
-	weaponString=",id="..itemSplit[OFFSET_ITEM_ID]
+	weaponString=",id="..itemSplit[UIParameters.OFFSET_ITEM_ID]
 	if #bonuses > 0 then
 		weaponString = weaponString..",bonus_id=" .. table.concat(bonuses, '/')
 	end
-	if itemSplit[OFFSET_ENCHANT_ID] and itemSplit[OFFSET_ENCHANT_ID]~=0 then
-		weaponString = weaponString..",enchant_id=" .. itemSplit[OFFSET_ENCHANT_ID]
+	if itemSplit[UIParameters.OFFSET_ENCHANT_ID] and itemSplit[UIParameters.OFFSET_ENCHANT_ID]~=0 then
+		weaponString = weaponString..",enchant_id=" .. itemSplit[UIParameters.OFFSET_ENCHANT_ID]
 	end
 	weaponString=weaponString..",relic_id=//"
 	weaponString=weaponString..",gem_id="..relic1.."/"..relic2.."/"
-	if not artifactData.relics[3].isLocked then
+	if not UIParameters.artifactData.relics[3].isLocked then
 		weaponString=weaponString..relic3
 	end
-	if relicComparisonTypeValue==1 then
+	if UIParameters.relicComparisonTypeValue==1 then
 		weaponString=weaponString..",relic_ilevel="..ilvlRelic1.."/"..ilvlRelic2.."/"
-		if not artifactData.relics[3].isLocked then
+		if not UIParameters.artifactData.relics[3].isLocked then
 		weaponString=weaponString..ilvlRelic3
 	end
 	else
@@ -2988,7 +2970,7 @@ function SimPermut:GetBaseString(nocrucible)
 	if not nocrucible then nocrucible=false end
 	local playerName = UnitName('player')
 	local playerClass
-	_, playerClass,classID = UnitClass('player')
+	_, playerClass,UIParameters.classID = UnitClass('player')
 	local playerLevel = UnitLevel('player')
 	local playerRealm = GetRealmName()
 	local playerRegion = ExtraData.RegionString[GetCurrentRegion()]
@@ -3055,7 +3037,6 @@ function SimPermut:GetBaseString(nocrucible)
 		SimPermutProfile = SimPermutProfile .. "main_hand=" .. table.concat(itemString, ',').. '\n'
     end
 	
-	--slotId = GetInventorySlotInfo("SecondaryHandSlot")
     itemLink = GetInventoryItemLink('player', INVSLOT_OFFHAND)
 	itemString = {}
 
@@ -3077,7 +3058,6 @@ end
 function SimPermut:CheckUsability(table1,table2)
 	local duplicate = true
 	local itemString 
-	local itemSplit = {}
 	local itemIdR111,itemIdR112
 	local itemIdT111,itemIdT112
 	
@@ -3096,13 +3076,13 @@ function SimPermut:CheckUsability(table1,table2)
 	itemIdR111 = PersoLib:GetIDFromLink(table1[11][1])
 	itemIdR112 = PersoLib:GetIDFromLink(table1[12][1])
 	
-	if fingerInf then
+	if UIParameters.fingerInf then
 		if itemIdR111>itemIdR112 then
-			return "Ring copy duplication ("..itemIdR111.."-"..itemIdR112.." /fi: "..tostring(fingerInf)..")"
+			return "Ring copy duplication ("..itemIdR111.."-"..itemIdR112.." /fi: "..tostring(UIParameters.fingerInf)..")"
 		end
 	else
 		if itemIdR111<itemIdR112 then
-			return "Ring copy duplication ("..itemIdR111.."-"..itemIdR112.." /fi: "..tostring(fingerInf)..")"
+			return "Ring copy duplication ("..itemIdR111.."-"..itemIdR112.." /fi: "..tostring(UIParameters.fingerInf)..")"
 		end
 	end
 	
@@ -3115,13 +3095,13 @@ function SimPermut:CheckUsability(table1,table2)
 	itemIdT111 = PersoLib:GetIDFromLink(table1[13][1])
 	itemIdT112 = PersoLib:GetIDFromLink(table1[14][1])
 	
-	if trinketInf then
+	if UIParameters.trinketInf then
 		if itemIdT111>itemIdT112 then
-			return "Trinket copy duplication ("..itemIdT111.."-"..itemIdT112.." /ti: "..tostring(trinketInf)..") "
+			return "Trinket copy duplication ("..itemIdT111.."-"..itemIdT112.." /ti: "..tostring(UIParameters.trinketInf)..") "
 		end
 	else
 		if itemIdT111<itemIdT112 then
-			return "Trinket copy duplication ("..itemIdT111.."-"..itemIdT112.." /ti: "..tostring(trinketInf)..")"
+			return "Trinket copy duplication ("..itemIdT111.."-"..itemIdT112.." /ti: "..tostring(UIParameters.trinketInf)..")"
 		end
 	end
 
@@ -3146,8 +3126,8 @@ end
 function SimPermut:GetArtifactString(nocrucible)
 	
 	SocketInventoryItem(INVSLOT_MAINHAND)
-	if artifactID and ExtraData.ArtifactTable[artifactID] then
-		local str = ExtraData.ArtifactTable[artifactID] .. ':0:0:0:0'
+	if UIParameters.artifactID and ExtraData.ArtifactTable[UIParameters.artifactID] then
+		local str = ExtraData.ArtifactTable[UIParameters.artifactID] .. ':0:0:0:0'
 		local cruciblestr = ""
 		local baseRanks = {}
 		local crucibleRanks = {}
@@ -3201,10 +3181,10 @@ end
 
 -- check for Tier Sets
 function SimPermut:HasTier(stier,tableEquip)
-	if ExtraData.HasTierSets[stier][classID] then
+	if ExtraData.HasTierSets[stier][UIParameters.classID] then
       local Count = 0;
       local Item;
-      for Slot, ItemID in pairs(ExtraData.HasTierSets[stier][classID]) do
+      for Slot, ItemID in pairs(ExtraData.HasTierSets[stier][UIParameters.classID]) do
         Item = tonumber(PersoLib:GetIDFromLink(tableEquip[Slot][1]));
         if Item and Item == ItemID then
           Count = Count + 1;
@@ -3315,15 +3295,15 @@ end
 function SimPermut:isEquiped(itemLink,slot)
 	local returnValue=false
 	if slot==11 then
-		if tableBaseLink[11]==itemLink or tableBaseLink[12]==itemLink then
+		if UIElements.tableBaseLink[11]==itemLink or UIElements.tableBaseLink[12]==itemLink then
 			returnValue=true
 		end
 	elseif slot==12 then
-		if tableBaseLink[13]==itemLink or tableBaseLink[14]==itemLink then
+		if UIElements.tableBaseLink[13]==itemLink or UIElements.tableBaseLink[14]==itemLink then
 			returnValue=true
 		end
 	else
-		if tableBaseLink[slot]==itemLink then
+		if UIElements.tableBaseLink[slot]==itemLink then
 			returnValue=true
 		end
 	end

@@ -6,108 +6,11 @@ if not PersoLib then return end
 local ArtifactUI          	= _G.C_ArtifactUI
 local HasArtifactEquipped 	= _G.HasArtifactEquipped
 local SocketInventoryItem 	= _G.SocketInventoryItem
-local Timer               	= _G.C_Timer
-local artifactTable 	  	= {
-	-- Death Knight
-	[128402] = 15,
-	[128292] = 12,
-	[128403] = 16,
-	-- Demon Hunter
-	[127829] = 3,
-	[128832] = 60,
-	-- Druid
-	[128858] = 59,
-	[128860] = 58,
-	[128821] = 57,
-	[128306] = 13,
-	-- Hunter
-	[128861] = 56,
-	[128826] = 55,
-	[128808] = 34,
-	-- Mage
-	[127857] = 4,
-	[128820] = 54,
-	[128862] = 53,
-	-- Monk
-	[128938] = 52,
-	[128937] = 51,
-	[128940] = 50,
-	-- Paladin
-	[128823] = 48,
-	[128866] = 49,
-	[120978] = 2,
-	-- Priest
-	[128868] = 46,
-	[128825] = 45,
-	[128827] = 47,
-	-- Rogue
-	[128870] = 43,
-	[128872] = 44,
-	[128476] = 17,
-	-- Shaman
-	[128935] = 40,
-	[128819] = 41,
-	[128911] = 32,
-	-- Warlock
-	[128942] = 39,
-	[128943] = 37,
-	[128941] = 38,
-	-- Warrior
-	[128910] = 36,
-	[128908] = 35,
-	[128289] = 11
-}
+local extraData			
 
-local RoleTable={
-  -- Death Knight
-  [250] = 'tank',
-  [251] = 'attack',
-  [252] = 'attack',
-  -- Demon Hunter
-  [577] = 'attack',
-  [581] = 'tank',
-  -- Druid
-  [102] = 'spell',
-  [103] = 'attack',
-  [104] = 'tank',
-  [105] = 'heal',
-  -- Hunter
-  [253] = 'attack',
-  [254] = 'attack',
-  [255] = 'attack',
-  -- Mage
-  [62] = 'spell',
-  [63] = 'spell',
-  [64] = 'spell',
-  -- Monk
-  [268] = 'tank',
-  [269] = 'attack',
-  [270] = 'hybrid',
-  -- Paladin
-  [65] = 'heal',
-  [66] = 'tank',
-  [70] = 'attack',
-  -- Priest
-  [256] = 'spell',
-  [257] = 'heal',
-  [258] = 'spell',
-  -- Rogue
-  [259] = 'attack',
-  [260] = 'attack',
-  [261] = 'attack',
-  -- Shaman
-  [262] = 'spell',
-  [263] = 'attack',
-  [264] = 'heal',
-  -- Warlock
-  [265] = 'spell',
-  [266] = 'spell',
-  [267] = 'spell',
-  -- Warrior
-  [71] = 'attack',
-  [72] = 'attack',
-  [73] = 'attack'
-}
+function PersoLib:Init(Datas)
+	extraData=Datas
+end
 
 -- First letter in caps
 function PersoLib:firstToUpper(str)
@@ -152,7 +55,6 @@ function PersoLib:doCartesianALACON(tableToPermut)
 															--trinket
 															tableReturn[#tableReturn][13]=tableToPermut[13][i13]
 															tableReturn[#tableReturn][14]=tableToPermut[14][i14]
-															--print(tableToPermut[1][i1].." "..tableToPermut[2][i2].." "..tableToPermut[3][i3].." "..tableToPermut[4][i4].." "..tableToPermut[5][i5].." "..tableToPermut[6][i6].." "..tableToPermut[7][i7].." "..tableToPermut[8][i8].." "..tableToPermut[9][i9].." "..tableToPermut[10][i10].." "..tableToPermut[11][i11].." "..tableToPermut[12][i12])
 														end
 													end
 												end
@@ -181,20 +83,6 @@ function PersoLib:tokenize(str)
   str = string.gsub(str, ' ', '_')
   str = string.gsub(str, ',', '_')
 
-  -- keep stuff we want, dumpster everything else
-  -- local s = ""
-  -- for i=1,str:len() do
-    -- keep digits 0-9
-    -- if str:byte(i) >= 48 and str:byte(i) <= 57 then
-      -- s = s .. str:sub(i,i)
-      -- keep lowercase letters
-    -- elseif str:byte(i) >= 97 and str:byte(i) <= 122 then
-      -- s = s .. str:sub(i,i)
-      -- keep %, +, ., _
-    -- elseif str:byte(i)==37 or str:byte(i)==43 or str:byte(i)==46 or str:byte(i)==95 then
-      -- s = s .. str:sub(i,i)
-    -- end
-  -- end
   -- strip trailing spaces
   if string.sub(str, str:len())=='_' then
     str = string.sub(str, 0, str:len()-1)
@@ -230,12 +118,13 @@ end
 
 -- simc, function that translates between the game's role values and ours
 function PersoLib:translateRole(spec_id)
-  local spec_role = RoleTable[spec_id]
+  local spec_role = extraData.RoleTable[spec_id]
   if spec_role ~= nil then
     return spec_role
   end
 end
 
+-- simc, function that reforulate race for simc
 function PersoLib:getRace()
 	-- Race info
 	local _, playerRace = UnitRace('player')
@@ -251,6 +140,7 @@ function PersoLib:getRace()
 	return playerRace
 end
 
+-- simc, function that returns spec ID
 function PersoLib:getSpecID()
 	local globalSpecID
 	local specId = GetSpecialization()
@@ -273,7 +163,6 @@ function PersoLib:GetArtifactString()
   end
     
   -- Unregister the events to prevent unwanted call. (thx Aethys :o)
-  --UIParent:UnregisterEvent("ARTIFACT_UPDATE");
   UIParent:UnregisterEvent("ARTIFACT_UPDATE");
   if not PersoLib:IsArtifactFrameOpen() then
     SocketInventoryItem(INVSLOT_MAINHAND)
@@ -284,7 +173,7 @@ function PersoLib:GetArtifactString()
     return nil
   end
 
-  local artifact_id = artifactTable[item_id]
+  local artifact_id = extraData.artifactTable[item_id]
   if artifact_id == nil then
     return nil
   end
@@ -364,6 +253,7 @@ function PersoLib:GetRealIlvl(itemLink)
 		ilvl = 815
 	elseif tonumber(itemSplit[11])==512 and tonumber(itemSplit[12])==22 and tonumber(itemSplit[15])==110 then --timewalking
 		ilvl = 850
+		--todo : 895 if warforged
 	end
 	
 	return ilvl
