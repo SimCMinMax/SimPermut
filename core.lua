@@ -43,7 +43,7 @@ local UIParameters={
 	errorMessage="",
 	currentFrame=1,
 	relicComparisonTypeValue=1,
-	CrucibleTypeTypeValue=1,
+	CrucibleComparisonTypeValue=1,
 	relicCopyCount=1,
 	relicString="",
 	crucibleCopyCount=1,
@@ -919,6 +919,7 @@ function SimPermut:BuildNetherlightFrame()
 	crucibletypedropdown:SetValue(UIParameters.CrucibleComparisonTypeValue)
 	crucibletypedropdown:SetCallback("OnValueChanged", function (this, event, item)
 		UIParameters.CrucibleComparisonTypeValue=item
+		UIParameters.crucibleString=""
 		if UIElements.mainframe:IsVisible() then
 			UIElements.mainframe:Release()
 		end
@@ -2902,7 +2903,7 @@ function SimPermut:GenerateCrucibleString()
 	end
 	CopyString=CopyString:sub(1, -2)
 	local copynb = SimPermut:GetCopyName(UIParameters.crucibleCopyCount,nil,CopyString,1,4)
-	str =  "\n" ..copynb .. "\n".. "crucible=" .. crucibleString.. '\n'
+	str =  copynb .. "\n".. "crucible=" .. crucibleString.. '\n'
 	
 	UIParameters.crucibleCopyCount=UIParameters.crucibleCopyCount+1
 		
