@@ -2538,9 +2538,12 @@ function SimPermut:GetAutoSimcString()
 	autoSimcString=autoSimcString .. "role="..PersoLib:translateRole(PersoLib:getSpecID()).."\n"
 	autoSimcString=autoSimcString .. "position=back".."\n"
 	autoSimcString=autoSimcString .. "talents="..PersoLib:CreateSimcTalentString().."\n"
-	local artStr=SimPermut:GetArtifactString()
+	local artStr,crucibleStr=SimPermut:GetArtifactString()
 	if artStr~="" then
-		autoSimcString=autoSimcString .. "artifact="..SimPermut:GetArtifactString().."\n"
+		autoSimcString=autoSimcString .. "artifact="..artStr.."\n"
+	end
+	if crucibleStr~="" then
+		autoSimcString=autoSimcString .. "crucible="..crucibleStr.."\n"
 	end
 	autoSimcString=autoSimcString .. actualSettings.simcCommands.. '\n'
 	autoSimcString=autoSimcString .. "other=".."\n"
@@ -3148,14 +3151,15 @@ function SimPermut:GetArtifactString(nocrucible)
 		end
 
 		-- Grab 7.3 artifact trait information
-		for _, powerId in ipairs(ExtraData.NetherlightData[1]) do
+		for powerId, _ in pairs(ExtraData.NetherlightData[1]) do
+			
 			local powerId, powerRank, relicRank, crucibleRank = SimPermut:GetPowerData(powerId, true)
 			if crucibleRank > 0 then
 			  crucibleRanks[#crucibleRanks + 1] = powerId
 			  crucibleRanks[#crucibleRanks + 1] = crucibleRank
 			end
 		end
-		for _, powerId in ipairs(ExtraData.NetherlightData[2]) do
+		for powerId, _ in pairs(ExtraData.NetherlightData[2]) do
 			local powerId, powerRank, relicRank, crucibleRank = SimPermut:GetPowerData(powerId, true)
 			if crucibleRank > 0 then
 			  crucibleRanks[#crucibleRanks + 1] = powerId
@@ -3166,7 +3170,6 @@ function SimPermut:GetArtifactString(nocrucible)
 	    if #baseRanks > 0 then
 			str = str .. ':' .. table.concat(baseRanks, ':')
 	    end
-
 	    if #crucibleRanks > 0 and not nocrucible then
 			cruciblestr = cruciblestr .. '\n'
 			cruciblestr = cruciblestr .. 'crucible=' .. table.concat(crucibleRanks, ':')
@@ -3232,63 +3235,61 @@ end
 
 -- Get data from artifact
 function SimPermut:GetPowerData(powerId, isCrucible)
-  if not powerId then
-    return 0, 0, 0
-  end
+	if not powerId then
+		return 0, 0, 0
+	end
 
-  local powerInfo = ArtifactUI.GetPowerInfo(powerId)
-  if powerInfo == nil then
-    return powerId, 0, 0
-  end
+	local powerInfo = ArtifactUI.GetPowerInfo(powerId)
+	if powerInfo == nil then
+		return powerId, 0, 0
+	end
 
-  local relicRanks = 0
-  local crucibleRanks = 0
-  local purchasedRanks = powerInfo.currentRank
-  -- A crucible (row 1 or 2)  trait
-  if isCrucible then
-    crucibleRanks = powerInfo.bonusRanks
-  else
-    relicRanks = powerInfo.bonusRanks
-    purchasedRanks = purchasedRanks - relicRanks
-	
+	local relicRanks = 0
+	local crucibleRanks = 0
+	local purchasedRanks = powerInfo.currentRank
+	-- A crucible (row 1 or 2)  trait
+	if isCrucible then
+		crucibleRanks = powerInfo.bonusRanks
+	else
+		relicRanks = powerInfo.bonusRanks
+		purchasedRanks = purchasedRanks - relicRanks
 
-    for ridx = 1, ArtifactUI.GetNumRelicSlots() do
-      local link = select(4, ArtifactUI.GetRelicInfo(ridx))
-      if link ~= nil then
-        local relicData   = PersoLib:LinkSplit(link)
-        local baseLink    = select(2, GetItemInfo(relicData[1]))
-        local basePowers  = ArtifactUI.GetPowersAffectedByRelicItemLink(baseLink)
-        local relicPowers = ArtifactUI.GetPowersAffectedByRelic(ridx)
+		for ridx = 1, ArtifactUI.GetNumRelicSlots() do
+			local link = select(4, ArtifactUI.GetRelicInfo(ridx))
+			if link ~= nil then
+				local relicData   = PersoLib:LinkSplit(link)
+				local baseLink    = select(2, GetItemInfo(relicData[1]))
+				local basePowers  = ArtifactUI.GetPowersAffectedByRelicItemLink(baseLink)
+				local relicPowers = ArtifactUI.GetPowersAffectedByRelic(ridx)
 
-        if type(basePowers) == 'number' then
-          basePowers = { basePowers }
-        end
+				if type(basePowers) == 'number' then
+					basePowers = { basePowers }
+				end
 
-        if type(relicPowers) == 'number' then
-          relicPowers = { relicPowers }
-        end
+				if type(relicPowers) == 'number' then
+					relicPowers = { relicPowers }
+				end
 
-        -- For each power id that is not included in the base powers given for the relic, add one rank
-        -- to crucible ranks, and subtract one from bonus ranks
-        for rpidx=1, #relicPowers do
-          local found = false
-          for bpidx=1, #basePowers do
-            if relicPowers[rpidx] == basePowers[bpidx] then
-              found = true
-              break
-            end
-          end
+				-- For each power id that is not included in the base powers given for the relic, add one rank
+				-- to crucible ranks, and subtract one from bonus ranks
+				for rpidx=1, #relicPowers do
+					local found = false
+					for bpidx=1, #basePowers do
+						if relicPowers[rpidx] == basePowers[bpidx] then
+							found = true
+							break
+						end
+					end
 
-          if not found then
-            crucibleRanks = crucibleRanks + 1
-            relicRanks = relicRanks - 1
-          end
-        end
-      end
-    end
-  end
-
-  return powerId, purchasedRanks, relicRanks, crucibleRanks
+					if not found then
+						crucibleRanks = crucibleRanks + 1
+						relicRanks = relicRanks - 1
+					end
+				end
+			end
+		end
+	end
+	return powerId, purchasedRanks, relicRanks, crucibleRanks
 end
 
 -- check if the item is selected
