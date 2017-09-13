@@ -3171,8 +3171,7 @@ function SimPermut:GetArtifactString(nocrucible)
 			str = str .. ':' .. table.concat(baseRanks, ':')
 	    end
 	    if #crucibleRanks > 0 and not nocrucible then
-			cruciblestr = cruciblestr .. '\n'
-			cruciblestr = cruciblestr .. 'crucible=' .. table.concat(crucibleRanks, ':')
+			cruciblestr = table.concat(crucibleRanks, ':')
 	    end
 		
 		Clear()

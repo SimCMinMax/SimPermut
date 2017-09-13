@@ -1,4 +1,7 @@
-v1.14.13 09/xx/2017
+v1.14.7 09/13/2017
+[Fix]Fix Crucible export
+
+v1.14.6 09/13/2017
 [Fix]Fix Crucible export
 [Code]Cleanup
 
