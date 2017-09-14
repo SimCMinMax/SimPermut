@@ -150,49 +150,197 @@ function PersoLib:getSpecID()
 	return globalSpecID
 end
 
--- simc, Artifact Information
 function PersoLib:IsArtifactFrameOpen()
-  local ArtifactFrame 	  = _G.ArtifactFrame
-  return ArtifactFrame and ArtifactFrame:IsShown() or false
+	local ArtifactFrame = _G.ArtifactFrame
+	return ArtifactFrame and ArtifactFrame:IsShown() or false
+end
+
+function PersoLib:GetPowerData(powerId)
+	if not powerId then
+		return 0, 0
+	end
+
+	local powerInfo = ArtifactUI.GetPowerInfo(powerId)
+	if powerInfo == nil then
+		return powerId, 0
+	end
+
+	return powerId, powerInfo.currentRank - powerInfo.bonusRanks
+end
+
+function PersoLib:OpenArtifact()
+	if not HasArtifactEquipped() then
+		return false, false, 0
+	end
+
+	local artifactFrameOpen = PersoLib:IsArtifactFrameOpen()
+	if not artifactFrameOpen then
+		SocketInventoryItem(INVSLOT_MAINHAND)
+	end
+
+	local ArtifactFrame = _G.ArtifactFrame
+
+	local itemId = select(1, ArtifactUI.GetArtifactInfo())
+	if itemId == nil or itemId == 0 then
+		if not artifactFrameOpen then
+			HideUIPanel(ArtifactFrame)
+		end
+		return false, false, 0
+	end
+
+	if not select(1, IsUsableItem(itemId)) then
+		if not artifactFrameOpen then
+			HideUIPanel(ArtifactFrame)
+		end
+		return false, false, 0
+	end
+
+	local mhId = select(1, GetInventoryItemID("player", GetInventorySlotInfo("MainHandSlot")))
+	local ohId = select(1, GetInventoryItemID("player", GetInventorySlotInfo("SecondaryHandSlot")))
+	local correctArtifactOpen = (mhId ~= nil and mhId == itemId) or (ohId ~= nil and ohId == itemId)
+
+	if not correctArtifactOpen then
+		print("|cFFFF0000Warning, attempting to generate Simulationcraft artifact output for the wrong item (expected " .. (mhId or 0) .. " or " .. (ohId or 0) .. ", got " .. itemId .. ")")
+		HideUIPanel(ArtifactFrame)
+		SocketInventoryItem(INVSLOT_MAINHAND)
+		itemId = select(1, ArtifactUI.GetArtifactInfo())
+	end
+
+	return artifactFrameOpen, correctArtifactOpen, itemId
+end
+
+function PersoLib:CloseArtifactFrame(wasOpen, correctOpen)
+	local ArtifactFrame = _G.ArtifactFrame
+
+	if ArtifactFrame and (not wasOpen or not correctOpen) then
+		HideUIPanel(ArtifactFrame)
+	end
 end
 
 -- simc, generates artifact string
 function PersoLib:GetArtifactString()
-  if not HasArtifactEquipped() then
-    return nil
-  end
-    
-  -- Unregister the events to prevent unwanted call. (thx Aethys :o)
-  UIParent:UnregisterEvent("ARTIFACT_UPDATE");
-  if not PersoLib:IsArtifactFrameOpen() then
-    SocketInventoryItem(INVSLOT_MAINHAND)
-  end
+	local artifactFrameOpen, correctArtifactOpen, itemId = self:OpenArtifact()
 
-  local item_id = select(1, ArtifactUI.GetArtifactInfo())
-  if item_id == nil or item_id == 0 then
-    return nil
-  end
+	if not itemId then
+		self:CloseArtifactFrame(artifactFrameOpen, correctArtifactOpen)
+		return nil
+	end
 
-  local artifact_id = extraData.artifactTable[item_id]
-  if artifact_id == nil then
-    return nil
-  end
+	local artifactId = extraData.ArtifactTable[itemId]
+	if artifactId == nil then
+		self:CloseArtifactFrame(artifactFrameOpen, correctArtifactOpen)
+		return nil
+	end
 
-  -- Note, relics are handled by the item string
-  local str = 'artifact=' .. artifact_id .. ':0:0:0:0'
+	-- Note, relics are handled by the item string
+	local str = artifactId .. ':0:0:0:0'
 
-  local powers = ArtifactUI.GetPowers()
-  for i = 1, #powers do
-    local power_id = powers[i]
-    local info = ArtifactUI.GetPowerInfo(power_id)
-    if info.currentRank > 0 and info.currentRank - info.bonusRanks > 0 then
-      str = str .. ':' .. power_id .. ':' .. (info.currentRank - info.bonusRanks)
-    end
-  end
+	local baseRanks = {}
+	local crucibleRanks = {}
+
+	local powers = ArtifactUI.GetPowers()
+	for i = 1, #powers do
+		local powerId, powerRank = PersoLib:GetPowerData(powers[i])
+
+		if powerRank > 0 then
+			baseRanks[#baseRanks + 1] = powerId
+			baseRanks[#baseRanks + 1] = powerRank
+		end
+	end
+
+	if #baseRanks > 0 then
+		str = str .. ':' .. table.concat(baseRanks, ':')
+	end
+
+	self:CloseArtifactFrame(artifactFrameOpen, correctArtifactOpen)
+
+	return str
+end
+
+-- simc, generates artifact string
+function PersoLib:GetCrucibleString(RelicSlot)
+	local artifactFrameOpen, correctArtifactOpen, itemId = self:OpenArtifact()
+
+	if not itemId then
+		self:CloseArtifactFrame(artifactFrameOpen, correctArtifactOpen)
+		return nil
+	end
+
+	local artifactId = extraData.ArtifactTable[itemId]
+	if artifactId == nil then
+		self:CloseArtifactFrame(artifactFrameOpen, correctArtifactOpen)
+		return nil
+	end
+
   
-  --ArtifactFrame:Hide()
-  --CloseSocketInfo()
-  UIParent:RegisterEvent("ARTIFACT_UPDATE");
+	local crucibleData = {}
+	for ridx = 1, ArtifactUI.GetNumRelicSlots() do
+		crucibleData[ridx] = PersoLib:GetCrucibleStringForSlot(ridx)
+	end
+
+	local crucibleStrings = {}
+	for ridx = 1, #crucibleData do
+		crucibleStrings[ridx] = table.concat(crucibleData[ridx], ':')
+	end
+
+	self:CloseArtifactFrame(artifactFrameOpen, correctArtifactOpen)
+
+	return table.concat(crucibleStrings, '/')
+end
+
+function PersoLib:GetCrucibleStringForSlot(RelicSlot,ForceOpenArtifact)
+	if ForceOpenArtifact then
+		local artifactFrameOpen, correctArtifactOpen, itemId = self:OpenArtifact()
+
+		if not itemId then
+			self:CloseArtifactFrame(artifactFrameOpen, correctArtifactOpen)
+			return nil
+		end
+
+		local artifactId = extraData.ArtifactTable[itemId]
+		if artifactId == nil then
+			self:CloseArtifactFrame(artifactFrameOpen, correctArtifactOpen)
+			return nil
+		end
+	end
+
+	local link = select(4, ArtifactUI.GetRelicInfo(RelicSlot))
+	if link ~= nil then
+		local relicSplit     = PersoLib:LinkSplit(link)
+		local baseLink       = select(2, GetItemInfo(relicSplit[1]))
+		local basePowers     = { ArtifactUI.GetPowersAffectedByRelicItemLink(baseLink) }
+		local relicPowers    = { ArtifactUI.GetPowersAffectedByRelic(RelicSlot) }
+		local cruciblePowers = {}
+
+		for rpidx = 1, #relicPowers do
+			local found = false
+			for bpidx = 1, #basePowers do
+				if relicPowers[rpidx] == basePowers[bpidx] then
+					found = true
+					break
+				end
+			end
+
+			if not found then
+				cruciblePowers[#cruciblePowers + 1] = relicPowers[rpidx]
+			end
+		end
+		
+		if ForceOpenArtifact then
+			self:CloseArtifactFrame(artifactFrameOpen, correctArtifactOpen)
+		end
+
+		if #cruciblePowers == 0 then
+			return { 0 }
+		else
+			return cruciblePowers
+		end
+	else
+		if ForceOpenArtifact then
+			self:CloseArtifactFrame(artifactFrameOpen, correctArtifactOpen)
+		end
+		return { 0 }
+	end
 end
 
 -- get item id from link

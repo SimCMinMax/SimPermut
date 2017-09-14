@@ -2539,12 +2539,13 @@ function SimPermut:GetAutoSimcString()
 	autoSimcString=autoSimcString .. "role="..PersoLib:translateRole(PersoLib:getSpecID()).."\n"
 	autoSimcString=autoSimcString .. "position=back".."\n"
 	autoSimcString=autoSimcString .. "talents="..PersoLib:CreateSimcTalentString().."\n"
-	local artStr,crucibleStr=SimPermut:GetArtifactString()
-	if artStr~="" then
-		autoSimcString=autoSimcString .. "artifact="..artStr.."\n"
+	local playerArtifact = PersoLib:GetArtifactString()
+	local playerCrucible = PersoLib:GetCrucibleString()
+	if playerArtifact~="" then
+		autoSimcString=autoSimcString .. "artifact="..playerArtifact.."\n"
 	end
-	if crucibleStr~="" then
-		autoSimcString=autoSimcString .. "crucible="..crucibleStr.."\n"
+	if playerCrucible~="" then
+		autoSimcString=autoSimcString .. "crucible="..playerCrucible.."\n"
 	end
 	autoSimcString=autoSimcString .. actualSettings.simcCommands.. '\n'
 	autoSimcString=autoSimcString .. "other=".."\n"
@@ -2984,7 +2985,8 @@ function SimPermut:GetBaseString(nocrucible)
 
 	local playerRace = PersoLib:getRace()
 	local playerTalents = PersoLib:CreateSimcTalentString()
-	local playerArtifact,playerCrucible = SimPermut:GetArtifactString(nocrucible)
+	local playerArtifact = PersoLib:GetArtifactString()
+	local playerCrucible = PersoLib:GetCrucibleString()
 	local playerSpec = ExtraData.SpecNames[ PersoLib:getSpecID() ]
 
 	-- Construct SimC-compatible strings from the basic information
