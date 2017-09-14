@@ -155,6 +155,11 @@ function PersoLib:IsArtifactFrameOpen()
 	return ArtifactFrame and ArtifactFrame:IsShown() or false
 end
 
+function PersoLib:IsCrucibleFrameOpen()
+	local ArtifactRelicForgeFrame = _G.ArtifactRelicForgeFrame
+	return ArtifactRelicForgeFrame and ArtifactRelicForgeFrame:IsShown() or false
+end
+
 function PersoLib:GetPowerData(powerId)
 	if not powerId then
 		return 0, 0
@@ -257,7 +262,7 @@ function PersoLib:GetArtifactString()
 	return str
 end
 
--- simc, generates artifact string
+-- simc, generates crucible string
 function PersoLib:GetCrucibleString(RelicSlot)
 	local artifactFrameOpen, correctArtifactOpen, itemId = self:OpenArtifact()
 
@@ -288,6 +293,7 @@ function PersoLib:GetCrucibleString(RelicSlot)
 	return table.concat(crucibleStrings, '/')
 end
 
+-- simc generates crucible string for a specific slot
 function PersoLib:GetCrucibleStringForSlot(RelicSlot,ForceOpenArtifact)
 	if ForceOpenArtifact then
 		local artifactFrameOpen, correctArtifactOpen, itemId = self:OpenArtifact()
