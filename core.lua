@@ -919,7 +919,9 @@ function SimPermut:BuildNetherlightFrame()
 	crucibletypedropdown:SetValue(UIParameters.CrucibleComparisonTypeValue)
 	crucibletypedropdown:SetCallback("OnValueChanged", function (this, event, item)
 		UIParameters.CrucibleComparisonTypeValue=item
+		--reset count and string
 		UIParameters.crucibleString=""
+		UIParameters.crucibleCopyCount=1
 		if UIElements.mainframe:IsVisible() then
 			UIElements.mainframe:Release()
 		end
