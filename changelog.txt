@@ -1,4 +1,5 @@
 v1.14.8 09/xx/2017
+[UI]New crucible export choice : export all combination of the current shown tree
 [Code]Implement new crucible export format
 [Fix]Reset crucible string when switching between one tree / full weapon
 

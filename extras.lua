@@ -607,9 +607,10 @@ SimPermut.ExtraData={
 	  [1] = 'relic ilevel',
 	  [2] = 'weapon ilevel'
 	},
-	CrucibleType = {
+	CrucibleComparisonType = {
 	  [1] = 'One tree',
-	  [2] = 'Full weapon'
+	  [2] = 'Full weapon',
+	  [3] = 'Current Tree permutation'
 	},
 	ReportTypeGear = {
 	  [1] = 'Item names',

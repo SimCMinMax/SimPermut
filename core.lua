@@ -45,6 +45,7 @@ local UIParameters={
 	currentFrame=1,
 	relicComparisonTypeValue=1,
 	CrucibleComparisonTypeValue=1,
+	CrucibleComparisonTypeValue_old=1,
 	relicCopyCount=1,
 	relicString="",
 	crucibleCopyCount=1,
@@ -86,6 +87,7 @@ local UIElements={
 	tableTalentcheckbox={},
 	tableTalentSpells={},
 	tableTalentResults={},
+	tableCrucibleResults={},
 	tablePreCheck={},
 	tableNumberSelected={},
 	DropdownTrait1,
@@ -136,15 +138,7 @@ SLASH_SIMPERMUTSLASHDEBUG1 = "/SimPermutDebug"
 -------------Test-----------------
 SLASH_SIMPERMUTSLASHTEST1 = "/Simtest"
 SlashCmdList["SIMPERMUTSLASHTEST"] = function (arg)
-	-- local currentTree={}
-	-- if ArtifactRelicForgeUI.IsAtForge() then
-		-- local treeData=ArtifactRelicForgeUI.GetSocketedRelicTalents(1)
-		-- GetPreviewRelicTalents
-		-- for k,v in pairs(treeData) do
-			-- if not currentTree[treeData[k].tier] then currentTree[treeData[k].tier]={} end
-			-- table.insert(currentTree[treeData[k].tier],treeData[k].powerID)
-		-- end
-	-- end
+	
 end
 -------------Test-----------------
 
@@ -160,13 +154,30 @@ SlashCmdList["SIMPERMUTSLASH"] = function (arg)
 		end
 	
 		--handle commandline
-		for i=1,#ExtraData.ListNames do
-			if string.match(arg, ExtraData.ListNames[i]) then
-				UIElements.tablePreCheck[i]=true
-			else
-				UIElements.tablePreCheck[i]=false
+		if string.match(arg, "fastAccess") then
+			local stringSplitarg = PersoLib:Split(arg, "=")
+			local stringSplitargval = PersoLib:Split(stringSplitarg[2], "-")
+			UIParameters.currentFrame = tonumber(stringSplitargval[1])
+			if tonumber(stringSplitargval[1])==3 then
+				if stringSplitargval[2] then
+					UIParameters.relicComparisonTypeValue=tonumber(stringSplitargval[2])
+				end
+			elseif tonumber(stringSplitargval[1])==4 then
+				if stringSplitargval[2] then
+					UIParameters.CrucibleComparisonTypeValue=tonumber(stringSplitargval[2])
+				end
+			end
+		else
+			for i=1,#ExtraData.ListNames do
+				if string.match(arg, ExtraData.ListNames[i]) then
+					UIElements.tablePreCheck[i]=true
+				else
+					UIElements.tablePreCheck[i]=false
+				end
 			end
 		end
+		
+		
 		SimPermut:BuildFrame()
 		UIParameters.mainframeCreated=true
 	end
@@ -234,28 +245,20 @@ function SimPermut:BuildFrame()
 	SimPermut:AddSpacer(UIElements.mainframe,true)
 	
 	if UIParameters.currentFrame==1 then --gear
-		UIParameters.currentFrame=1
 		SimPermut:BuildGearFrame()
 		SimPermut:BuildResultFrame(true)
 		SimPermut:InitGearFrame()
 	elseif UIParameters.currentFrame==2 then --talents
-		UIParameters.currentFrame=2
 		SimPermut:BuildTalentFrame()
 		SimPermut:BuildResultFrame(false)
 		SimPermut:GenerateTalents()
 	elseif UIParameters.currentFrame==3 then --relics
-		UIParameters.currentFrame=3
 		SimPermut:BuildRelicFrame()
-		SimPermut:BuildResultFrame(false)
 	elseif UIParameters.currentFrame==4 then --NetherLight crucible
-		UIParameters.currentFrame=4
 		SimPermut:BuildNetherlightFrame()
-		SimPermut:BuildResultFrame(false)
 	elseif UIParameters.currentFrame==5 then --add items
-		UIParameters.currentFrame=5
 		SimPermut:BuildDungeonJournalFrame()
 	elseif UIParameters.currentFrame==6 then --options
-		UIParameters.currentFrame=6
 		SimPermut:BuildOptionFrame()
 	end
 end
@@ -566,6 +569,8 @@ function SimPermut:BuildRelicFrame()
 	UIElements.mainGroup:SetHeight(600)
     UIElements.mainGroup:SetRelativeWidth(0.65)
 	UIElements.mainframe:AddChild(UIElements.mainGroup)
+	
+	SimPermut:BuildResultFrame(false)
 	
 	local container1 = AceGUI:Create("SimpleGroup")
 	container1:SetFullWidth(true)
@@ -911,6 +916,8 @@ function SimPermut:BuildNetherlightFrame()
     UIElements.mainGroup:SetRelativeWidth(0.65)
 	UIElements.mainframe:AddChild(UIElements.mainGroup)
 	
+	SimPermut:BuildResultFrame(false)
+	
 	local container1 = AceGUI:Create("SimpleGroup")
 	container1:SetFullWidth(true)
 	container1:SetHeight(600)
@@ -923,11 +930,12 @@ function SimPermut:BuildNetherlightFrame()
 	container1:AddChild(labeltitre1)
 	
 	local crucibletypedropdown = AceGUI:Create("Dropdown")
-	crucibletypedropdown:SetWidth(150)
-	crucibletypedropdown:SetList(ExtraData.CrucibleType)
+	crucibletypedropdown:SetWidth(200)
+	crucibletypedropdown:SetList(ExtraData.CrucibleComparisonType)
 	crucibletypedropdown:SetLabel("Comparison type")
 	crucibletypedropdown:SetValue(UIParameters.CrucibleComparisonTypeValue)
 	crucibletypedropdown:SetCallback("OnValueChanged", function (this, event, item)
+		UIParameters.CrucibleComparisonTypeValue_old=UIParameters.CrucibleComparisonTypeValue
 		UIParameters.CrucibleComparisonTypeValue=item
 		--reset count and string
 		UIParameters.crucibleString=""
@@ -983,277 +991,322 @@ function SimPermut:BuildNetherlightFrame()
 	
 	SimPermut:AddSpacer(container1,true)
 	
-	if UIParameters.CrucibleComparisonTypeValue==2 then
-		--add left panel
-		local cruciblecontainerleft = AceGUI:Create("SimpleGroup")
-		cruciblecontainerleft:SetRelativeWidth(0.33)
-		cruciblecontainerleft:SetLayout("Flow")
-		container1:AddChild(cruciblecontainerleft)
+	if UIParameters.CrucibleComparisonTypeValue==1 or UIParameters.CrucibleComparisonTypeValue==2 then
+		if UIParameters.CrucibleComparisonTypeValue==2 then
+			--add left panel
+			local cruciblecontainerleft = AceGUI:Create("SimpleGroup")
+			cruciblecontainerleft:SetRelativeWidth(0.33)
+			cruciblecontainerleft:SetLayout("Flow")
+			container1:AddChild(cruciblecontainerleft)
+			
+			SimPermut:AddSpacer(cruciblecontainerleft,false,0.42)
+			local relicinfo11= AceGUI:Create("Label")
+			relicinfo11:SetRelativeWidth(0.58)
+			relicinfo11:SetColor(1,.82,0)
+			relicinfo11:SetText("Relic 1")
+			cruciblecontainerleft:AddChild(relicinfo11)
+			
+			SimPermut:AddSpacer(cruciblecontainerleft,false,0.42)
 		
-		SimPermut:AddSpacer(cruciblecontainerleft,false,0.42)
-		local relicinfo11= AceGUI:Create("Label")
-		relicinfo11:SetRelativeWidth(0.58)
-		relicinfo11:SetColor(1,.82,0)
-		relicinfo11:SetText("Relic 1")
-		cruciblecontainerleft:AddChild(relicinfo11)
-		
-		SimPermut:AddSpacer(cruciblecontainerleft,false,0.42)
-	
-		local relicinfoleft= AceGUI:Create("Label")
-		relicinfoleft:SetRelativeWidth(0.58)
-		relicinfoleft:SetColor(1,.82,0)
-		relicinfoleft:SetText("Tier 2 trait")
-		cruciblecontainerleft:AddChild(relicinfoleft)
-		
-		SimPermut:AddSpacer(cruciblecontainerleft,true)
-		SimPermut:AddSpacer(cruciblecontainerleft,false,0.1)
+			local relicinfoleft= AceGUI:Create("Label")
+			relicinfoleft:SetRelativeWidth(0.58)
+			relicinfoleft:SetColor(1,.82,0)
+			relicinfoleft:SetText("Tier 2 trait")
+			cruciblecontainerleft:AddChild(relicinfoleft)
+			
+			SimPermut:AddSpacer(cruciblecontainerleft,true)
+			SimPermut:AddSpacer(cruciblecontainerleft,false,0.1)
 
-		local  spellTextureleft, crucibleIconleft
-		crucibleIconleft=AceGUI:Create("Icon")
-		UIElements.dropdownTableCrucible[1]={}
-		UIElements.dropdownTableCrucible[1][2] = AceGUI:Create("Dropdown")
-		UIElements.dropdownTableCrucible[1][2]:SetRelativeWidth(0.8)
-		UIElements.dropdownTableCrucible[1][2]:SetList(ExtraData.NetherlightData[2])
-		UIElements.dropdownTableCrucible[1][2]:SetLabel("")
-		UIElements.dropdownTableCrucible[1][2]:SetValue(T2)
-		trait[1]=T2
-		UIElements.dropdownTableCrucible[1][2]:SetCallback("OnValueChanged", function (this, event, item)
-			trait[1]=item
-			_, _, spellTextureleft = GetSpellInfo(ExtraData.NetherlightSpellID[item])
+			local  spellTextureleft, crucibleIconleft
+			crucibleIconleft=AceGUI:Create("Icon")
+			UIElements.dropdownTableCrucible[1]={}
+			UIElements.dropdownTableCrucible[1][2] = AceGUI:Create("Dropdown")
+			UIElements.dropdownTableCrucible[1][2]:SetRelativeWidth(0.8)
+			UIElements.dropdownTableCrucible[1][2]:SetList(ExtraData.NetherlightData[2])
+			UIElements.dropdownTableCrucible[1][2]:SetLabel("")
+			UIElements.dropdownTableCrucible[1][2]:SetValue(T2)
+			trait[1]=T2
+			UIElements.dropdownTableCrucible[1][2]:SetCallback("OnValueChanged", function (this, event, item)
+				trait[1]=item
+				_, _, spellTextureleft = GetSpellInfo(ExtraData.NetherlightSpellID[item])
+				if spellTextureleft then
+					crucibleIconleft:SetImage(spellTextureleft)
+				end
+			end)
+			cruciblecontainerleft:AddChild(UIElements.dropdownTableCrucible[1][2])
+			
+			SimPermut:AddSpacer(cruciblecontainerleft,true)
+			SimPermut:AddSpacer(cruciblecontainerleft,false,0.4)
+			
+			_, _, spellTextureleft = GetSpellInfo(ExtraData.NetherlightSpellID[trait[1]])
 			if spellTextureleft then
 				crucibleIconleft:SetImage(spellTextureleft)
 			end
-		end)
-		cruciblecontainerleft:AddChild(UIElements.dropdownTableCrucible[1][2])
-		
-		SimPermut:AddSpacer(cruciblecontainerleft,true)
-		SimPermut:AddSpacer(cruciblecontainerleft,false,0.4)
-		
-		_, _, spellTextureleft = GetSpellInfo(ExtraData.NetherlightSpellID[trait[1]])
-		if spellTextureleft then
-			crucibleIconleft:SetImage(spellTextureleft)
+			crucibleIconleft:SetImageSize(40,40)
+			crucibleIconleft:SetWidth(60)
+			crucibleIconleft:SetCallback("OnEnter", function(widget)
+				GameTooltip:SetOwner(widget.frame, "ANCHOR_TOPRIGHT")
+				GameTooltip:SetHyperlink("spell:"..ExtraData.NetherlightSpellID[trait[1]])
+				GameTooltip:Show()
+			end)			
+			crucibleIconleft:SetCallback("OnLeave", function(widget)
+				GameTooltip:Hide()
+			end)
+			cruciblecontainerleft:AddChild(crucibleIconleft)
+			
+			SimPermut:AddSpacer(cruciblecontainerleft,true)
+			SimPermut:AddSpacer(cruciblecontainerleft,false,0.42)
+			
+			local relicinfo11left= AceGUI:Create("Label")
+			relicinfo11left:SetRelativeWidth(0.58)
+			relicinfo11left:SetColor(1,.82,0)
+			relicinfo11left:SetText("Tier 3 relic trait")
+			cruciblecontainerleft:AddChild(relicinfo11left)
+			
+			SimPermut:AddSpacer(cruciblecontainerleft,true)
+			SimPermut:AddSpacer(cruciblecontainerleft,false,0.1)
+			UIElements.dropdownTableCrucible[1][3] = AceGUI:Create("Dropdown")
+			UIElements.dropdownTableCrucible[1][3]:SetRelativeWidth(0.8)
+			UIElements.dropdownTableCrucible[1][3]:SetList(ExtraData.NetherlightData[3][UIParameters.artifactID])
+			UIElements.dropdownTableCrucible[1][3]:SetLabel("")
+			UIElements.dropdownTableCrucible[1][3]:SetValue(T3)
+			cruciblecontainerleft:AddChild(UIElements.dropdownTableCrucible[1][3])
+		else--spacer container
+			local containerfiller = AceGUI:Create("SimpleGroup")
+			containerfiller:SetRelativeWidth(0.33)
+			containerfiller:SetLayout("Flow")
+			container1:AddChild(containerfiller)
 		end
-		crucibleIconleft:SetImageSize(40,40)
-		crucibleIconleft:SetWidth(60)
-		crucibleIconleft:SetCallback("OnEnter", function(widget)
-			GameTooltip:SetOwner(widget.frame, "ANCHOR_TOPRIGHT")
-			GameTooltip:SetHyperlink("spell:"..ExtraData.NetherlightSpellID[trait[1]])
-			GameTooltip:Show()
-		end)			
-		crucibleIconleft:SetCallback("OnLeave", function(widget)
-			GameTooltip:Hide()
-		end)
-		cruciblecontainerleft:AddChild(crucibleIconleft)
 		
-		SimPermut:AddSpacer(cruciblecontainerleft,true)
-		SimPermut:AddSpacer(cruciblecontainerleft,false,0.42)
 		
-		local relicinfo11left= AceGUI:Create("Label")
-		relicinfo11left:SetRelativeWidth(0.58)
-		relicinfo11left:SetColor(1,.82,0)
-		relicinfo11left:SetText("Tier 3 relic trait")
-		cruciblecontainerleft:AddChild(relicinfo11left)
+		local cruciblecontainer = AceGUI:Create("SimpleGroup")
+		cruciblecontainer:SetRelativeWidth(0.33)
+		cruciblecontainer:SetLayout("Flow")
+		container1:AddChild(cruciblecontainer)
 		
-		SimPermut:AddSpacer(cruciblecontainerleft,true)
-		SimPermut:AddSpacer(cruciblecontainerleft,false,0.1)
-		UIElements.dropdownTableCrucible[1][3] = AceGUI:Create("Dropdown")
-		UIElements.dropdownTableCrucible[1][3]:SetRelativeWidth(0.8)
-		UIElements.dropdownTableCrucible[1][3]:SetList(ExtraData.NetherlightData[3][UIParameters.artifactID])
-		UIElements.dropdownTableCrucible[1][3]:SetLabel("")
-		UIElements.dropdownTableCrucible[1][3]:SetValue(T3)
-		cruciblecontainerleft:AddChild(UIElements.dropdownTableCrucible[1][3])
-	else--spacer container
-		local containerfiller = AceGUI:Create("SimpleGroup")
-		containerfiller:SetRelativeWidth(0.33)
-		containerfiller:SetLayout("Flow")
-		container1:AddChild(containerfiller)
-	end
-	
-	
-	local cruciblecontainer = AceGUI:Create("SimpleGroup")
-	cruciblecontainer:SetRelativeWidth(0.33)
-	cruciblecontainer:SetLayout("Flow")
-	container1:AddChild(cruciblecontainer)
-	
-	if UIParameters.CrucibleComparisonTypeValue==2 then
+		if UIParameters.CrucibleComparisonTypeValue==2 then
+			SimPermut:AddSpacer(cruciblecontainer,false,0.42)
+			local relicinfo2= AceGUI:Create("Label")
+			relicinfo2:SetRelativeWidth(0.58)
+			relicinfo2:SetColor(1,.82,0)
+			relicinfo2:SetText("Relic 2")
+			cruciblecontainer:AddChild(relicinfo2)
+		end
+		
 		SimPermut:AddSpacer(cruciblecontainer,false,0.42)
-		local relicinfo2= AceGUI:Create("Label")
-		relicinfo2:SetRelativeWidth(0.58)
-		relicinfo2:SetColor(1,.82,0)
-		relicinfo2:SetText("Relic 2")
-		cruciblecontainer:AddChild(relicinfo2)
-	end
-	
-	SimPermut:AddSpacer(cruciblecontainer,false,0.42)
-	
-	local relicinfo1= AceGUI:Create("Label")
-	relicinfo1:SetRelativeWidth(0.58)
-	relicinfo1:SetColor(1,.82,0)
-	relicinfo1:SetText("Tier 2 trait")
-	cruciblecontainer:AddChild(relicinfo1)
-	
-	SimPermut:AddSpacer(cruciblecontainer,true)
-	SimPermut:AddSpacer(cruciblecontainer,false,0.1)
+		
+		local relicinfo1= AceGUI:Create("Label")
+		relicinfo1:SetRelativeWidth(0.58)
+		relicinfo1:SetColor(1,.82,0)
+		relicinfo1:SetText("Tier 2 trait")
+		cruciblecontainer:AddChild(relicinfo1)
+		
+		SimPermut:AddSpacer(cruciblecontainer,true)
+		SimPermut:AddSpacer(cruciblecontainer,false,0.1)
 
-	local  spellTexture, crucibleIcon
-	crucibleIcon=AceGUI:Create("Icon")
-	UIElements.dropdownTableCrucible[2]={}
-	UIElements.dropdownTableCrucible[2][2] = AceGUI:Create("Dropdown")
-	UIElements.dropdownTableCrucible[2][2]:SetRelativeWidth(0.8)
-	UIElements.dropdownTableCrucible[2][2]:SetList(ExtraData.NetherlightData[2])
-	UIElements.dropdownTableCrucible[2][2]:SetLabel("")
-	UIElements.dropdownTableCrucible[2][2]:SetValue(T2)
-	trait[2]=T2
-	UIElements.dropdownTableCrucible[2][2]:SetCallback("OnValueChanged", function (this, event, item)
-		trait[2]=item
-		_, _, spellTexture = GetSpellInfo(ExtraData.NetherlightSpellID[item])
+		local  spellTexture, crucibleIcon
+		crucibleIcon=AceGUI:Create("Icon")
+		UIElements.dropdownTableCrucible[2]={}
+		UIElements.dropdownTableCrucible[2][2] = AceGUI:Create("Dropdown")
+		UIElements.dropdownTableCrucible[2][2]:SetRelativeWidth(0.8)
+		UIElements.dropdownTableCrucible[2][2]:SetList(ExtraData.NetherlightData[2])
+		UIElements.dropdownTableCrucible[2][2]:SetLabel("")
+		UIElements.dropdownTableCrucible[2][2]:SetValue(T2)
+		trait[2]=T2
+		UIElements.dropdownTableCrucible[2][2]:SetCallback("OnValueChanged", function (this, event, item)
+			trait[2]=item
+			_, _, spellTexture = GetSpellInfo(ExtraData.NetherlightSpellID[item])
+			if spellTexture then
+				crucibleIcon:SetImage(spellTexture)
+			end
+		end)
+		cruciblecontainer:AddChild(UIElements.dropdownTableCrucible[2][2])
+		
+		SimPermut:AddSpacer(cruciblecontainer,true)
+		SimPermut:AddSpacer(cruciblecontainer,false,0.4)
+		
+		_, _, spellTexture = GetSpellInfo(ExtraData.NetherlightSpellID[trait[2]])
 		if spellTexture then
 			crucibleIcon:SetImage(spellTexture)
 		end
-    end)
-	cruciblecontainer:AddChild(UIElements.dropdownTableCrucible[2][2])
-	
-	SimPermut:AddSpacer(cruciblecontainer,true)
-	SimPermut:AddSpacer(cruciblecontainer,false,0.4)
-	
-	_, _, spellTexture = GetSpellInfo(ExtraData.NetherlightSpellID[trait[2]])
-	if spellTexture then
-		crucibleIcon:SetImage(spellTexture)
-	end
-	crucibleIcon:SetImageSize(40,40)
-	crucibleIcon:SetWidth(60)
-	crucibleIcon:SetCallback("OnEnter", function(widget)
-		GameTooltip:SetOwner(widget.frame, "ANCHOR_TOPRIGHT")
-		GameTooltip:SetHyperlink("spell:"..ExtraData.NetherlightSpellID[trait[2]])
-		GameTooltip:Show()
-	end)			
-	crucibleIcon:SetCallback("OnLeave", function(widget)
-		GameTooltip:Hide()
-	end)
-	cruciblecontainer:AddChild(crucibleIcon)
-	
-	SimPermut:AddSpacer(cruciblecontainer,true)
-	SimPermut:AddSpacer(cruciblecontainer,false,0.42)
-	
-	local relicinfo11= AceGUI:Create("Label")
-	relicinfo11:SetRelativeWidth(0.58)
-	relicinfo11:SetColor(1,.82,0)
-	relicinfo11:SetText("Tier 3 relic trait")
-	cruciblecontainer:AddChild(relicinfo11)
-	
-	SimPermut:AddSpacer(cruciblecontainer,true)
-	SimPermut:AddSpacer(cruciblecontainer,false,0.1)
-	UIElements.dropdownTableCrucible[2][3] = AceGUI:Create("Dropdown")
-	UIElements.dropdownTableCrucible[2][3]:SetRelativeWidth(0.8)
-	UIElements.dropdownTableCrucible[2][3]:SetList(ExtraData.NetherlightData[3][UIParameters.artifactID])
-	UIElements.dropdownTableCrucible[2][3]:SetLabel("")
-	UIElements.dropdownTableCrucible[2][3]:SetValue(T3)
-	cruciblecontainer:AddChild(UIElements.dropdownTableCrucible[2][3])
-	
-	if UIParameters.CrucibleComparisonTypeValue==2 then
-		--add left panel
-		local cruciblecontainerright = AceGUI:Create("SimpleGroup")
-		cruciblecontainerright:SetRelativeWidth(0.33)
-		cruciblecontainerright:SetLayout("Flow")
-		container1:AddChild(cruciblecontainerright)
+		crucibleIcon:SetImageSize(40,40)
+		crucibleIcon:SetWidth(60)
+		crucibleIcon:SetCallback("OnEnter", function(widget)
+			GameTooltip:SetOwner(widget.frame, "ANCHOR_TOPRIGHT")
+			GameTooltip:SetHyperlink("spell:"..ExtraData.NetherlightSpellID[trait[2]])
+			GameTooltip:Show()
+		end)			
+		crucibleIcon:SetCallback("OnLeave", function(widget)
+			GameTooltip:Hide()
+		end)
+		cruciblecontainer:AddChild(crucibleIcon)
 		
-		SimPermut:AddSpacer(cruciblecontainerright,false,0.42)
-		local relicinfo2= AceGUI:Create("Label")
-		relicinfo2:SetRelativeWidth(0.58)
-		relicinfo2:SetColor(1,.82,0)
-		relicinfo2:SetText("Relic 3")
-		cruciblecontainerright:AddChild(relicinfo2)
+		SimPermut:AddSpacer(cruciblecontainer,true)
+		SimPermut:AddSpacer(cruciblecontainer,false,0.42)
 		
-		SimPermut:AddSpacer(cruciblecontainerright,false,0.42)
-	
-		local relicinforight= AceGUI:Create("Label")
-		relicinforight:SetRelativeWidth(0.58)
-		relicinforight:SetColor(1,.82,0)
-		relicinforight:SetText("Tier 2 trait")
-		cruciblecontainerright:AddChild(relicinforight)
+		local relicinfo11= AceGUI:Create("Label")
+		relicinfo11:SetRelativeWidth(0.58)
+		relicinfo11:SetColor(1,.82,0)
+		relicinfo11:SetText("Tier 3 relic trait")
+		cruciblecontainer:AddChild(relicinfo11)
 		
-		SimPermut:AddSpacer(cruciblecontainerright,true)
-		SimPermut:AddSpacer(cruciblecontainerright,false,0.1)
+		SimPermut:AddSpacer(cruciblecontainer,true)
+		SimPermut:AddSpacer(cruciblecontainer,false,0.1)
+		UIElements.dropdownTableCrucible[2][3] = AceGUI:Create("Dropdown")
+		UIElements.dropdownTableCrucible[2][3]:SetRelativeWidth(0.8)
+		UIElements.dropdownTableCrucible[2][3]:SetList(ExtraData.NetherlightData[3][UIParameters.artifactID])
+		UIElements.dropdownTableCrucible[2][3]:SetLabel("")
+		UIElements.dropdownTableCrucible[2][3]:SetValue(T3)
+		cruciblecontainer:AddChild(UIElements.dropdownTableCrucible[2][3])
+		
+		if UIParameters.CrucibleComparisonTypeValue==2 then
+			--add left panel
+			local cruciblecontainerright = AceGUI:Create("SimpleGroup")
+			cruciblecontainerright:SetRelativeWidth(0.33)
+			cruciblecontainerright:SetLayout("Flow")
+			container1:AddChild(cruciblecontainerright)
+			
+			SimPermut:AddSpacer(cruciblecontainerright,false,0.42)
+			local relicinfo2= AceGUI:Create("Label")
+			relicinfo2:SetRelativeWidth(0.58)
+			relicinfo2:SetColor(1,.82,0)
+			relicinfo2:SetText("Relic 3")
+			cruciblecontainerright:AddChild(relicinfo2)
+			
+			SimPermut:AddSpacer(cruciblecontainerright,false,0.42)
+		
+			local relicinforight= AceGUI:Create("Label")
+			relicinforight:SetRelativeWidth(0.58)
+			relicinforight:SetColor(1,.82,0)
+			relicinforight:SetText("Tier 2 trait")
+			cruciblecontainerright:AddChild(relicinforight)
+			
+			SimPermut:AddSpacer(cruciblecontainerright,true)
+			SimPermut:AddSpacer(cruciblecontainerright,false,0.1)
 
-		local  spellTextureright, crucibleIconright
-		crucibleIconright=AceGUI:Create("Icon")
-		UIElements.dropdownTableCrucible[3]={}
-		UIElements.dropdownTableCrucible[3][2] = AceGUI:Create("Dropdown")
-		UIElements.dropdownTableCrucible[3][2]:SetRelativeWidth(0.8)
-		UIElements.dropdownTableCrucible[3][2]:SetList(ExtraData.NetherlightData[2])
-		UIElements.dropdownTableCrucible[3][2]:SetLabel("")
-		UIElements.dropdownTableCrucible[3][2]:SetValue(T2)
-		trait[3]=T2
-		UIElements.dropdownTableCrucible[3][2]:SetCallback("OnValueChanged", function (this, event, item)
-			trait[3]=item
-			_, _, spellTextureright = GetSpellInfo(ExtraData.NetherlightSpellID[item])
+			local  spellTextureright, crucibleIconright
+			crucibleIconright=AceGUI:Create("Icon")
+			UIElements.dropdownTableCrucible[3]={}
+			UIElements.dropdownTableCrucible[3][2] = AceGUI:Create("Dropdown")
+			UIElements.dropdownTableCrucible[3][2]:SetRelativeWidth(0.8)
+			UIElements.dropdownTableCrucible[3][2]:SetList(ExtraData.NetherlightData[2])
+			UIElements.dropdownTableCrucible[3][2]:SetLabel("")
+			UIElements.dropdownTableCrucible[3][2]:SetValue(T2)
+			trait[3]=T2
+			UIElements.dropdownTableCrucible[3][2]:SetCallback("OnValueChanged", function (this, event, item)
+				trait[3]=item
+				_, _, spellTextureright = GetSpellInfo(ExtraData.NetherlightSpellID[item])
+				if spellTextureright then
+					crucibleIconright:SetImage(spellTextureright)
+				end
+			end)
+			cruciblecontainerright:AddChild(UIElements.dropdownTableCrucible[3][2])
+			
+			SimPermut:AddSpacer(cruciblecontainerright,true)
+			SimPermut:AddSpacer(cruciblecontainerright,false,0.4)
+			
+			_, _, spellTextureright = GetSpellInfo(ExtraData.NetherlightSpellID[trait[3]])
 			if spellTextureright then
 				crucibleIconright:SetImage(spellTextureright)
 			end
-		end)
-		cruciblecontainerright:AddChild(UIElements.dropdownTableCrucible[3][2])
-		
-		SimPermut:AddSpacer(cruciblecontainerright,true)
-		SimPermut:AddSpacer(cruciblecontainerright,false,0.4)
-		
-		_, _, spellTextureright = GetSpellInfo(ExtraData.NetherlightSpellID[trait[3]])
-		if spellTextureright then
-			crucibleIconright:SetImage(spellTextureright)
+			crucibleIconright:SetImageSize(40,40)
+			crucibleIconright:SetWidth(60)
+			crucibleIconright:SetCallback("OnEnter", function(widget)
+				GameTooltip:SetOwner(widget.frame, "ANCHOR_TOPRIGHT")
+				GameTooltip:SetHyperlink("spell:"..ExtraData.NetherlightSpellID[trait[3]])
+				GameTooltip:Show()
+			end)			
+			crucibleIconright:SetCallback("OnLeave", function(widget)
+				GameTooltip:Hide()
+			end)
+			cruciblecontainerright:AddChild(crucibleIconright)
+			
+			SimPermut:AddSpacer(cruciblecontainerright,true)
+			SimPermut:AddSpacer(cruciblecontainerright,false,0.42)
+			
+			local relicinfo11right= AceGUI:Create("Label")
+			relicinfo11right:SetRelativeWidth(0.58)
+			relicinfo11right:SetColor(1,.82,0)
+			relicinfo11right:SetText("Tier 3 relic trait")
+			cruciblecontainerright:AddChild(relicinfo11right)
+			
+			SimPermut:AddSpacer(cruciblecontainerright,true)
+			SimPermut:AddSpacer(cruciblecontainerright,false,0.1)
+			UIElements.dropdownTableCrucible[3][3] = AceGUI:Create("Dropdown")
+			UIElements.dropdownTableCrucible[3][3]:SetRelativeWidth(0.8)
+			UIElements.dropdownTableCrucible[3][3]:SetList(ExtraData.NetherlightData[3][UIParameters.artifactID])
+			UIElements.dropdownTableCrucible[3][3]:SetLabel("")
+			UIElements.dropdownTableCrucible[3][3]:SetValue(T3)
+			cruciblecontainerright:AddChild(UIElements.dropdownTableCrucible[3][3])
+		else
+			local containerfillerright2 = AceGUI:Create("SimpleGroup")
+			containerfillerright2:SetRelativeWidth(0.33)
+			containerfillerright2:SetLayout("Flow")
+			container1:AddChild(containerfillerright2)
 		end
-		crucibleIconright:SetImageSize(40,40)
-		crucibleIconright:SetWidth(60)
-		crucibleIconright:SetCallback("OnEnter", function(widget)
-			GameTooltip:SetOwner(widget.frame, "ANCHOR_TOPRIGHT")
-			GameTooltip:SetHyperlink("spell:"..ExtraData.NetherlightSpellID[trait[3]])
-			GameTooltip:Show()
-		end)			
-		crucibleIconright:SetCallback("OnLeave", function(widget)
-			GameTooltip:Hide()
+		
+		
+		SimPermut:AddSpacer(container1,false,0.3)
+		local ReportDropdownCruciblegen = AceGUI:Create("Dropdown")
+		ReportDropdownCruciblegen:SetWidth(160)
+		ReportDropdownCruciblegen:SetList(ExtraData.ReportTypeCrucible)
+		ReportDropdownCruciblegen:SetLabel("Report Type")
+		ReportDropdownCruciblegen:SetValue(actualSettings.report_typeCrucible)
+		ReportDropdownCruciblegen:SetCallback("OnValueChanged", function (this, event, item)
+			SimPermutVars.report_typeCrucible=item
+			PersoLib:MergeTables(defaultSettings,SimPermutVars,actualSettings)
 		end)
-		cruciblecontainerright:AddChild(crucibleIconright)
-		
-		SimPermut:AddSpacer(cruciblecontainerright,true)
-		SimPermut:AddSpacer(cruciblecontainerright,false,0.42)
-		
-		local relicinfo11right= AceGUI:Create("Label")
-		relicinfo11right:SetRelativeWidth(0.58)
-		relicinfo11right:SetColor(1,.82,0)
-		relicinfo11right:SetText("Tier 3 relic trait")
-		cruciblecontainerright:AddChild(relicinfo11right)
-		
-		SimPermut:AddSpacer(cruciblecontainerright,true)
-		SimPermut:AddSpacer(cruciblecontainerright,false,0.1)
-		UIElements.dropdownTableCrucible[3][3] = AceGUI:Create("Dropdown")
-		UIElements.dropdownTableCrucible[3][3]:SetRelativeWidth(0.8)
-		UIElements.dropdownTableCrucible[3][3]:SetList(ExtraData.NetherlightData[3][UIParameters.artifactID])
-		UIElements.dropdownTableCrucible[3][3]:SetLabel("")
-		UIElements.dropdownTableCrucible[3][3]:SetValue(T3)
-		cruciblecontainerright:AddChild(UIElements.dropdownTableCrucible[3][3])
-	else
-		local containerfillerright2 = AceGUI:Create("SimpleGroup")
-		containerfillerright2:SetRelativeWidth(0.33)
-		containerfillerright2:SetLayout("Flow")
-		container1:AddChild(containerfillerright2)
+		container1:AddChild(ReportDropdownCruciblegen)
+		local buttonGenerate = AceGUI:Create("Button")
+		buttonGenerate:SetText("Generate")
+		buttonGenerate:SetRelativeWidth(0.2)
+		buttonGenerate:SetCallback("OnClick", function()
+			SimPermut:GenerateCrucible()
+		end)
+		container1:AddChild(buttonGenerate)
+	else --Shown tree
+		if not ArtifactRelicForgeUI.IsAtForge() then
+			print("Netherlight crucible must be open")
+			UIParameters.CrucibleComparisonTypeValue=UIParameters.CrucibleComparisonTypeValue_old
+			if UIElements.mainframe:IsVisible() then
+				UIElements.mainframe:Release()
+			end
+			SimPermut:BuildFrame()
+		else
+			local currentTree = PersoLib:ExtractCurrentCrucibleTree()
+			
+			local containerPermuteNC = AceGUI:Create("SimpleGroup")
+			containerPermuteNC:SetFullWidth(true)
+			containerPermuteNC:SetLayout("Flow")
+			container1:AddChild(containerPermuteNC)
+			
+			local relicinfo11= AceGUI:Create("Label")
+			relicinfo11:SetFullWidth(true)
+			relicinfo11:SetText("Current Relic : "..currentTree[1][1].." / "..currentTree[2][1].." - "..currentTree[2][2].." / "..currentTree[3][1].." - "..currentTree[3][2].." - "..currentTree[3][3])
+			containerPermuteNC:AddChild(relicinfo11)
+			
+			SimPermut:AddSpacer(container1,true)
+			local ReportDropdownCruciblegen = AceGUI:Create("Dropdown")
+			ReportDropdownCruciblegen:SetWidth(160)
+			ReportDropdownCruciblegen:SetList(ExtraData.ReportTypeCrucible)
+			ReportDropdownCruciblegen:SetLabel("Report Type")
+			ReportDropdownCruciblegen:SetValue(actualSettings.report_typeCrucible)
+			ReportDropdownCruciblegen:SetCallback("OnValueChanged", function (this, event, item)
+				SimPermutVars.report_typeCrucible=item
+				PersoLib:MergeTables(defaultSettings,SimPermutVars,actualSettings)
+			end)
+			containerPermuteNC:AddChild(ReportDropdownCruciblegen)
+			
+			local buttonGenerate = AceGUI:Create("Button")
+			buttonGenerate:SetText("Generate")
+			buttonGenerate:SetRelativeWidth(0.2)
+			buttonGenerate:SetCallback("OnClick", function()
+				SimPermut:GenerateCruciblePermutation(currentTree)
+			end)
+			containerPermuteNC:AddChild(buttonGenerate)
+		end
 	end
-	
-	SimPermut:AddSpacer(container1,false,0.3)
-	local ReportDropdownCruciblegen = AceGUI:Create("Dropdown")
-    ReportDropdownCruciblegen:SetWidth(160)
-	ReportDropdownCruciblegen:SetList(ExtraData.ReportTypeCrucible)
-	ReportDropdownCruciblegen:SetLabel("Report Type")
-	ReportDropdownCruciblegen:SetValue(actualSettings.report_typeCrucible)
-	ReportDropdownCruciblegen:SetCallback("OnValueChanged", function (this, event, item)
-		SimPermutVars.report_typeCrucible=item
-		PersoLib:MergeTables(defaultSettings,SimPermutVars,actualSettings)
-    end)
-	container1:AddChild(ReportDropdownCruciblegen)
-	local buttonGenerate = AceGUI:Create("Button")
-	buttonGenerate:SetText("Generate")
-	buttonGenerate:SetRelativeWidth(0.2)
-	buttonGenerate:SetCallback("OnClick", function()
-		SimPermut:GenerateCrucible()
-	end)
-	container1:AddChild(buttonGenerate)
+
 end
 
 -- Field construction for Dungeon Journal Frame
@@ -1904,6 +1957,7 @@ function SimPermut:Generate()
 	local permutString=""
 	local baseString=""
 	local finalString=""
+	local permuttable={}
 	if SimPermut:GetTableLink() then
 		PersoLib:debugPrint("--------------------",UIParameters.ad)
 		PersoLib:debugPrint("Generating Gear string...",UIParameters.ad)
@@ -1980,7 +2034,7 @@ function SimPermut:GenerateRelic()
 	PersoLib:debugPrint("--------------------",UIParameters.ad)
 end
 
--- clic btn generate Relic
+-- clic btn generate Crucible
 function SimPermut:GenerateCrucible()
 	local permutString=""
 	local baseString=""
@@ -1992,6 +2046,25 @@ function SimPermut:GenerateCrucible()
 	permutString=SimPermut:GenerateCrucibleString()
 	UIParameters.crucibleString=UIParameters.crucibleString.."\n"..permutString
 	finalString=SimPermut:GetFinalString(baseString,UIParameters.crucibleString)
+	SimPermut:PrintPermut(finalString)
+	PersoLib:debugPrint("End of generation",UIParameters.ad)
+	PersoLib:debugPrint("--------------------",UIParameters.ad)
+end
+
+-- clic btn generate Crucible with permutation
+function SimPermut:GenerateCruciblePermutation(currentTree)
+	local permutString=""
+	local baseString=""
+	local finalString=""
+	local permuttable={}
+
+	PersoLib:debugPrint("--------------------",UIParameters.ad)
+	PersoLib:debugPrint("Generating crucible String with permutation...",UIParameters.ad)
+	baseString=SimPermut:GetBaseString()
+	SimPermut:GenerateCrucibleRecursive(currentTree,1,"")
+	permuttable=UIElements.tableCrucibleResults
+	permutString=SimPermut:GenerateCruciblePermutationStrings(permuttable,currentTree)
+	finalString=SimPermut:GetFinalString(baseString,permutString)
 	SimPermut:PrintPermut(finalString)
 	PersoLib:debugPrint("End of generation",UIParameters.ad)
 	PersoLib:debugPrint("--------------------",UIParameters.ad)
@@ -2013,6 +2086,23 @@ function SimPermut:GenerateTalentsRecursive(stacks,str)
 					newstr=str..""..i
 					SimPermut:GenerateTalentsRecursive(newstacks+1,newstr)
 				end
+			end
+		end
+	end
+end
+
+-- clic btn generate Talent recursion
+function SimPermut:GenerateCrucibleRecursive(currentTree,stacks,str)
+	local newstacks=stacks
+	local newstr=str
+	if newstacks > 3 then
+		UIElements.tableCrucibleResults[#UIElements.tableCrucibleResults+1]=str
+	else
+		for i=1,3 do
+			if currentTree[stacks][i] and not ((tonumber(string.sub(str,2))==1 and i==3) or (tonumber(string.sub(str,2))==2 and i==1)) then
+				
+				newstr=str..""..i
+				SimPermut:GenerateCrucibleRecursive(currentTree,newstacks+1,newstr)
 			end
 		end
 	end
@@ -2895,6 +2985,7 @@ function SimPermut:GenerateRelicString()
 	return returnString
 end
 
+-- generates the data dor the current chosen tree
 function SimPermut:GenerateCrucibleData(fullweapon)
 	local T1,_=next(ExtraData.NetherlightData[1],nil)
 	local crucibleData={}
@@ -2991,13 +3082,13 @@ function SimPermut:GetCopyName(copynumber,nbitem,List,nbitems,typeReport)
 	local returnString="copy="
 	
 	if (typeReport==1 and actualSettings.report_typeGear==1 and List) or (typeReport==2 and actualSettings.report_typeTalents==1) or (typeReport==3 and actualSettings.report_typeRelics==1) or (typeReport==4 and actualSettings.report_typeCrucible==1) then
-		if typeReport==1 then
+		if typeReport==1 then --gear
 			returnString=returnString..List
-		elseif typeReport==2 then
+		elseif typeReport==2 then --talent
 			returnString=returnString..List
-		elseif typeReport==3 then
+		elseif typeReport==3 then --artifact
 			returnString=returnString..string.gsub(List, " ", "-");
-		elseif typeReport==4 then
+		elseif typeReport==4 then --crucible
 			returnString=returnString..string.gsub(List, " ", "-");
 		end
 	else 
@@ -3353,4 +3444,30 @@ function SimPermut:isEquiped(itemLink,slot)
 		end
 	end
 	return returnValue
+end
+
+function SimPermut:GenerateCruciblePermutationStrings(permuttable,currentTree)
+	local copynb
+	local returnString=""
+	local crucibleStrings = {}
+	local copystring=""
+	for i=1,#permuttable do
+		--build permutation
+		crucibleStrings[i]=""
+		copystring=""
+		for j=1, string.len(permuttable[i])do
+			local talentnb = tonumber(string.sub(permuttable[i],j,j))
+			if j==2 then
+				copystring = copystring..ExtraData.NetherlightData[j][currentTree[j][talentnb]].."_"
+			elseif j==3 then
+				copystring = copystring..ExtraData.NetherlightData[j][UIParameters.artifactID][currentTree[j][talentnb]].."_"
+			end
+			
+			crucibleStrings[i]=crucibleStrings[i]..currentTree[j][talentnb]..":"
+		end
+		crucibleStrings[i]=crucibleStrings[i]:sub(1, -2)		
+		copynb = SimPermut:GetCopyName(i,nil,copystring,#permuttable,4)
+		returnString=returnString.."\n" ..copynb .. "\n".. "crucible="..crucibleStrings[i].."//".."\n"
+	end
+	return returnString
 end

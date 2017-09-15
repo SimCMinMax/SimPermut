@@ -4,6 +4,8 @@ local PersoLib = LibStub:NewLibrary(MAJOR, MINOR)
 if not PersoLib then return end
 
 local ArtifactUI          	= _G.C_ArtifactUI
+local ArtifactRelicForgeUI  = _G.C_ArtifactRelicForgeUI
+local ArtifactRelicForgeFrame = _G.ArtifactRelicForgeFrame
 local HasArtifactEquipped 	= _G.HasArtifactEquipped
 local SocketInventoryItem 	= _G.SocketInventoryItem
 local extraData			
@@ -88,6 +90,33 @@ function PersoLib:tokenize(str)
     str = string.sub(str, 0, str:len()-1)
   end
   return str
+end
+
+function PersoLib:Split(str, delim, maxNb)
+   -- Eliminate bad cases...
+   if string.find(str, delim) == nil then
+      return { str }
+   end
+   if maxNb == nil or maxNb < 1 then
+      maxNb = 0    -- No limit
+   end
+   local result = {}
+   local pat = "(.-)" .. delim .. "()"
+   local nb = 0
+   local lastPos
+   for part, pos in string.gmatch(str, pat) do
+      nb = nb + 1
+      result[nb] = part
+      lastPos = pos
+      if nb == maxNb then
+         break
+      end
+   end
+   -- Handle the last field
+   if nb ~= maxNb then
+      result[nb + 1] = string.sub(str, lastPos)
+   end
+   return result
 end
 
 -- simc, method for constructing the talent string
@@ -349,6 +378,28 @@ function PersoLib:GetCrucibleStringForSlot(RelicSlot,ForceOpenArtifact)
 	end
 end
 
+function PersoLib:ExtractCurrentCrucibleTree()
+	local currentTree={}
+	if ArtifactRelicForgeUI.IsAtForge() then
+		if _G.ArtifactRelicForgeFrame.relicSlot then--relic slot
+			local treeData={}
+			treeData = ArtifactRelicForgeUI.GetSocketedRelicTalents(_G.ArtifactRelicForgeFrame.relicSlot)
+			for k,v in pairs(treeData) do
+				if not currentTree[treeData[k].tier] then currentTree[treeData[k].tier]={} end
+				table.insert(currentTree[treeData[k].tier],treeData[k].powerID)
+			end
+		else -- preview slot
+			local treeData={}
+			treeData = ArtifactRelicForgeUI.GetPreviewRelicTalents()
+			for k,v in pairs(treeData) do
+				if not currentTree[treeData[k].tier] then currentTree[treeData[k].tier]={} end
+				table.insert(currentTree[treeData[k].tier],treeData[k].powerID)
+			end
+		end
+	end
+	return currentTree
+end
+
 -- get item id from link
 function PersoLib:GetIDFromLink(itemLink)
 	local itemString = string.match(itemLink, "item:([%-?%d:]+)")
@@ -427,4 +478,19 @@ function PersoLib:LinkSplit(link)
   end
 
   return itemSplit
+end
+
+function PersoLib:DumpTable(tbl, indent)
+  if not indent then indent = 0 end
+  for k, v in pairs(tbl) do
+    formatting = string.rep("  ", indent) .. k .. ": "
+    if type(v) == "table" then
+      print(formatting)
+      PersoLib:DumpTable(v, indent+1)
+    elseif type(v) == 'boolean' then
+      print(formatting .. tostring(v))      
+    else
+      print(formatting .. v)
+    end
+  end
 end
