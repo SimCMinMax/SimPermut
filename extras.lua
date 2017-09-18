@@ -612,6 +612,12 @@ SimPermut.ExtraData={
 	  [2] = 'Full weapon',
 	  [3] = 'Current Tree permutation'
 	},
+	CrucibleExtractPreviewType = {
+	  [0] = 'This tree alone',
+	  [1] = 'Replace relic slot 1',
+	  [2] = 'Replace relic slot 2',
+	  [3] = 'Replace relic slot 3'
+	},
 	ReportTypeGear = {
 	  [1] = 'Item names',
 	  [2] = 'Copy number'

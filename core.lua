@@ -129,7 +129,8 @@ local defaultSettings={
 	addedItemsTable		= {},
 	smallUI				= false,
 	simcCommands		= "",
-	NCKeepBase			= false
+	NCKeepBase			= false,
+	NCPreviewType		= 0
 }
 local actualSettings={}
 
@@ -1281,11 +1282,6 @@ function SimPermut:BuildNetherlightFrame()
 			containerPermuteNC:SetLayout("Flow")
 			container1:AddChild(containerPermuteNC)
 			
-			local relicinfo11= AceGUI:Create("Label")
-			relicinfo11:SetFullWidth(true)
-			relicinfo11:SetText("Current Relic : "..currentTree[1][1].." / "..currentTree[2][1].." - "..currentTree[2][2].." / "..currentTree[3][1].." - "..currentTree[3][2].." - "..currentTree[3][3])
-			containerPermuteNC:AddChild(relicinfo11)
-			
 			local buttonRefresh = AceGUI:Create("Button")
 			buttonRefresh:SetText("Refresh current relic")
 			buttonRefresh:SetRelativeWidth(0.2)
@@ -1296,19 +1292,36 @@ function SimPermut:BuildNetherlightFrame()
 				SimPermut:BuildFrame()
 			end)
 			containerPermuteNC:AddChild(buttonRefresh)
-			local checkBoxkeepBase = AceGUI:Create("CheckBox")
-			checkBoxkeepBase:SetFullWidth(true)
-			checkBoxkeepBase:SetLabel("Keep other relic crucible from base")
-			checkBoxkeepBase:SetValue(actualSettings.NCKeepBase)
-			checkBoxkeepBase:SetCallback("OnValueChanged", function (this, event, item)
-				SimPermutVars.NCKeepBase=checkBoxkeepBase:GetValue()
-				PersoLib:MergeTables(defaultSettings,SimPermutVars,actualSettings)
-			end)
+			
+			local relicinfo11= AceGUI:Create("Label")
+			relicinfo11:SetFullWidth(true)
+			relicinfo11:SetText("Current Relic : "..PersoLib:GetNameFromTraitID(currentTree[2][1],UIParameters.artifactID).." - "..PersoLib:GetNameFromTraitID(currentTree[2][2],UIParameters.artifactID).." / "..PersoLib:GetNameFromTraitID(currentTree[3][1],UIParameters.artifactID).." - "..PersoLib:GetNameFromTraitID(currentTree[3][2],UIParameters.artifactID).." - "..PersoLib:GetNameFromTraitID(currentTree[3][3],UIParameters.artifactID))
+			containerPermuteNC:AddChild(relicinfo11)
+			
+			SimPermut:AddSpacer(containerPermuteNC,true)
 			if _G.ArtifactRelicForgeFrame.relicSlot and _G.ArtifactRelicForgeFrame.relicSlot <=3 then --not possible if preview
+				local checkBoxkeepBase = AceGUI:Create("CheckBox")
+				checkBoxkeepBase:SetFullWidth(true)
+				checkBoxkeepBase:SetLabel("Keep other relic crucible from base")
+				checkBoxkeepBase:SetValue(actualSettings.NCKeepBase)
+				checkBoxkeepBase:SetCallback("OnValueChanged", function (this, event, item)
+					SimPermutVars.NCKeepBase=checkBoxkeepBase:GetValue()
+					PersoLib:MergeTables(defaultSettings,SimPermutVars,actualSettings)
+				end)
 				containerPermuteNC:AddChild(checkBoxkeepBase)
 			else
-				SimPermutVars.NCKeepBase=false
-				PersoLib:MergeTables(defaultSettings,SimPermutVars,actualSettings)
+				-- SimPermutVars.NCKeepBase=false
+				-- PersoLib:MergeTables(defaultSettings,SimPermutVars,actualSettings)
+				local PreviewTypeDropdownCruciblegen = AceGUI:Create("Dropdown")
+				PreviewTypeDropdownCruciblegen:SetWidth(160)
+				PreviewTypeDropdownCruciblegen:SetList(ExtraData.CrucibleExtractPreviewType)
+				PreviewTypeDropdownCruciblegen:SetLabel("Export type for preview")
+				PreviewTypeDropdownCruciblegen:SetValue(actualSettings.report_typeCrucible)
+				PreviewTypeDropdownCruciblegen:SetCallback("OnValueChanged", function (this, event, item)
+					SimPermutVars.NCPreviewType=item
+					PersoLib:MergeTables(defaultSettings,SimPermutVars,actualSettings)
+				end)
+				containerPermuteNC:AddChild(PreviewTypeDropdownCruciblegen)
 			end
 			
 			SimPermut:AddSpacer(containerPermuteNC,true)
@@ -3054,11 +3067,7 @@ function SimPermut:GenerateCrucibleString()
 	
 	for k,v in pairs(crucibleData) do
 		for i=2,3 do
-			if ExtraData.NetherlightData[2][crucibleData[k][i]] then --crucible trait
-				CopyString = CopyString..ExtraData.NetherlightData[2][crucibleData[k][i]].."_"
-			else --artifact trait
-				CopyString = CopyString..ExtraData.NetherlightData[3][UIParameters.artifactID][crucibleData[k][i]].."_"
-			end
+			CopyString = CopyString..PersoLib:GetNameFromTraitID(crucibleData[k][i],UIParameters.artifactID).."_"
 		end
 		CopyString = CopyString.."-"
 	end
@@ -3484,10 +3493,8 @@ function SimPermut:GenerateCruciblePermutationStrings(permuttable,currentTree)
 		copystring=""
 		for j=1, string.len(permuttable[i])do
 			local talentnb = tonumber(string.sub(permuttable[i],j,j))
-			if j==2 then
-				copystring = copystring..ExtraData.NetherlightData[j][currentTree[j][talentnb]].."_"
-			elseif j==3 then
-				copystring = copystring..ExtraData.NetherlightData[j][UIParameters.artifactID][currentTree[j][talentnb]].."_"
+			if j~=1 then
+				copystring = copystring..PersoLib:GetNameFromTraitID(currentTree[j][talentnb],UIParameters.artifactID).."_"
 			end
 			crucibleStrings[i]=crucibleStrings[i]..currentTree[j][talentnb]..":"
 		end
@@ -3495,20 +3502,37 @@ function SimPermut:GenerateCruciblePermutationStrings(permuttable,currentTree)
 		crucibleStrings[i]=crucibleStrings[i]:sub(1, -2)		
 		copynb = SimPermut:GetCopyName(i,nil,copystring,#permuttable,4)
 		
-		if not actualSettings.NCKeepBase then
-			returnString=returnString.."\n" ..copynb .. "\n".. "crucible="..crucibleStrings[i].."//".."\n"
-		else
-			local copystringBase=""
-			
-			for k=1,3 do
-				if _G.ArtifactRelicForgeFrame.relicSlot == k then
-					copystringBase=copystringBase..crucibleStrings[i].."/"
-				else
-					copystringBase=copystringBase..table.concat(PersoLib:GetCrucibleStringForSlot(k,true), ':').."/"
+		if _G.ArtifactRelicForgeFrame.relicSlot <= 3 then
+			if not actualSettings.NCKeepBase then
+				returnString=returnString.."\n" ..copynb .. "\n".. "crucible="..crucibleStrings[i].."//".."\n"
+			else
+				local copystringBase=""
+				
+				for k=1,3 do
+					if _G.ArtifactRelicForgeFrame.relicSlot == k then
+						copystringBase=copystringBase..crucibleStrings[i].."/"
+					else
+						copystringBase=copystringBase..table.concat(PersoLib:GetCrucibleStringForSlot(k,true), ':').."/"
+					end
 				end
+				copystringBase=copystringBase:sub(1, -2)
+				returnString=returnString.."\n" ..copynb .. "\n".. "crucible="..copystringBase.."\n"
 			end
-			copystringBase=copystringBase:sub(1, -2)
-			returnString=returnString.."\n" ..copynb .. "\n".. "crucible="..copystringBase.."\n"
+		else
+			if actualSettings.NCPreviewType == 0 then
+				returnString=returnString.."\n" ..copynb .. "\n".. "crucible="..crucibleStrings[i].."//".."\n"
+			else
+				local copystringBase=""
+				for k=1,3 do
+					if actualSettings.NCPreviewType == k then
+						copystringBase=copystringBase..crucibleStrings[i].."/"
+					else
+						copystringBase=copystringBase..table.concat(PersoLib:GetCrucibleStringForSlot(k,true), ':').."/"
+					end
+				end
+				copystringBase=copystringBase:sub(1, -2)
+				returnString=returnString.."\n" ..copynb .. "\n".. "crucible="..copystringBase.."\n"
+			end
 		end
 	end
 	return returnString

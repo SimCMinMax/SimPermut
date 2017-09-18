@@ -8,10 +8,10 @@ local ArtifactRelicForgeUI  = _G.C_ArtifactRelicForgeUI
 local ArtifactRelicForgeFrame = _G.ArtifactRelicForgeFrame
 local HasArtifactEquipped 	= _G.HasArtifactEquipped
 local SocketInventoryItem 	= _G.SocketInventoryItem
-local extraData			
+local ExtraData			
 
 function PersoLib:Init(Datas)
-	extraData=Datas
+	ExtraData=Datas
 end
 
 -- First letter in caps
@@ -147,7 +147,7 @@ end
 
 -- simc, function that translates between the game's role values and ours
 function PersoLib:translateRole(spec_id)
-  local spec_role = extraData.RoleTable[spec_id]
+  local spec_role = ExtraData.RoleTable[spec_id]
   if spec_role ~= nil then
     return spec_role
   end
@@ -260,7 +260,7 @@ function PersoLib:GetArtifactString()
 		return nil
 	end
 
-	local artifactId = extraData.ArtifactTable[itemId]
+	local artifactId = ExtraData.ArtifactTable[itemId]
 	if artifactId == nil then
 		self:CloseArtifactFrame(artifactFrameOpen, correctArtifactOpen)
 		return nil
@@ -300,7 +300,7 @@ function PersoLib:GetCrucibleString(RelicSlot)
 		return nil
 	end
 
-	local artifactId = extraData.ArtifactTable[itemId]
+	local artifactId = ExtraData.ArtifactTable[itemId]
 	if artifactId == nil then
 		self:CloseArtifactFrame(artifactFrameOpen, correctArtifactOpen)
 		return nil
@@ -332,7 +332,7 @@ function PersoLib:GetCrucibleStringForSlot(RelicSlot,ForceOpenArtifact)
 			return nil
 		end
 
-		local artifactId = extraData.ArtifactTable[itemId]
+		local artifactId = ExtraData.ArtifactTable[itemId]
 		if artifactId == nil then
 			self:CloseArtifactFrame(artifactFrameOpen, correctArtifactOpen)
 			return nil
@@ -478,6 +478,21 @@ function PersoLib:LinkSplit(link)
   end
 
   return itemSplit
+end
+
+function PersoLib:GetNameFromTraitID(traitID,artifactID)
+	local name=""
+	if ExtraData.NetherlightData[1][traitID] then --crucible trait
+		name = ExtraData.NetherlightData[1][traitID]
+	elseif  ExtraData.NetherlightData[2][traitID] then--artifact trait
+		name = ExtraData.NetherlightData[2][traitID]
+	elseif ExtraData.NetherlightData[3][artifactID][traitID] then
+		name = ExtraData.NetherlightData[3][artifactID][traitID]
+	else
+		name = ""
+	end
+	
+	return name
 end
 
 function PersoLib:DumpTable(tbl, indent)
