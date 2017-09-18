@@ -381,7 +381,7 @@ end
 function PersoLib:ExtractCurrentCrucibleTree()
 	local currentTree={}
 	if ArtifactRelicForgeUI.IsAtForge() then
-		if _G.ArtifactRelicForgeFrame.relicSlot then--relic slot
+		if _G.ArtifactRelicForgeFrame.relicSlot and _G.ArtifactRelicForgeFrame.relicSlot <=3 then--relic slot
 			local treeData={}
 			treeData = ArtifactRelicForgeUI.GetSocketedRelicTalents(_G.ArtifactRelicForgeFrame.relicSlot)
 			for k,v in pairs(treeData) do

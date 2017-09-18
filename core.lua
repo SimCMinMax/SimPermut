@@ -1286,6 +1286,16 @@ function SimPermut:BuildNetherlightFrame()
 			relicinfo11:SetText("Current Relic : "..currentTree[1][1].." / "..currentTree[2][1].." - "..currentTree[2][2].." / "..currentTree[3][1].." - "..currentTree[3][2].." - "..currentTree[3][3])
 			containerPermuteNC:AddChild(relicinfo11)
 			
+			local buttonRefresh = AceGUI:Create("Button")
+			buttonRefresh:SetText("Refresh current relic")
+			buttonRefresh:SetRelativeWidth(0.2)
+			buttonRefresh:SetCallback("OnClick", function()
+				if UIElements.mainframe:IsVisible() then
+					UIElements.mainframe:Release()
+				end
+				SimPermut:BuildFrame()
+			end)
+			containerPermuteNC:AddChild(buttonRefresh)
 			local checkBoxkeepBase = AceGUI:Create("CheckBox")
 			checkBoxkeepBase:SetFullWidth(true)
 			checkBoxkeepBase:SetLabel("Keep other relic crucible from base")
@@ -1294,9 +1304,14 @@ function SimPermut:BuildNetherlightFrame()
 				SimPermutVars.NCKeepBase=checkBoxkeepBase:GetValue()
 				PersoLib:MergeTables(defaultSettings,SimPermutVars,actualSettings)
 			end)
-			containerPermuteNC:AddChild(checkBoxkeepBase)
+			if _G.ArtifactRelicForgeFrame.relicSlot and _G.ArtifactRelicForgeFrame.relicSlot <=3 then --not possible if preview
+				containerPermuteNC:AddChild(checkBoxkeepBase)
+			else
+				SimPermutVars.NCKeepBase=false
+				PersoLib:MergeTables(defaultSettings,SimPermutVars,actualSettings)
+			end
 			
-			SimPermut:AddSpacer(container1,true)
+			SimPermut:AddSpacer(containerPermuteNC,true)
 			local ReportDropdownCruciblegen = AceGUI:Create("Dropdown")
 			ReportDropdownCruciblegen:SetWidth(160)
 			ReportDropdownCruciblegen:SetList(ExtraData.ReportTypeCrucible)
@@ -3474,13 +3489,12 @@ function SimPermut:GenerateCruciblePermutationStrings(permuttable,currentTree)
 			elseif j==3 then
 				copystring = copystring..ExtraData.NetherlightData[j][UIParameters.artifactID][currentTree[j][talentnb]].."_"
 			end
-			copystring=copystring:sub(1, -2)
 			crucibleStrings[i]=crucibleStrings[i]..currentTree[j][talentnb]..":"
 		end
+		copystring=copystring:sub(1, -2)
 		crucibleStrings[i]=crucibleStrings[i]:sub(1, -2)		
 		copynb = SimPermut:GetCopyName(i,nil,copystring,#permuttable,4)
 		
-		print(actualSettings.NCKeepBase)
 		if not actualSettings.NCKeepBase then
 			returnString=returnString.."\n" ..copynb .. "\n".. "crucible="..crucibleStrings[i].."//".."\n"
 		else
