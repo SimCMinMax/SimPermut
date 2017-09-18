@@ -65,7 +65,10 @@ local UIParameters={
 	epicGemUsed,
 	fingerInf = false,
 	trinketInf = false,
-	ad=false
+	ad=false,
+	PosX=0,
+	PosY=0
+	
 }
 local UIElements={
 	mainframe,
@@ -130,7 +133,8 @@ local defaultSettings={
 	smallUI				= false,
 	simcCommands		= "",
 	NCKeepBase			= false,
-	NCPreviewType		= 0
+	NCPreviewType		= 0,
+	NCPreviewReplace	= false
 }
 local actualSettings={}
 
@@ -140,7 +144,7 @@ SLASH_SIMPERMUTSLASHDEBUG1 = "/SimPermutDebug"
 -------------Test-----------------
 SLASH_SIMPERMUTSLASHTEST1 = "/Simtest"
 SlashCmdList["SIMPERMUTSLASHTEST"] = function (arg)
-	
+	print(UIElements.mainframe:GetPoint())
 end
 -------------Test-----------------
 
@@ -208,17 +212,21 @@ function SimPermut:BuildFrame()
 	--Init Vars
 	UIParameters.artifactID,UIParameters.artifactData = LAD:GetArtifactInfo() 
 	
+	--replace fram if already opened
 	if UIElements.mainframe and UIElements.mainframe:IsVisible() then
 		UIElements.mainframe:Release()
 	end
-	
 	UIElements.mainframe = AceGUI:Create("Frame")
 	UIElements.mainframe:SetTitle("SimPermut")
-	UIElements.mainframe:SetPoint("CENTER")
+	UIElements.mainframe:SetPoint("CENTER",UIParameters.PosX, UIParameters.PosY)
 	UIElements.mainframe:SetCallback("OnClose", function(widget) 
 		if UIElements.mainframe:IsVisible() then
 			widget:Release()
 		end
+	end)
+	UIElements.mainframe:SetCallback("OnRelease", function(widget) 
+		--update position
+		_, _, _, UIParameters.PosX, UIParameters.PosY = UIElements.mainframe:GetPoint()
 	end)
 	UIElements.mainframe:SetLayout("Flow")
 	
@@ -1310,18 +1318,33 @@ function SimPermut:BuildNetherlightFrame()
 				end)
 				containerPermuteNC:AddChild(checkBoxkeepBase)
 			else
-				-- SimPermutVars.NCKeepBase=false
-				-- PersoLib:MergeTables(defaultSettings,SimPermutVars,actualSettings)
 				local PreviewTypeDropdownCruciblegen = AceGUI:Create("Dropdown")
 				PreviewTypeDropdownCruciblegen:SetWidth(160)
 				PreviewTypeDropdownCruciblegen:SetList(ExtraData.CrucibleExtractPreviewType)
 				PreviewTypeDropdownCruciblegen:SetLabel("Export type for preview")
-				PreviewTypeDropdownCruciblegen:SetValue(actualSettings.report_typeCrucible)
+				PreviewTypeDropdownCruciblegen:SetValue(actualSettings.NCPreviewType)
 				PreviewTypeDropdownCruciblegen:SetCallback("OnValueChanged", function (this, event, item)
 					SimPermutVars.NCPreviewType=item
 					PersoLib:MergeTables(defaultSettings,SimPermutVars,actualSettings)
+					if UIElements.mainframe:IsVisible() then
+						UIElements.mainframe:Release()
+					end
+					SimPermut:BuildFrame()
 				end)
 				containerPermuteNC:AddChild(PreviewTypeDropdownCruciblegen)
+				
+				if SimPermutVars.NCPreviewType > 0 then
+					SimPermut:AddSpacer(containerPermuteNC,true)
+					local checkBoxreplacePreview = AceGUI:Create("CheckBox")
+					checkBoxreplacePreview:SetFullWidth(true)
+					checkBoxreplacePreview:SetLabel("Replace Relic trait")
+					checkBoxreplacePreview:SetValue(actualSettings.NCPreviewReplace)
+					checkBoxreplacePreview:SetCallback("OnValueChanged", function (this, event, item)
+						SimPermutVars.NCPreviewReplace=checkBoxreplacePreview:GetValue()
+						PersoLib:MergeTables(defaultSettings,SimPermutVars,actualSettings)
+					end)
+					containerPermuteNC:AddChild(checkBoxreplacePreview)
+				end
 			end
 			
 			SimPermut:AddSpacer(containerPermuteNC,true)
