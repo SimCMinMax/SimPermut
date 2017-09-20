@@ -144,7 +144,9 @@ SLASH_SIMPERMUTSLASHDEBUG1 = "/SimPermutDebug"
 -------------Test-----------------
 SLASH_SIMPERMUTSLASHTEST1 = "/Simtest"
 SlashCmdList["SIMPERMUTSLASHTEST"] = function (arg)
-	print(UIElements.mainframe:GetPoint())
+	local link = ArtifactRelicForgeUI.GetPreviewRelicItemLink()
+	local split = PersoLib:LinkSplit(link)
+	PersoLib:DumpTable(split)
 end
 -------------Test-----------------
 
@@ -2226,7 +2228,7 @@ end
 -- Permutation Management --
 ----------------------------
 -- get item string
-function SimPermut:GetItemString(itemLink,itemType,base,forceilvl,forcegem)
+function SimPermut:GetItemString(itemLink,itemType,base,forceilvl,forcegem,relicOverrideLink,relicOverrideSlot)
 	--itemLink 	: link of the item
 	--itemType 	: item slot
 	--base 		: true if item from equiped gear, false from inventory
@@ -2314,48 +2316,66 @@ function SimPermut:GetItemString(itemLink,itemType,base,forceilvl,forcegem)
 
 	-- Artifacts use this
 	if bit.band(flags, 256) == 256 then
-        rest_offset = rest_offset + 1 -- An unknown field
-        local n_bonus_ids = tonumber(itemSplit[rest_offset])
+		local relicNb=0
+		rest_offset = rest_offset + 1 -- An unknown field
+		local n_bonus_ids = tonumber(itemSplit[rest_offset])
 		if n_bonus_ids==1 then --unlocked traits field
 			rest_offset = rest_offset + 1 
 		end
-        local relic_str = ''
-        while rest_offset < #itemSplit do
-          n_bonus_ids = tonumber(itemSplit[rest_offset])
-          rest_offset = rest_offset + 1
+		local relic_str = ''
+		while rest_offset < #itemSplit do
+			relicNb = relicNb + 1
+			n_bonus_ids = tonumber(itemSplit[rest_offset])
+			rest_offset = rest_offset + 1
+			
+			if relicOverrideSlot and relicOverrideSlot==relicNb then
+				local split = PersoLib:LinkSplit(relicOverrideLink)
+				relic_str = relic_str .. split[14] .. ':' ..split[15] .. ':' ..split[16]
+				rest_offset = rest_offset + 3
+				if rest_offset < #itemSplit then
+					relic_str = relic_str .. '/'
+				end
+			else
+				if n_bonus_ids == 0 then
+					relic_str = relic_str .. 0
+				else
+					for rbid = 1, n_bonus_ids do
+						relic_str = relic_str .. itemSplit[rest_offset]
+						if rbid < n_bonus_ids then
+							relic_str = relic_str .. ':'
+						end
+						rest_offset = rest_offset + 1
+					end
+				end
 
-          if n_bonus_ids == 0 then
-            relic_str = relic_str .. 0
-          else
-            for rbid = 1, n_bonus_ids do
-              relic_str = relic_str .. itemSplit[rest_offset]
-              if rbid < n_bonus_ids then
-                relic_str = relic_str .. ':'
-              end
-              rest_offset = rest_offset + 1
-            end
-          end
-
-          if rest_offset < #itemSplit then
-            relic_str = relic_str .. '/'
-		  end
+				if rest_offset < #itemSplit then
+					relic_str = relic_str .. '/'
+				end
+			end
 		end
 
-        if relic_str ~= '' then
-          simcItemOptions[#simcItemOptions + 1] = 'relic_id=' .. relic_str
-        end
+		if relic_str ~= '' then
+		simcItemOptions[#simcItemOptions + 1] = 'relic_id=' .. relic_str
+		end
     end
 
 	-- Gems
 	if itemType=="main_hand" or itemType=="off_hand" then --exception for relics
 		local gems = {}
 		for i=1, 4 do -- hardcoded here to just grab all 4 sockets
-			local _,gemLink = GetItemGem(itemLink, i)
-			if gemLink then
-				local gemDetail = string.match(gemLink, "item[%-?%d:]+")
-				gems[#gems + 1] = string.match(gemDetail, "item:(%d+):" )
-			elseif flags == 256 then
-				gems[#gems + 1] = "0"
+			if relicOverrideSlot and relicOverrideSlot==i then
+				if relicOverrideLink then
+					local gemDetail = string.match(relicOverrideLink, "item[%-?%d:]+")
+					gems[#gems + 1] = string.match(gemDetail, "item:(%d+):" )
+				end
+			else
+				local _,gemLink = GetItemGem(itemLink, i)
+				if gemLink then
+					local gemDetail = string.match(gemLink, "item[%-?%d:]+")
+					gems[#gems + 1] = string.match(gemDetail, "item:(%d+):" )
+				elseif flags == 256 then
+					gems[#gems + 1] = "0"
+				end
 			end
 		end
 		if #gems > 0 then
@@ -3508,6 +3528,7 @@ end
 function SimPermut:GenerateCruciblePermutationStrings(permuttable,currentTree)
 	local copynb
 	local returnString=""
+	local weaponstring=""
 	local crucibleStrings = {}
 	local copystring=""
 	for i=1,#permuttable do
@@ -3554,7 +3575,31 @@ function SimPermut:GenerateCruciblePermutationStrings(permuttable,currentTree)
 					end
 				end
 				copystringBase=copystringBase:sub(1, -2)
-				returnString=returnString.."\n" ..copynb .. "\n".. "crucible="..copystringBase.."\n"
+				
+				if actualSettings.NCPreviewReplace then
+					weaponstring="\n"
+					--add weapons
+					itemLink = GetInventoryItemLink('player', INVSLOT_MAINHAND)
+					itemString = {}
+
+					-- if we don't have an item link, we don't care
+					if itemLink then
+						local reliclink = ArtifactRelicForgeUI.GetPreviewRelicItemLink()
+						itemString=SimPermut:GetItemString(itemLink,'main_hand',true,_,_,reliclink,actualSettings.NCPreviewType)
+						weaponstring = weaponstring .. "main_hand=" .. table.concat(itemString, ',').. '\n'
+					end
+					
+					itemLink = GetInventoryItemLink('player', INVSLOT_OFFHAND)
+					itemString = {}
+
+					-- if we don't have an item link, we don't care
+					if itemLink then
+						itemString=SimPermut:GetItemString(itemLink,'off_hand',true)
+						weaponstring = weaponstring .. "off_hand=" .. table.concat(itemString, ',').. '\n'
+					end
+				end
+				
+				returnString=returnString.."\n" ..copynb .. "\n".. "crucible="..copystringBase..weaponstring.."\n"
 			end
 		end
 	end
