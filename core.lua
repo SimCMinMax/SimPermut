@@ -67,7 +67,8 @@ local UIParameters={
 	trinketInf = false,
 	ad=false,
 	PosX=0,
-	PosY=0
+	PosY=0,
+	profileName = ""
 	
 }
 local UIElements={
@@ -3178,7 +3179,7 @@ function SimPermut:GetCopyName(copynumber,nbitem,List,nbitems,typeReport)
 		returnString=returnString.."copy"..maskedProfileID
 	end
 	
-	returnString=returnString..",Base"
+	returnString=returnString..","..UIParameters.profileName
 	return returnString
 end
 
@@ -3200,6 +3201,8 @@ function SimPermut:GetBaseString(nocrucible)
 	local playerArtifact = PersoLib:GetArtifactString()
 	local playerCrucible = PersoLib:GetCrucibleString()
 	local playerSpec = ExtraData.SpecNames[ PersoLib:getSpecID() ]
+	
+	UIParameters.profileName='"'..playerName ..'"'
 
 	-- Construct SimC-compatible strings from the basic information
 	local player = ""
@@ -3237,7 +3240,7 @@ function SimPermut:GetBaseString(nocrucible)
 	-- Method that gets gear information
 	local items,itemsLinks = SimPermut:GetItemStrings()
 
-	SimPermutProfile = SimPermutProfile .. "name=Base \n"
+	SimPermutProfile = SimPermutProfile .. "name="..UIParameters.profileName.."\n"
 	-- output gear
 	for slotNum=1, #ExtraData.PermutSlotNames do
 		if items[slotNum] then
