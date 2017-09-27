@@ -703,37 +703,42 @@ SimPermut.ExtraData={
 		[5438] 	= 'Distant Army',
 		[5889] 	= 'Heavy Hide',
 		[5439] 	= 'Hidden Satyr',
-		[5890] 	= 'Trained Soldier'
+		[5890] 	= 'Trained Soldier',
+		[999999]= 'Scrap ench.'
 	},
 	enchantCloak = {
-	  [0] 	 = 'Untouched',
-	  [5434] = '+200 Str',
-	  [5435] = '+200 Agi',
-	  [5436] = '+200 Int'
+		[0] 	 = 'Untouched',
+		[5434] 	= '+200 Str',
+		[5435] 	= '+200 Agi',
+		[5436] 	= '+200 Int',
+		[999999]= 'Scrap ench.'
 	},
 	enchantRing = {
-	  [0] 	 = 'Untouched',
-	  [5427] = '+200 Crit',
-	  [5428] = '+200 Haste',
-	  [5429] = '+200 Mast',
-	  [5430] = '+200 Vers'
+		[0] 	= 'Untouched',
+		[5427] 	= '+200 Crit',
+		[5428] 	= '+200 Haste',
+		[5429] 	= '+200 Mast',
+		[5430] 	= '+200 Vers',
+		[999999]= 'Scrap ench.'
 	},
 	gemList = {
-	  [0] 	 = 'Untouched',
-	  [130219] = '+150 Crit',
-	  [130220] = '+150 Haste',
-	  [130222] = '+150 Mast',
-	  [130221] = '+150 Vers',
-	  [151580] = '+200 Crit',
-	  [151583] = '+200 Haste',
-	  [151584] = '+200 Mast',
-	  [151585] = '+200 Vers'
+		
+		[0] 	 = 'Untouched',
+		[130219] = '+150 Crit',
+		[130220] = '+150 Haste',
+		[130222] = '+150 Mast',
+		[130221] = '+150 Vers',
+		[151580] = '+200 Crit',
+		[151583] = '+200 Haste',
+		[151584] = '+200 Mast',
+		[151585] = '+200 Vers',
+		[999999] = 'Scrap gem'
 	},
 	gemListEpic = {
-	  [0] 	   = 'No Epic gem',
-	  [130246] = '+200 Str',
-	  [130247] = '+200 Agi',
-	  [130248] = '+200 Int',
+		[0] 	   = 'No Epic gem',
+		[130246] = '+200 Str',
+		[130247] = '+200 Agi',
+		[130248] = '+200 Int',
 	}
 }
 

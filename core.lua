@@ -2033,8 +2033,6 @@ function SimPermut:Generate()
 		permutString=SimPermut:GetPermutationString(permuttable)
 		finalString=SimPermut:GetFinalString(baseString,permutString)
 		SimPermut:PrintPermut(finalString)
-		
-		
 		PersoLib:debugPrint("End of generation",UIParameters.ad)
 		PersoLib:debugPrint("--------------------",UIParameters.ad)
 	else --error
@@ -2243,13 +2241,16 @@ function SimPermut:GetItemString(itemLink,itemType,base,forceilvl,forcegem,relic
 	simcItemOptions[#simcItemOptions + 1] = ',id=' .. itemId
 	
 	-- Enchant
+	
 	if base and not SimPermutVars.replaceEnchantsBase then 
 		if tonumber(itemSplit[UIParameters.OFFSET_ENCHANT_ID]) > 0 then
 			enchantID=itemSplit[UIParameters.OFFSET_ENCHANT_ID]
 		end
 	else
 		if itemType=="neck" then
-			if (UIParameters.actualForce or (base and SimPermutVars.replaceEnchantsBase)) and UIParameters.actualEnchantNeck~=0 then
+			if UIParameters.actualEnchantNeck == 999999 then
+				enchantID=""
+			elseif (UIParameters.actualForce or (base and SimPermutVars.replaceEnchantsBase)) and UIParameters.actualEnchantNeck~=0 then
 				enchantID=UIParameters.actualEnchantNeck
 			else	
 				if UIParameters.actualEnchantNeck==0 or tonumber(itemSplit[UIParameters.OFFSET_ENCHANT_ID]) > 0 then
@@ -2261,7 +2262,9 @@ function SimPermut:GetItemString(itemLink,itemType,base,forceilvl,forcegem,relic
 				end
 			end
 		elseif itemType=="back" then
-			if (UIParameters.actualForce or (base and SimPermutVars.replaceEnchantsBase))  and UIParameters.actualEnchantBack~=0 then
+			if UIParameters.actualEnchantBack == 999999 then
+				enchantID=""
+			elseif (UIParameters.actualForce or (base and SimPermutVars.replaceEnchantsBase))  and UIParameters.actualEnchantBack~=0 then
 				enchantID=UIParameters.actualEnchantBack
 			else
 				if UIParameters.actualEnchantBack==0 or tonumber(itemSplit[UIParameters.OFFSET_ENCHANT_ID]) > 0 then
@@ -2273,7 +2276,9 @@ function SimPermut:GetItemString(itemLink,itemType,base,forceilvl,forcegem,relic
 				end
 			end
 		elseif string.match(itemType, 'finger*') then
-			if (UIParameters.actualForce or (base and SimPermutVars.replaceEnchantsBase))  and UIParameters.actualEnchantFinger~=0 then
+			if UIParameters.actualEnchantFinger == 999999 then
+				enchantID=""
+			elseif (UIParameters.actualForce or (base and SimPermutVars.replaceEnchantsBase))  and UIParameters.actualEnchantFinger~=0 then
 				enchantID=UIParameters.actualEnchantFinger
 			else
 				if UIParameters.actualEnchantFinger==0 or tonumber(itemSplit[UIParameters.OFFSET_ENCHANT_ID]) > 0 then
@@ -2288,7 +2293,7 @@ function SimPermut:GetItemString(itemLink,itemType,base,forceilvl,forcegem,relic
 			if tonumber(itemSplit[UIParameters.OFFSET_ENCHANT_ID]) > 0 then
 				enchantID=itemSplit[UIParameters.OFFSET_ENCHANT_ID]
 			end
-		end
+		end	
 	end
 	
 	if enchantID and enchantID ~= "" then
@@ -2413,7 +2418,8 @@ function SimPermut:GetItemString(itemLink,itemType,base,forceilvl,forcegem,relic
 				simcItemOptions[#simcItemOptions + 1] = gemstring
 			end
 		else
-			if (UIParameters.actualForce or forcegem or (base and SimPermutVars.replaceEnchantsBase)) and UIParameters.actualGem~=0 then
+			if UIParameters.actualGem == 999999 then
+			elseif (UIParameters.actualForce or forcegem or (base and SimPermutVars.replaceEnchantsBase)) and UIParameters.actualGem~=0 then
 				if UIParameters.actualGem and UIParameters.actualGem~=0 and (hasSocket>0 or tonumber(itemSplit[UIParameters.OFFSET_GEM_ID_1]) ~= 0) then
 					gemstring='gem_id='
 					for i=1,hasSocket do
@@ -3528,6 +3534,7 @@ function SimPermut:isEquiped(itemLink,slot)
 	return returnValue
 end
 
+-- Generate the string from extracted artifact
 function SimPermut:GenerateCruciblePermutationStrings(permuttable,currentTree)
 	local copynb
 	local returnString=""
@@ -3597,7 +3604,7 @@ function SimPermut:GenerateCruciblePermutationStrings(permuttable,currentTree)
 
 					-- if we don't have an item link, we don't care
 					if itemLink then
-						itemString=SimPermut:GetItemString(itemLink,'off_hand',true)
+						itemString=SimPermut:GetItemString(itemLink,'off_hand',true,_,_,reliclink,actualSettings.NCPreviewType)
 						weaponstring = weaponstring .. "off_hand=" .. table.concat(itemString, ',').. '\n'
 					end
 				end
