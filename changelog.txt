@@ -1,3 +1,7 @@
+v1.14.9 11/03/2017
+[UI]Auto-simc format change
+[Fix]Shadow priest relic fix
+
 v1.14.8 09/20/2017
 [UI]New crucible export choice : export all combination of the current shown tree
 [UI]Keep window position when changing module
