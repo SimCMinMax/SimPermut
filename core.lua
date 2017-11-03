@@ -2724,13 +2724,11 @@ end
 function SimPermut:GetAutoSimcString()
 	local autoSimcString=""
 	autoSimcString=autoSimcString .. "[Profile]".."\n"
-	autoSimcString=autoSimcString .. "profilename="..UnitName('player').."\n"
-	autoSimcString=autoSimcString .. "profileid=1".."\n"
 	local _, playerClass = UnitClass('player')
-	autoSimcString=autoSimcString .. "class="..PersoLib:tokenize(playerClass) .."\n"
-	autoSimcString=autoSimcString .. "race="..PersoLib:tokenize(PersoLib:getRace()).."\n"
-	autoSimcString=autoSimcString .. "level="..UnitLevel('player').."\n"
+	autoSimcString=autoSimcString .. PersoLib:tokenize(playerClass).."="..UnitName('player').."\n"
 	autoSimcString=autoSimcString .. "spec="..PersoLib:tokenize(ExtraData.SpecNames[ PersoLib:getSpecID() ]).."\n"
+	autoSimcString=autoSimcString .. "level="..UnitLevel('player').."\n"
+	autoSimcString=autoSimcString .. "race="..PersoLib:tokenize(PersoLib:getRace()).."\n"
 	autoSimcString=autoSimcString .. "role="..PersoLib:translateRole(PersoLib:getSpecID()).."\n"
 	autoSimcString=autoSimcString .. "position=back".."\n"
 	autoSimcString=autoSimcString .. "talents="..PersoLib:CreateSimcTalentString().."\n"
@@ -2743,7 +2741,6 @@ function SimPermut:GetAutoSimcString()
 		autoSimcString=autoSimcString .. "crucible="..playerCrucible.."\n"
 	end
 	autoSimcString=autoSimcString .. actualSettings.simcCommands.. '\n'
-	autoSimcString=autoSimcString .. "other=".."\n"
 	autoSimcString=autoSimcString .. "\n".."[Gear]"
 	
 	return autoSimcString
