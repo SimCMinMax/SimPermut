@@ -2688,7 +2688,14 @@ function SimPermut:GetItemListString()
 			local _,_,itemRarity = GetItemInfo(UIElements.tableLinkPermut[i][j][1])
 			local itemid = tonumber(PersoLib:GetIDFromLink(UIElements.tableLinkPermut[i][j][1]))
 			local itemString = SimPermut:GetItemString(UIElements.tableLinkPermut[i][j][1],ExtraData.PermutSimcNames[i],false,UIElements.tableLinkPermut[i][j][2],UIElements.tableLinkPermut[i][j][3])
-			actualString = actualString .. ((itemid == ExtraData.HasTierSets["T21"][UIParameters.classID][i]) and "T21" or "")..((itemid == ExtraData.HasTierSets["T20"][UIParameters.classID][i]) and "T20" or "").. ((itemid == ExtraData.HasTierSets["T19"][UIParameters.classID][i]) and "T19" or "").. ((itemRarity== 5) and "L" or "")..table.concat(itemString, ',').."|"
+			local extraDataString = ""..((itemid == ExtraData.HasTierSets["T21"][UIParameters.classID][i]) and "T21" or "")..((itemid == ExtraData.HasTierSets["T20"][UIParameters.classID][i]) and "T20" or "").. ((itemid == ExtraData.HasTierSets["T19"][UIParameters.classID][i]) and "T19" or "").. ((itemRarity== 5) and "L" or "")
+			local actualextraDataString = ""
+			if extraDataString == "" then 
+				actualextraDataString = "" 
+			else 
+				actualextraDataString = extraDataString.. "--" 
+			end
+			actualString = actualString .. actualextraDataString ..table.concat(itemString, ',').."|"
 		end
 		actualString=actualString:sub(1, -2)
 		returnString = returnString..ExtraData.PermutSimcNames[i] .. "="..actualString.."\n"
