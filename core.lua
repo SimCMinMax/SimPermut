@@ -2873,7 +2873,7 @@ function SimPermut:GetPermutationString(permuttable)
 			for j=1,#permuttable[i] do
 				draw = true
 				local _,_,itemRarity = GetItemInfo(permuttable[i][j][1])
-				if(itemRarity==5) then 
+				if(itemRarity == 5) and PersoLib:GetIDFromLink(permuttable[i][j][1]) ~= 154172 then -- exlude amanthul from count 
 					nbLeg=nbLeg+1
 				end
 				
