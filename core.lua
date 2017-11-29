@@ -31,7 +31,7 @@ local UIParameters={
 	TALENTS_MAX_COLUMN	= 3,
 	TALENTS_MAX_ROW		= 7,
 	RELIC_MIN_ILVL		= 780,
-	RELIC_MAX_ILVL		= 999,
+	RELIC_MAX_ILVL		= 1000,
 	ITEM_COUNT_THRESHOLD = 25,
 	COPY_THRESHOLD 		= 500,
 	
@@ -116,7 +116,7 @@ local defaultSettings={
 	report_typeRelics	= 2,
 	report_typeCrucible	= 2,
 	ilvl_thresholdMin 	= 800,
-	ilvl_thresholdMax 	= 999,
+	ilvl_thresholdMax 	= 1000,
 	enchant_neck		= 0,
 	enchant_back		= 0,	
 	enchant_ring		= 0,		
@@ -129,7 +129,7 @@ local defaultSettings={
 	replaceEnchants		= false,
 	replaceEnchantsBase	= false,
 	ilvl_RelicMin		= 780,
-	ilvl_RelicMax		= 999,
+	ilvl_RelicMax		= 1000,
 	addedItemsTable		= {},
 	smallUI				= false,
 	simcCommands		= "",
@@ -205,6 +205,10 @@ end
 function SimPermut:OnInitialize()
 	SlashCmdList["SimPermut"] = handler;
 	PersoLib:Init(ExtraData)
+  if SimPermutVars.ilvl_thresholdMax==999 then
+    SimPermutVars.ilvl_thresholdMax=1000
+		PersoLib:MergeTables(defaultSettings,SimPermutVars,actualSettings)
+  end
 end
 
 ----------------------------
@@ -665,7 +669,7 @@ function SimPermut:BuildRelicFrame()
 	else
 		UIElements.ilvlWeapon= AceGUI:Create("EditBox")
 		UIElements.ilvlWeapon:SetWidth(70)
-		UIElements.ilvlWeapon:SetMaxLetters(3)
+		UIElements.ilvlWeapon:SetMaxLetters(4)
 		UIElements.ilvlWeapon:SetText(itemLevel)
 		UIElements.ilvlWeapon:SetCallback("OnEnterPressed", function (this, event, item)
 			UIElements.ilvlWeapon:SetText(string.match(item, '(%d+)'))
@@ -735,7 +739,7 @@ function SimPermut:BuildRelicFrame()
 			SimPermut:AddSpacer(reliccontainer1,false,0.3)
 			UIElements.ilvlTrait1= AceGUI:Create("EditBox")
 			UIElements.ilvlTrait1:SetRelativeWidth(0.4)
-			UIElements.ilvlTrait1:SetMaxLetters(3)
+			UIElements.ilvlTrait1:SetMaxLetters(4)
 			UIElements.ilvlTrait1:SetText(itemLevel1)
 			UIElements.ilvlTrait1:SetCallback("OnEnterPressed", function (this, event, item)
 				UIElements.ilvlTrait1:SetText(string.match(item, '(%d+)'))
@@ -797,7 +801,7 @@ function SimPermut:BuildRelicFrame()
 			SimPermut:AddSpacer(reliccontainer2,false,0.3)
 			UIElements.ilvlTrait2= AceGUI:Create("EditBox")
 			UIElements.ilvlTrait2:SetRelativeWidth(0.4)
-			UIElements.ilvlTrait2:SetMaxLetters(3)
+			UIElements.ilvlTrait2:SetMaxLetters(4)
 			UIElements.ilvlTrait2:SetText(itemLevel2)
 			UIElements.ilvlTrait2:SetCallback("OnEnterPressed", function (this, event, item)
 				UIElements.ilvlTrait2:SetText(string.match(item, '(%d+)'))
@@ -860,7 +864,7 @@ function SimPermut:BuildRelicFrame()
 				SimPermut:AddSpacer(reliccontainer3,false,0.3)
 				UIElements.ilvlTrait3= AceGUI:Create("EditBox")
 				UIElements.ilvlTrait3:SetRelativeWidth(0.4)
-				UIElements.ilvlTrait3:SetMaxLetters(3)
+				UIElements.ilvlTrait3:SetMaxLetters(4)
 				UIElements.ilvlTrait3:SetText(itemLevel3)
 				UIElements.ilvlTrait3:SetCallback("OnEnterPressed", function (this, event, item)
 					UIElements.ilvlTrait3:SetText(string.match(item, '(%d+)'))
@@ -1549,7 +1553,7 @@ function SimPermut:BuildOptionFrame()
 	ilvlMin:SetText(actualSettings.ilvl_thresholdMin)
 	ilvlMin:SetWidth(80)
 	ilvlMin:SetLabel("Min")
-	ilvlMin:SetMaxLetters(3)
+	ilvlMin:SetMaxLetters(4)
 	ilvlMin:SetCallback("OnEnterPressed", function (this, event, item)
 		ilvlMin:SetText(string.match(item, '(%d+)'))
 		if ilvlMin:GetText()=="" then
@@ -1565,7 +1569,7 @@ function SimPermut:BuildOptionFrame()
 	ilvlMax:SetText(actualSettings.ilvl_thresholdMax)
 	ilvlMax:SetWidth(80)
 	ilvlMax:SetLabel("Max")
-	ilvlMax:SetMaxLetters(3)
+	ilvlMax:SetMaxLetters(4)
 	ilvlMax:SetCallback("OnEnterPressed", function (this, event, item)
 		ilvlMax:SetText(string.match(item, '(%d+)'))
 		if ilvlMax:GetText()=="" then
@@ -1588,7 +1592,7 @@ function SimPermut:BuildOptionFrame()
 	ilvlMinRelic:SetText(actualSettings.ilvl_RelicMin)
 	ilvlMinRelic:SetWidth(80)
 	ilvlMinRelic:SetLabel("Min")
-	ilvlMinRelic:SetMaxLetters(3)
+	ilvlMinRelic:SetMaxLetters(4)
 	ilvlMinRelic:SetCallback("OnEnterPressed", function (this, event, item)
 		ilvlMinRelic:SetText(string.match(item, '(%d+)'))
 		if ilvlMinRelic:GetText()=="" then
@@ -1604,7 +1608,7 @@ function SimPermut:BuildOptionFrame()
 	ilvlMaxRelic:SetText(actualSettings.ilvl_RelicMax)
 	ilvlMaxRelic:SetWidth(80)
 	ilvlMaxRelic:SetLabel("Max")
-	ilvlMaxRelic:SetMaxLetters(3)
+	ilvlMaxRelic:SetMaxLetters(4)
 	ilvlMaxRelic:SetCallback("OnEnterPressed", function (this, event, item)
 		ilvlMaxRelic:SetText(string.match(item, '(%d+)'))
 		if ilvlMaxRelic:GetText()=="" then
