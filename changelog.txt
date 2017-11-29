@@ -1,3 +1,7 @@
+v1.14.11 11/29/2017
+[UI]updtate ilvl max threshold to 1k
+[UI]Set ilvl max to 1k if it was at 999
+
 v1.14.10 11/08/2017
 [UI]Auto-simc format change
 [Fix]Exclude amanthul from leg count
