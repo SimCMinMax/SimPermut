@@ -411,7 +411,7 @@ SimPermut.ExtraData={
 		[128306] = {},
 		-- Hunter
 			--BM (Storm, Arcane, Iron)-
-		[128861] = {[873]="Cobra Shot dmg",[872]="Multi-Shot dmg",[875]="Kill command bonus dmg",[868]="Aspect of the wild duration",[1517]="Cobra Shot focus reduc",[869]="Beast Cleave dmg",[870]="Kill command dmg",[878]="Bestial Wrath bonus dmg",[871]="Dodge",[874]="Aspect of the Turtle heal"},
+		[128861] = {[873]="Cobra Shot dmg",[872]="Multi-Shot dmg",[875]="Kill command bonus dmg",[868]="Aspect of the wild duration",[1517]="Cobra Shot focus reduc",[869]="Beast Cleave dmg",[870]="Kill command dmg",[1095]="Bestial Wrath bonus dmg",[871]="Dodge",[874]="Aspect of the Turtle heal"},
 			--MM (Storm, Blood, Life)-
 		[128826] = {[319]="Aimed Shot crit Vulnerable",[312]="Aimed Shot crit dmg",[1521]="Vulnerability effectiveness",[313]="Marked Shot dmg",[318]="Marked Shot crit chance",[315]="Multi Shot dmg",[314]="Trueshot CD",[320]="Bursting Shot CD",[317]="Disengage dmg reduc",[316]="Aspect of the Turtle heal"},
 			--Sv (Storm, Iron, Blood)-
