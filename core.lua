@@ -3599,10 +3599,10 @@ function SimPermut:GenerateCruciblePermutationStrings(permuttable,currentTree)
 					--add weapons
 					itemLink = GetInventoryItemLink('player', INVSLOT_MAINHAND)
 					itemString = {}
+          local reliclink = ArtifactRelicForgeUI.GetPreviewRelicItemLink()
 
 					-- if we don't have an item link, we don't care
 					if itemLink then
-						local reliclink = ArtifactRelicForgeUI.GetPreviewRelicItemLink()
 						itemString=SimPermut:GetItemString(itemLink,'main_hand',true,_,_,reliclink,actualSettings.NCPreviewType)
 						weaponstring = weaponstring .. "main_hand=" .. table.concat(itemString, ',').. '\n'
 					end
