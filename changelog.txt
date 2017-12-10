@@ -1,3 +1,6 @@
+v1.14.12 12/12/2017
+[Fix]Fix NC issue with off hand
+
 v1.14.11 11/29/2017
 [UI]updtate ilvl max threshold to 1k
 [UI]Set ilvl max to 1k if it was at 999
