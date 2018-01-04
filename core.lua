@@ -416,25 +416,11 @@ function SimPermut:BuildGearFrame()
 	
 	SimPermut:AddSpacer(UIElements.mainGroup,false,89)
 
-	local labelSetsT19= AceGUI:Create("Label")
-	labelSetsT19:SetText("T19 (min)")
-	labelSetsT19:SetWidth(76)
-	UIElements.mainGroup:AddChild(labelSetsT19)
-	
-	local dropdownSetsT19 = AceGUI:Create("Dropdown")
-	dropdownSetsT19:SetList(ExtraData.SetsListT19)
-	dropdownSetsT19:SetWidth(110)
-	dropdownSetsT19:SetValue(actualSettings.setsT19)
-	dropdownSetsT19:SetCallback("OnValueChanged", function (this, event, item)
-		UIParameters.actualSetsT19=item
-    end)
-	UIElements.mainGroup:AddChild(dropdownSetsT19)
-
 	local labelSetsT20= AceGUI:Create("Label")
 	labelSetsT20:SetText("T20 (min)")
-	labelSetsT20:SetWidth(55)
+	labelSetsT20:SetWidth(76)
 	UIElements.mainGroup:AddChild(labelSetsT20)
-
+	
 	local dropdownSetsT20 = AceGUI:Create("Dropdown")
 	dropdownSetsT20:SetList(ExtraData.SetsListT20)
 	dropdownSetsT20:SetWidth(110)
@@ -443,6 +429,20 @@ function SimPermut:BuildGearFrame()
 		UIParameters.actualSetsT20=item
     end)
 	UIElements.mainGroup:AddChild(dropdownSetsT20)
+
+	local labelSetsT21= AceGUI:Create("Label")
+	labelSetsT21:SetText("T21 (min)")
+	labelSetsT21:SetWidth(55)
+	UIElements.mainGroup:AddChild(labelSetsT21)
+
+	local dropdownSetsT21 = AceGUI:Create("Dropdown")
+	dropdownSetsT21:SetList(ExtraData.SetsListT21)
+	dropdownSetsT21:SetWidth(110)
+	dropdownSetsT21:SetValue(actualSettings.setsT21)
+	dropdownSetsT21:SetCallback("OnValueChanged", function (this, event, item)
+		UIParameters.actualSetsT21=item
+    end)
+	UIElements.mainGroup:AddChild(dropdownSetsT21)
 	
 	SimPermut:AddSpacer(UIElements.mainGroup,false,90)
 
