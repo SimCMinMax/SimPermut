@@ -1,3 +1,7 @@
+v1.14.13 01/04/2018
+[UI]Show T20 and T21 on main screen. T19 still accessible in the option panel
+[Fix]Fix Amanthul detection for legendaries 
+
 v1.14.12 12/12/2017
 [Fix]Fix NC issue with off hand
 
