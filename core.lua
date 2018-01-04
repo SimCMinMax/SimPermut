@@ -2506,12 +2506,12 @@ function SimPermut:GetItemStrings()
 		-- if we don't have an item link, we don't care
 		if itemLink then
 			local _,_,itemRarity = GetItemInfo(itemLink)
-			if itemRarity==5 then
-				UIParameters.equipedLegendaries= UIParameters.equipedLegendaries+1
+			if itemRarity == 5 and PersoLib:GetIDFromLink(itemLink) ~= 154172 then
+				UIParameters.equipedLegendaries = UIParameters.equipedLegendaries + 1
 			end
-			itemString=SimPermut:GetItemString(itemLink,ExtraData.PermutSimcNames[slotNum],true)
-			UIElements.tableBaseString[slotNum]=table.concat(itemString, ',')
-			itemsLinks[slotNum]=itemLink
+			itemString = SimPermut:GetItemString(itemLink,ExtraData.PermutSimcNames[slotNum],true)
+			UIElements.tableBaseString[slotNum] = table.concat(itemString, ',')
+			itemsLinks[slotNum] = itemLink
 			items[slotNum] = ExtraData.PermutSimcNames[slotNum] .. "=" .. table.concat(itemString, ',')
 		end
 	end
@@ -2877,7 +2877,7 @@ function SimPermut:GetPermutationString(permuttable)
 			for j=1,#permuttable[i] do
 				draw = true
 				local _,_,itemRarity = GetItemInfo(permuttable[i][j][1])
-				if(itemRarity == 5) and PersoLib:GetIDFromLink(permuttable[i][j][1]) ~= 154172 then -- exlude amanthul from count 
+				if (itemRarity == 5) and PersoLib:GetIDFromLink(permuttable[i][j][1]) ~= 154172 then -- exlude amanthul from count 
 					nbLeg=nbLeg+1
 				end
 				
