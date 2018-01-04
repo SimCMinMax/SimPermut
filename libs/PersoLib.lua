@@ -414,7 +414,7 @@ function PersoLib:GetIDFromLink(itemLink)
 		end
 	end
 
-	return itemSplit[1]
+	return tonumber(itemSplit[1])
 end
 
 -- get item id from link

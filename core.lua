@@ -2690,7 +2690,7 @@ function SimPermut:GetItemListString()
 		actualString=""
 		for j=1,#UIElements.tableLinkPermut[i] do
 			local _,_,itemRarity = GetItemInfo(UIElements.tableLinkPermut[i][j][1])
-			local itemid = tonumber(PersoLib:GetIDFromLink(UIElements.tableLinkPermut[i][j][1]))
+			local itemid = PersoLib:GetIDFromLink(UIElements.tableLinkPermut[i][j][1])
 			local itemString = SimPermut:GetItemString(UIElements.tableLinkPermut[i][j][1],ExtraData.PermutSimcNames[i],false,UIElements.tableLinkPermut[i][j][2],UIElements.tableLinkPermut[i][j][3])
 			local extraDataString = ""..((itemid == ExtraData.HasTierSets["T21"][UIParameters.classID][i]) and "T21" or "")..((itemid == ExtraData.HasTierSets["T20"][UIParameters.classID][i]) and "T20" or "").. ((itemid == ExtraData.HasTierSets["T19"][UIParameters.classID][i]) and "T19" or "").. ((itemRarity== 5) and "L" or "")
 			local actualextraDataString = ""
@@ -2926,7 +2926,7 @@ function SimPermut:GetPermutationString(permuttable)
 			end
 			
 			itemList=itemList:sub(1, -2)
-			
+
 			if((nbLeg >=UIParameters.actualLegMin and nbLeg<=UIParameters.actualLegMax and nbitem>0 
 				and (UIParameters.actualSetsT19==0 or (UIParameters.actualSetsT19==2 and T192p) or (UIParameters.actualSetsT19==4 and T194p)) 
 				and (UIParameters.actualSetsT20==0 or (UIParameters.actualSetsT20==2 and T202p) or (UIParameters.actualSetsT20==4 and T204p))
@@ -3419,7 +3419,7 @@ function SimPermut:HasTier(stier,tableEquip)
       local Count = 0;
       local Item;
       for Slot, ItemID in pairs(ExtraData.HasTierSets[stier][UIParameters.classID]) do
-        Item = tonumber(PersoLib:GetIDFromLink(tableEquip[Slot][1]));
+        Item = PersoLib:GetIDFromLink(tableEquip[Slot][1]);
         if Item and Item == ItemID then
           Count = Count + 1;
         end
