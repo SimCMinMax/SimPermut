@@ -2245,7 +2245,6 @@ function SimPermut:GetItemString(itemLink,itemType,base,forceilvl,forcegem,relic
 	simcItemOptions[#simcItemOptions + 1] = ',id=' .. itemId
 	
 	-- Enchant
-	
 	if base and not SimPermutVars.replaceEnchantsBase then 
 		if tonumber(itemSplit[UIParameters.OFFSET_ENCHANT_ID]) > 0 then
 			enchantID=itemSplit[UIParameters.OFFSET_ENCHANT_ID]
@@ -2326,7 +2325,7 @@ function SimPermut:GetItemString(itemLink,itemType,base,forceilvl,forcegem,relic
 
 	-- Artifacts use this
 	if bit.band(flags, 256) == 256 then
-		local relicNb=0
+		local relicNb = 0
 		rest_offset = rest_offset + 1 -- An unknown field
 		local n_bonus_ids = tonumber(itemSplit[rest_offset])
 		if n_bonus_ids==1 then --unlocked traits field
@@ -2365,9 +2364,9 @@ function SimPermut:GetItemString(itemLink,itemType,base,forceilvl,forcegem,relic
 		end
 
 		if relic_str ~= '' then
-		simcItemOptions[#simcItemOptions + 1] = 'relic_id=' .. relic_str
+      simcItemOptions[#simcItemOptions + 1] = 'relic_id=' .. relic_str
 		end
-    end
+  end
 
 	-- Gems
 	if itemType=="main_hand" or itemType=="off_hand" then --exception for relics
