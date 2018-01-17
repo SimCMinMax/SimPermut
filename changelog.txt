@@ -1,3 +1,6 @@
+v1.14.14 01/17/2018
+[Fix]Fix artifact string export issue caused by 7.3.5 changes
+
 v1.14.13 01/04/2018
 [UI]Show T20 and T21 on main screen. T19 still accessible in the option panel
 [Fix]Fix Amanthul detection for legendaries 
