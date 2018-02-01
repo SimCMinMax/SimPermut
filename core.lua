@@ -2803,34 +2803,39 @@ function SimPermut:PreparePermutations(permuttable)
 	local itemIdRing1,itemIdRing2
 	local itemIdTrinket1,itemIdTrinket2 
 	--preparing rings
-	if (GetInventoryItemLink('player', INVSLOT_FINGER1)==permuttable[1][11][1] and GetInventoryItemLink('player', INVSLOT_FINGER2)==permuttable[1][12][1]) or 
-		(GetInventoryItemLink('player', INVSLOT_FINGER1)==permuttable[1][12][1] and GetInventoryItemLink('player', INVSLOT_FINGER2)==permuttable[1][11][1]) then
-		itemIdRing1 = PersoLib:GetIDFromLink(GetInventoryItemLink('player', INVSLOT_FINGER1))
-		itemIdRing2 = PersoLib:GetIDFromLink(GetInventoryItemLink('player', INVSLOT_FINGER2))
-	else
-		itemIdRing1 = PersoLib:GetIDFromLink(permuttable[1][11][1])
-		itemIdRing2 = PersoLib:GetIDFromLink(permuttable[1][12][1])
-	end
-	if itemIdRing1<itemIdRing2 then
-		UIParameters.fingerInf=true
+	if #permuttable[1][11] > 0 and #permuttable[1][12] > 0 then
+		if (GetInventoryItemLink('player', INVSLOT_FINGER1)==permuttable[1][11][1] and GetInventoryItemLink('player', INVSLOT_FINGER2)==permuttable[1][12][1]) or 
+			(GetInventoryItemLink('player', INVSLOT_FINGER1)==permuttable[1][12][1] and GetInventoryItemLink('player', INVSLOT_FINGER2)==permuttable[1][11][1]) then
+			itemIdRing1 = PersoLib:GetIDFromLink(GetInventoryItemLink('player', INVSLOT_FINGER1))
+			itemIdRing2 = PersoLib:GetIDFromLink(GetInventoryItemLink('player', INVSLOT_FINGER2))
+		else
+			itemIdRing1 = PersoLib:GetIDFromLink(permuttable[1][11][1])
+			itemIdRing2 = PersoLib:GetIDFromLink(permuttable[1][12][1])
+		end
+		if itemIdRing1<itemIdRing2 then
+			UIParameters.fingerInf=true
+		end
+		
+		PersoLib:debugPrint("fingerInf:"..tostring(UIParameters.fingerInf).."("..itemIdRing1.."-"..itemIdRing2..")",UIParameters.ad)
 	end
 	
 	--prepare trinkets
-	if (GetInventoryItemLink('player', INVSLOT_TRINKET1)==permuttable[1][13][1] and GetInventoryItemLink('player', INVSLOT_TRINKET2)==permuttable[1][14][1]) or 
-		(GetInventoryItemLink('player', INVSLOT_TRINKET1)==permuttable[1][14][1] and GetInventoryItemLink('player', INVSLOT_TRINKET2)==permuttable[1][13][1]) then
-		
-		itemIdTrinket1 = PersoLib:GetIDFromLink(GetInventoryItemLink('player', INVSLOT_TRINKET1))
-		itemIdTrinket2 = PersoLib:GetIDFromLink(GetInventoryItemLink('player', INVSLOT_TRINKET2))
-	else
-		itemIdTrinket1 = PersoLib:GetIDFromLink(permuttable[1][13][1])
-		itemIdTrinket2 = PersoLib:GetIDFromLink(permuttable[1][14][1])
+	if #permuttable[1][13] > 0 and #permuttable[1][14] > 0 then
+		if (GetInventoryItemLink('player', INVSLOT_TRINKET1)==permuttable[1][13][1] and GetInventoryItemLink('player', INVSLOT_TRINKET2)==permuttable[1][14][1]) or 
+			(GetInventoryItemLink('player', INVSLOT_TRINKET1)==permuttable[1][14][1] and GetInventoryItemLink('player', INVSLOT_TRINKET2)==permuttable[1][13][1]) then
+			
+			itemIdTrinket1 = PersoLib:GetIDFromLink(GetInventoryItemLink('player', INVSLOT_TRINKET1))
+			itemIdTrinket2 = PersoLib:GetIDFromLink(GetInventoryItemLink('player', INVSLOT_TRINKET2))
+		else
+			itemIdTrinket1 = PersoLib:GetIDFromLink(permuttable[1][13][1])
+			itemIdTrinket2 = PersoLib:GetIDFromLink(permuttable[1][14][1])
+		end
+		if itemIdTrinket1<itemIdTrinket2 then
+			UIParameters.trinketInf=true
+		end
+
+		PersoLib:debugPrint("trinketInf:"..tostring(UIParameters.trinketInf).."("..itemIdTrinket1.."-"..itemIdTrinket2..")",UIParameters.ad)
 	end
-	if itemIdTrinket1<itemIdTrinket2 then
-		UIParameters.trinketInf=true
-	end
-	
-	PersoLib:debugPrint("fingerInf:"..tostring(UIParameters.fingerInf).."("..itemIdRing1.."-"..itemIdRing2..")  ".."trinketInf:"..tostring(UIParameters.trinketInf).."("..itemIdTrinket1.."-"..itemIdTrinket2..")",UIParameters.ad)
-		
 end
 
 -- generates the string of all permutations
@@ -3238,10 +3243,10 @@ function SimPermut:GetBaseString(nocrucible)
 	SimPermutProfile = SimPermutProfile .. playerRole .. '\n'
 	SimPermutProfile = SimPermutProfile .. playerTalents .. '\n'
 	SimPermutProfile = SimPermutProfile .. playerSpec .. '\n'
-	if playerArtifact ~= "" then
+	if playerArtifact ~= nil then
 		SimPermutProfile = SimPermutProfile .. "artifact=".. playerArtifact .. '\n'
 	end
-	if playerCrucible ~= "" then
+	if playerCrucible ~= nil then
 		SimPermutProfile = SimPermutProfile .. "crucible=".. playerCrucible .. '\n'
 	end
 
