@@ -721,6 +721,10 @@ SimPermut.ExtraData={
 		[5434] 	= '+200 Str',
 		[5435] 	= '+200 Agi',
 		[5436] 	= '+200 Int',
+		[5310]  = '+100 Crit',
+		[5311]  = '+100 Haste',
+		[5312]  = '+100 Mast',
+		[5314]  = '+100 Vers',
 		[999999]= 'Scrap ench.'
 	},
 	enchantRing = {
