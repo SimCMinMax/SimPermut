@@ -235,12 +235,12 @@ SimPermut.ExtraData={
 			--Brew
 		[128938] = {{},{},{}},
 			--WW (Storm, Iron, Storm)-
-		[128937] = {
+		[128940] = {
 		{[0]="Current trait",[133016]="Rising Sun Kick dmg",[146932]="Fist of Fury dmg",[147112]="Storm Earth and Fire CD",[144531]="Max Energy up",[137365]="Tiger Palm dmg",[137421]="Blackout Kick no chi",[141514]="Spinning Crane Kick dmg",[132993]="Touch of Death CD",[137468]="Dodge up",[132808]="Transcendence heal"},
 		{[0]="Current trait",[147101]="Rising Sun Kick dmg",[140815]="Fist of Fury dmg",[133075]="Max Energy up",[144522]="Tiger Palm dmg",[134081]="Blackout Kick no chi",[133763]="Spinning Crane Kick dmg",[132781]="Touch of Death CD",[147759]="Dodge up",[133120]="Transcendence heal"},
 		{[0]="Current trait",[133016]="Rising Sun Kick dmg",[146932]="Fist of Fury dmg",[147112]="Storm Earth and Fire CD",[144531]="Max Energy up",[137365]="Tiger Palm dmg",[137421]="Blackout Kick no chi",[141514]="Spinning Crane Kick dmg",[132993]="Touch of Death CD",[137468]="Dodge up",[132808]="Transcendence heal"}},
 			--Mist
-		[128940] = {{},{},{}},
+		[128937] = {{},{},{}},
 		-- Paladin
 			--Holy
 		[128823] = {{},{},{}},
@@ -343,8 +343,8 @@ SimPermut.ExtraData={
 		[128862] = {{0,136692,132791,137308,132849,142515,141267,142308,133141,137545},{0,142175,133030,132305,147079,147076,140813,142176,132984,141272,137490},{0,136692,132791,137308,132849,142515,141267,142308,133141,137545}},--Frost
 		-- Monk
 		[128938] = {{},{},{}},
-		[128937] = {{0,133016,146932,147112,144531,137365,137421,141514,132993,137468,132808},{0,147101,140815,133075,144522,134081,133763,132781,147759,133120},{0,133016,146932,147112,144531,137365,137421,141514,132993,137468,132808}},--Windwalker
-		[128940] = {{},{},{}},
+		[128940] = {{0,133016,146932,147112,144531,137365,137421,141514,132993,137468,132808},{0,147101,140815,133075,144522,134081,133763,132781,147759,133120},{0,133016,146932,147112,144531,137365,137421,141514,132993,137468,132808}},--Windwalker
+		[128937] = {{},{},{}},
 		-- Paladin
 		[128823] = {{},{},{}},
 		[128866] = {{},{},{}},
@@ -372,7 +372,7 @@ SimPermut.ExtraData={
 	},
 	NetherlightData={
 	{
-		[1739]="Netherlifht Fortification"
+		[1739]="Netherlight Fortification"
 	},
 	{
 		[1771]="Master of Shadows",
@@ -427,9 +427,9 @@ SimPermut.ExtraData={
 			--Brew
 		[128938] = {},
 			--WW (Storm, Iron, Storm)-
-		[128937] = {[820]="Rising Sun Kick dmg",[825]="Fist of Fury dmg",[1549]="Storm Earth and Fire CD",[800]="Max Energy up",[821]="Tiger Palm dmg",[1094]="Blackout Kick no chi",[824]="Spinning Crane Kick dmg",[822]="Touch of Death CD",[801]="Dodge up",[829]="Transcendence heal"},
+		[128940] = {[820]="Rising Sun Kick dmg",[825]="Fist of Fury dmg",[1549]="Storm Earth and Fire CD",[800]="Max Energy up",[821]="Tiger Palm dmg",[1094]="Blackout Kick no chi",[824]="Spinning Crane Kick dmg",[822]="Touch of Death CD",[801]="Dodge up",[829]="Transcendence heal"},
 			--Mist
-		[128940] = {},
+		[128937] = {},
 		-- Paladin
 			--Holy
 		[128823] = {},
