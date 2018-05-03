@@ -598,10 +598,8 @@ SimPermut.ExtraData={
 	FrameMenu={
 		[1]	= "Gear permutation",
 		[2] = "Talent permutation",
-		[3] = "Artifact Generator",
-		[4] = "Netherlight Crucible",
-		[5] = "Add Items",
-		[6] = "Options"
+		[3] = "Add Items",
+		[4] = "Options"
 	},
 	RelicComparisonType = {
 	  [1] = 'relic ilevel',

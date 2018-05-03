@@ -1,4 +1,4 @@
-## Interface: 70300
+## Interface: 80100
 ## Title: SimPermut
 ## Notes: Constructs SimC export strings with permutations for items in inventory. Based on SimulationCraft's Addon. 
 ## Author: Kutikuti

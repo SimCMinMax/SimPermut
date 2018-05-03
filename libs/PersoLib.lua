@@ -509,3 +509,14 @@ function PersoLib:DumpTable(tbl, indent)
     end
   end
 end
+
+function PersoLib:Dump(tbl,tblname,inspect)
+	if tblname then
+		print("Dump:"..tblname)
+	end
+	DevTools_Dump(tbl);
+	if inspect then
+		UIParentLoadAddOn("Blizzard_DebugTools")
+		DisplayTableInspectorWindow(tbl)
+	end
+end
