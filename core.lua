@@ -36,9 +36,8 @@ local UIParameters={
 	errorMessage="",
 	currentFrame=1,
 	
-	actualEnchantNeck=0,
+	actualEnchantWeapon=0,
 	actualEnchantFinger=0,
-	actualEnchantBack=0,
 	actualGem=0,
 	actualForce=false,
 	epicGemUsed,
@@ -83,8 +82,7 @@ local defaultSettings={
 	report_typeTalents	= 2,
 	ilvl_thresholdMin 	= 300,
 	ilvl_thresholdMax 	= 500,
-	enchant_neck		= 0,
-	enchant_back		= 0,	
+	enchant_weapon		= 0,
 	enchant_ring		= 0,		
 	gems				= 0,	
 	gemsEpic			= 0,
@@ -247,34 +245,6 @@ function SimPermut:BuildGearFrame()
 
 	
 	------ Items + param
-	local labelEnchantNeck= AceGUI:Create("Label")
-	labelEnchantNeck:SetText("Enchant Neck")
-	labelEnchantNeck:SetWidth(80)
-	UIElements.mainGroup:AddChild(labelEnchantNeck)
-	
-	local dropdownEnchantNeck = AceGUI:Create("Dropdown")
-	dropdownEnchantNeck:SetWidth(130)
-	dropdownEnchantNeck:SetList(ExtraData.enchantNeck)
-	dropdownEnchantNeck:SetValue(actualSettings.enchant_neck)
-	dropdownEnchantNeck:SetCallback("OnValueChanged", function (this, event, item)
-		UIParameters.actualEnchantNeck=item
-    end)
-	UIElements.mainGroup:AddChild(dropdownEnchantNeck)
-		
-	local labelEnchantBack= AceGUI:Create("Label")
-	labelEnchantBack:SetText("     Enchant Back")
-	labelEnchantBack:SetWidth(95)
-	UIElements.mainGroup:AddChild(labelEnchantBack)
-	
-	local dropdownEnchantBack = AceGUI:Create("Dropdown")
-	dropdownEnchantBack:SetWidth(110)
-	dropdownEnchantBack:SetList(ExtraData.enchantCloak)
-	dropdownEnchantBack:SetValue(actualSettings.enchant_back)
-	dropdownEnchantBack:SetCallback("OnValueChanged", function (this, event, item)
-		UIParameters.actualEnchantBack=item
-    end)
-	UIElements.mainGroup:AddChild(dropdownEnchantBack)
-	
 	local labelEnchantFinger= AceGUI:Create("Label")
 	labelEnchantFinger:SetText("     Enchant Ring")
 	labelEnchantFinger:SetWidth(95)
@@ -288,6 +258,21 @@ function SimPermut:BuildGearFrame()
 		UIParameters.actualEnchantFinger=item
     end)
 	UIElements.mainGroup:AddChild(dropdownEnchantFinger)
+
+	
+	local labelEnchantWeapon= AceGUI:Create("Label")
+	labelEnchantWeapon:SetText("     Enchant Weapon")
+	labelEnchantWeapon:SetWidth(95)
+	UIElements.mainGroup:AddChild(labelEnchantWeapon)
+	
+	local dropdownEnchantWeapon = AceGUI:Create("Dropdown")
+	dropdownEnchantWeapon:SetWidth(110)
+	dropdownEnchantWeapon:SetList(ExtraData.enchantWeapon)
+	dropdownEnchantWeapon:SetValue(actualSettings.enchant_weapon)
+	dropdownEnchantWeapon:SetCallback("OnValueChanged", function (this, event, item)
+		UIParameters.actualEnchantWeapon=item
+    end)
+	UIElements.mainGroup:AddChild(dropdownEnchantWeapon)
 	
 	local labelGem= AceGUI:Create("Label")
 	labelGem:SetText("     Gem")
@@ -721,36 +706,7 @@ function SimPermut:BuildOptionFrame()
 	labeltitre2:SetFullWidth(true)
 	container1:AddChild(labeltitre2)
 	
-	local labelEnchantNeck= AceGUI:Create("Label")
-	labelEnchantNeck:SetText("Enchant Neck")
-	labelEnchantNeck:SetWidth(80)
-	container1:AddChild(labelEnchantNeck)
-	
-	local dropdownEnchantNeck = AceGUI:Create("Dropdown")
-	dropdownEnchantNeck:SetWidth(130)
-	dropdownEnchantNeck:SetList(ExtraData.enchantNeck)
-	dropdownEnchantNeck:SetValue(actualSettings.enchant_neck)
-	dropdownEnchantNeck:SetCallback("OnValueChanged", function (this, event, item)
-		SimPermutVars.enchant_neck=item
-		PersoLib:MergeTables(defaultSettings,SimPermutVars,actualSettings)
-    end)
-	container1:AddChild(dropdownEnchantNeck)
-		
-	local labelEnchantBack= AceGUI:Create("Label")
-	labelEnchantBack:SetText("     Enchant Back")
-	labelEnchantBack:SetWidth(95)
-	container1:AddChild(labelEnchantBack)
-	
-	local dropdownEnchantBack = AceGUI:Create("Dropdown")
-	dropdownEnchantBack:SetWidth(110)
-	dropdownEnchantBack:SetList(ExtraData.enchantCloak)
-	dropdownEnchantBack:SetValue(actualSettings.enchant_back)
-	dropdownEnchantBack:SetCallback("OnValueChanged", function (this, event, item)
-		SimPermutVars.enchant_back=item
-		PersoLib:MergeTables(defaultSettings,SimPermutVars,actualSettings)
-    end)
-	container1:AddChild(dropdownEnchantBack)
-	
+	-- Finger enchant
 	local labelEnchantFinger= AceGUI:Create("Label")
 	labelEnchantFinger:SetText("     Enchant Ring")
 	labelEnchantFinger:SetWidth(95)
@@ -766,6 +722,7 @@ function SimPermut:BuildOptionFrame()
     end)
 	container1:AddChild(dropdownEnchantFinger)
 	
+	-- Gems
 	local labelGem= AceGUI:Create("Label")
 	labelGem:SetText("     Gem")
 	labelGem:SetWidth(55)
@@ -781,21 +738,9 @@ function SimPermut:BuildOptionFrame()
     end)
 	container1:AddChild(dropdownGem)
 	
-	SimPermut:AddSpacer(container1,true)
-	
-	UIElements.checkBoxForce = AceGUI:Create("CheckBox")
-	UIElements.checkBoxForce:SetWidth(250)
-	UIElements.checkBoxForce:SetLabel("Replace current enchant/gems")
-	UIElements.checkBoxForce:SetCallback("OnValueChanged", function (this, event, item)
-		SimPermutVars.replaceEnchants=UIElements.checkBoxForce:GetValue()
-		PersoLib:MergeTables(defaultSettings,SimPermutVars,actualSettings)
-    end)
-	container1:AddChild(UIElements.checkBoxForce)
-	
-	SimPermut:AddSpacer(container1,false,180)
-	
+	-- Epic Gem
 	local labelepicGem= AceGUI:Create("Label")
-	labelepicGem:SetText("Use 1 Epic gem")
+	labelepicGem:SetText("     Use 1 Epic gem")
 	labelepicGem:SetWidth(90)
 	container1:AddChild(labelepicGem)
 	
@@ -808,6 +753,18 @@ function SimPermut:BuildOptionFrame()
 		PersoLib:MergeTables(defaultSettings,SimPermutVars,actualSettings)
     end)
 	container1:AddChild(dropdownEpicGem)
+
+	SimPermut:AddSpacer(container1,false,50)
+
+	-- Replace current checkbox
+	UIElements.checkBoxForce = AceGUI:Create("CheckBox")
+	UIElements.checkBoxForce:SetWidth(250)
+	UIElements.checkBoxForce:SetLabel("Replace current enchant/gems")
+	UIElements.checkBoxForce:SetCallback("OnValueChanged", function (this, event, item)
+		SimPermutVars.replaceEnchants=UIElements.checkBoxForce:GetValue()
+		PersoLib:MergeTables(defaultSettings,SimPermutVars,actualSettings)
+    end)
+	container1:AddChild(UIElements.checkBoxForce)
 	
 	SimPermut:AddSpacer(container1,true)
 	SimPermut:AddSpacer(container1,true)
@@ -883,9 +840,9 @@ function SimPermut:InitGearFrame()
 	UIElements.tableLinkPermut={}
 	
 	--init with default parameters
-	UIParameters.actualEnchantNeck=actualSettings.enchant_neck
+	
+	UIParameters.actualEnchantWeapon=actualSettings.enchant_weapon
 	UIParameters.actualEnchantFinger=actualSettings.enchant_ring
-	UIParameters.actualEnchantBack=actualSettings.enchant_back
 	UIParameters.actualGem=actualSettings.gems
 	UIParameters.actualForce=actualSettings.replaceEnchants
 	
@@ -1133,35 +1090,7 @@ function SimPermut:GetItemString(itemLink,itemType,base,forceilvl,forcegem)
 			enchantID=itemSplit[UIParameters.OFFSET_ENCHANT_ID]
 		end
 	else
-		if itemType=="neck" then
-			if UIParameters.actualEnchantNeck == 999999 then
-				enchantID=""
-			elseif (UIParameters.actualForce or (base and SimPermutVars.replaceEnchantsBase)) and UIParameters.actualEnchantNeck~=0 then
-				enchantID=UIParameters.actualEnchantNeck
-			else	
-				if UIParameters.actualEnchantNeck==0 or tonumber(itemSplit[UIParameters.OFFSET_ENCHANT_ID]) > 0 then
-					if tonumber(itemSplit[UIParameters.OFFSET_ENCHANT_ID]) > 0 then
-						enchantID=itemSplit[UIParameters.OFFSET_ENCHANT_ID]
-					end
-				else
-					enchantID=UIParameters.actualEnchantNeck
-				end
-			end
-		elseif itemType=="back" then
-			if UIParameters.actualEnchantBack == 999999 then
-				enchantID=""
-			elseif (UIParameters.actualForce or (base and SimPermutVars.replaceEnchantsBase))  and UIParameters.actualEnchantBack~=0 then
-				enchantID=UIParameters.actualEnchantBack
-			else
-				if UIParameters.actualEnchantBack==0 or tonumber(itemSplit[UIParameters.OFFSET_ENCHANT_ID]) > 0 then
-					if tonumber(itemSplit[UIParameters.OFFSET_ENCHANT_ID]) > 0 then
-						enchantID=itemSplit[UIParameters.OFFSET_ENCHANT_ID]
-					end
-				else
-					enchantID=UIParameters.actualEnchantBack
-				end
-			end
-		elseif string.match(itemType, 'finger*') then
+		if string.match(itemType, 'finger*') then
 			if UIParameters.actualEnchantFinger == 999999 then
 				enchantID=""
 			elseif (UIParameters.actualForce or (base and SimPermutVars.replaceEnchantsBase))  and UIParameters.actualEnchantFinger~=0 then
@@ -1173,6 +1102,20 @@ function SimPermut:GetItemString(itemLink,itemType,base,forceilvl,forcegem)
 					end
 				else
 					enchantID=UIParameters.actualEnchantFinger
+				end
+			end
+		elseif (string.match(itemType, 'main_hand')) then
+			if UIParameters.actualEnchantFinger == 999999 then
+				enchantID=""
+			elseif (UIParameters.actualForce or (base and SimPermutVars.replaceEnchantsBase))  and UIParameters.actualEnchantWeapon~=0 then
+				enchantID=UIParameters.actualEnchantWeapon
+			else
+				if UIParameters.actualEnchantWeapon==0 or tonumber(itemSplit[UIParameters.OFFSET_ENCHANT_ID]) > 0 then
+					if tonumber(itemSplit[UIParameters.OFFSET_ENCHANT_ID]) > 0 then
+						enchantID=itemSplit[UIParameters.OFFSET_ENCHANT_ID]
+					end
+				else
+					enchantID=UIParameters.actualEnchantWeapon
 				end
 			end
 		else
@@ -1383,7 +1326,7 @@ function SimPermut:GetListItem(strItem,itemLine)
 		realSlot=13
 	elseif strItem=="main hand" then
 		slotID=16
-		realSlot=15
+		realSlot=18
 	elseif strItem=="off hand" then
 		slotID=17
 		realSlot=16
@@ -1521,6 +1464,7 @@ function SimPermut:GetItemListString()
 		
 	end
 	
+	--[[
 	--mainhand
     local itemLink = GetInventoryItemLink('player', INVSLOT_MAINHAND)
 	local itemString = {}
@@ -1540,7 +1484,7 @@ function SimPermut:GetItemListString()
 		itemString=SimPermut:GetItemString(itemLink,'off_hand',true)
 		returnString = returnString .. "off_hand=" .. table.concat(itemString, ',').. '\n'
     end
-	
+	]]--
 	
 	return returnString
 --SimPermut:GetItemString(itemLink,itemType,base)
@@ -1834,6 +1778,7 @@ function SimPermut:GetBaseString()
 		end
 	end
 	
+	--[[
 	--add weapons
     itemLink = GetInventoryItemLink('player', INVSLOT_MAINHAND)
 	itemString = {}
@@ -1851,7 +1796,8 @@ function SimPermut:GetBaseString()
     if itemLink then
 		itemString=SimPermut:GetItemString(itemLink,'off_hand',true)
 		SimPermutProfile = SimPermutProfile .. "off_hand=" .. table.concat(itemString, ',').. '\n'
-    end
+	end
+	]]--
 
 	return SimPermutProfile,itemsLinks
 end
