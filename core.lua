@@ -80,7 +80,7 @@ local variablesLoaded=false
 local defaultSettings={
 	report_typeGear		= 2,
 	report_typeTalents	= 2,
-	ilvl_thresholdMin 	= 300,
+	ilvl_thresholdMin 	= 280,
 	ilvl_thresholdMax 	= 500,
 	enchant_weapon		= 0,
 	enchant_ring		= 0,		
@@ -1325,10 +1325,10 @@ function SimPermut:GetListItem(strItem,itemLine)
 		slotID=15
 		realSlot=13
 	elseif strItem=="main hand" then
-		slotID=16
-		realSlot=18
-	elseif strItem=="off hand" then
 		slotID=17
+		realSlot=15
+	elseif strItem=="off hand" then
+		slotID=18
 		realSlot=16
 	end
 	blizzardname=ExtraData.SlotNames[slotID]
@@ -1442,7 +1442,6 @@ function SimPermut:GetTableLink()
 			UIElements.tableLinkPermut[12]=UIElements.tableLinkPermut[11]
 		end
 	end
-		
 	
 	return returnvalue
 end

@@ -125,8 +125,8 @@ SimPermut.ExtraData={
 		["INVTYPE_FEET"]=10,
 		["INVTYPE_FINGER"]=11,
 		["INVTYPE_TRINKET"]=12,
-		["INVSLOT_MAINHAND"]=16,
-		["INVSLOT_OFFHAND"]=17
+		["INVSLOT_MAINHAND"]=13,
+		["INVSLOT_OFFHAND"]=14
 	},
 	SlotNames = {
 		[1]="HeadSlot", 
