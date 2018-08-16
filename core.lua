@@ -1381,6 +1381,12 @@ function SimPermut:GetListItem(strItem,itemLine)
 	elseif strItem=="trinket" then
 		slotID=15
 		realSlot=13
+	elseif strItem=="main hand" then
+		slotID=16
+		realSlot=15
+	elseif strItem=="off hand" then
+		slotID=17
+		realSlot=16
 	end
 	blizzardname=ExtraData.SlotNames[slotID]
 	simcname=ExtraData.SimcSlotNames[slotID]
