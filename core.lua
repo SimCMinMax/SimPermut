@@ -140,10 +140,10 @@ end
 function SimPermut:OnInitialize()
 	SlashCmdList["SimPermut"] = handler;
 	PersoLib:Init(ExtraData)
-  if SimPermutVars.ilvl_thresholdMax==999 then
-    SimPermutVars.ilvl_thresholdMax=1000
+  	if SimPermutVars.ilvl_thresholdMax == 999 then
+    	SimPermutVars.ilvl_thresholdMax = 1000
 		PersoLib:MergeTables(defaultSettings,SimPermutVars,actualSettings)
-  end
+	end
 end
 
 ----------------------------
