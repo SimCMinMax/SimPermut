@@ -1174,11 +1174,11 @@ function SimPermut:GetItemString(itemLink,itemType,base,forceilvl,forcegem)
 				if (itemSplit[UIParameters.OFFSET_GEM_ID_1]~=0) then 
 					gemstring=gemstring..itemSplit[UIParameters.OFFSET_GEM_ID_1]
 					if (itemSplit[UIParameters.OFFSET_GEM_ID_2]~=0) then 
-						gemstring=gemstring..itemSplit[UIParameters.OFFSET_GEM_ID_2]
+						gemstring=gemstring..'/'..itemSplit[UIParameters.OFFSET_GEM_ID_2]
 						if (itemSplit[UIParameters.OFFSET_GEM_ID_3]~=0) then 
-							gemstring=gemstring..itemSplit[UIParameters.OFFSET_GEM_ID_3]
+							gemstring=gemstring..'/'..itemSplit[UIParameters.OFFSET_GEM_ID_3]
 							if (itemSplit[UIParameters.OFFSET_GEM_ID_4]~=0) then 
-								gemstring=gemstring..itemSplit[UIParameters.OFFSET_GEM_ID_4]
+								gemstring=gemstring..'/'..itemSplit[UIParameters.OFFSET_GEM_ID_4]
 							end
 						end
 					end
@@ -1209,11 +1209,11 @@ function SimPermut:GetItemString(itemLink,itemType,base,forceilvl,forcegem)
 					if (itemSplit[UIParameters.OFFSET_GEM_ID_1]~=0) then 
 						gemstring=gemstring..itemSplit[UIParameters.OFFSET_GEM_ID_1]
 						if (itemSplit[UIParameters.OFFSET_GEM_ID_2]~=0) then 
-							gemstring=gemstring..itemSplit[UIParameters.OFFSET_GEM_ID_2]
+							gemstring=gemstring..'/'..itemSplit[UIParameters.OFFSET_GEM_ID_2]
 							if (itemSplit[UIParameters.OFFSET_GEM_ID_3]~=0) then 
-								gemstring=gemstring..itemSplit[UIParameters.OFFSET_GEM_ID_3]
+								gemstring=gemstring..'/'..itemSplit[UIParameters.OFFSET_GEM_ID_3]
 								if (itemSplit[UIParameters.OFFSET_GEM_ID_4]~=0) then 
-									gemstring=gemstring..itemSplit[UIParameters.OFFSET_GEM_ID_4]
+									gemstring=gemstring..'/'..itemSplit[UIParameters.OFFSET_GEM_ID_4]
 								end
 							end
 						end
