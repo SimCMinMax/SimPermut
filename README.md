@@ -52,4 +52,4 @@ See [AutoSimC on GitHub](https://github.com/SimCMinMax/AutoSimC)
 ## Credits
 Kutikuti 
 
-[Quichons guild](http://www.quichons.fr/) from EU-Elune (fr)
+[Watcheur](https://github.com/watcheur) for BFA changes
