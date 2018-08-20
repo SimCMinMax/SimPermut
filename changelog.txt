@@ -1,5 +1,11 @@
-v1.15.0 07/19/2018
-[Fix] BFA compatibilité (thx to https://github.com/watcheur)
+v1.15.0 16/08/2018
+[UI]Remove tier list
+[UI]Remove legendaries
+[UI]Adding Main hand & off hand
+[UI]Add new enchantments
+[UI]Add new gems
+[Fix]Set minimum ilvl to 300 (was 200) & maximum to 500 (was 1000)
+[Code]Cleanup (legion features)
 
 v1.14.15 02/01/2018
 [Fix]LUA error in some cases
