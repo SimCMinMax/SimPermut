@@ -162,6 +162,10 @@ function PersoLib:getRace()
 		playerRace = 'Blood Elf'
 	elseif playerRace == 'NightElf' then
 		playerRace = 'Night Elf'
+	elseif playerRace == 'MagharOrc' then
+		playerRace = 'Maghar Orc'
+	elseif playerRace == 'DarkIronDwarf' then
+		playerRace = 'Dark Iron Dwarf'
 	elseif playerRace == 'Scourge' then
 		playerRace = 'Undead'
 	end
