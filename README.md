@@ -1,4 +1,7 @@
 # SimPermut
+
+Addon is broken right now, i'm working on fixing it but it could take a bit of time.
+Use [RaidBot](https://www.raidbots.com/simbot) for now.
  
 ## Overview
 
